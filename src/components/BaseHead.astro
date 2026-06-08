@@ -33,6 +33,21 @@ const { title, description, image = FallbackImage } = Astro.props;
 <meta name="generator" content={Astro.generator} />
 
 <Font cssVariable="--font-atkinson" preload />
+<script is:inline>
+	(() => {
+		const mobileQuery = window.matchMedia('(max-width: 720px), (pointer: coarse)');
+		const setDevice = () => {
+			document.documentElement.dataset.device = mobileQuery.matches ? 'mobile' : 'desktop';
+		};
+
+		setDevice();
+		if (mobileQuery.addEventListener) {
+			mobileQuery.addEventListener('change', setDevice);
+		} else {
+			mobileQuery.addListener(setDevice);
+		}
+	})();
+</script>
 
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
