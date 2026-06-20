@@ -1,0 +1,108 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE_TITLE } from '../consts';
+import '../styles/play-tiles.css';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead
+			title={`Play Tiles | ${SITE_TITLE}`}
+			description="A playable smart_tiles simulator for testing tactile learning games."
+		/>
+	</head>
+	<body>
+		<Header />
+		<main class="tiles-page">
+			<section class="app-shell">
+				<section class="board-panel" aria-label="smart_tiles simulator">
+					<header class="topbar">
+						<div>
+							<p class="eyebrow">smart_tiles</p>
+							<h1>Build a play board</h1>
+						</div>
+						<div class="mode-tabs" role="tablist" aria-label="Game mode">
+							<button class="mode-tab active" type="button" data-mode="equation">Equation</button>
+							<button class="mode-tab" type="button" data-mode="maze">Maze</button>
+							<button class="mode-tab" type="button" data-mode="memory">Memory</button>
+							<button class="mode-tab" type="button" data-mode="story">Story</button>
+						</div>
+					</header>
+
+					<div class="play-area">
+						<div class="tray" aria-label="Available tiles"></div>
+						<div class="grid-wrap">
+							<div class="grid" aria-label="Tile board"></div>
+						</div>
+					</div>
+				</section>
+
+				<aside class="side-panel">
+					<section class="status-panel" aria-label="Game status">
+						<div class="panel-title-row">
+							<h2 id="modeTitle">Equation Builder</h2>
+							<button class="small-button" type="button" id="resetBoard">Reset</button>
+						</div>
+						<p id="modePrompt" class="prompt"></p>
+						<div class="metric-row">
+							<div>
+								<span class="metric-label">Tiles</span>
+								<strong id="tileCount">0</strong>
+							</div>
+							<div>
+								<span class="metric-label">Links</span>
+								<strong id="linkCount">0</strong>
+							</div>
+							<div>
+								<span class="metric-label">Score</span>
+								<strong id="scoreValue">0</strong>
+							</div>
+						</div>
+					</section>
+
+					<section class="graph-panel" aria-label="Detected tile graph">
+						<h2>Detected Graph</h2>
+						<div id="graphList" class="graph-list"></div>
+					</section>
+
+					<section class="interest-panel" aria-label="Interest">
+						<h2>Playtest Signal</h2>
+						<label>
+							I am a
+							<select id="audienceRole">
+								<option>Parent</option>
+								<option>Teacher</option>
+								<option>Kid</option>
+								<option>Maker</option>
+							</select>
+						</label>
+						<label>
+							Most interesting game
+							<select id="favoriteMode">
+								<option>Equation Builder</option>
+								<option>Maze Runner</option>
+								<option>Memory Match</option>
+								<option>Story Builder</option>
+							</select>
+						</label>
+						<label>
+							Interest level
+							<input id="interestLevel" type="range" min="1" max="5" value="3" />
+						</label>
+						<label>
+							Email
+							<input id="email" type="email" placeholder="optional" />
+						</label>
+						<button class="primary-button" type="button" id="saveSignal">Save Interest</button>
+						<p id="saveStatus" class="save-status"></p>
+					</section>
+				</aside>
+			</section>
+		</main>
+		<Footer />
+		<script is:inline src="/scripts/play-tiles.js"></script>
+	</body>
+</html>
