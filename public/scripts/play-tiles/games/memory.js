@@ -1,0 +1,142 @@
+import { blankTilePack, memoryFaces, squareLayout } from '../config.js';
+
+export class MemoryGame {
+	constructor(app, board) {
+		this.app = app;
+		this.board = board;
+		this.title = 'Memory Match';
+		this.selectedCount = 16;
+		this.running = false;
+		this.locked = false;
+		this.attempts = 0;
+		this.matches = 0;
+		this.selection = [];
+		this.turnToken = 0;
+	}
+
+	enter() {
+		this.stop();
+		return blankTilePack('memory');
+	}
+
+	exit() {
+		this.stop();
+	}
+
+	isLocked() {
+		return this.running;
+	}
+
+	instructions() {
+		return `Choose how many tiles to play with, then drag that many white tiles into the board or use software placement. Click two tiles to reveal them. Matching tiles turn gray immediately.`;
+	}
+
+	setTileCount(count) {
+		this.selectedCount = count;
+		this.stop();
+		this.board.reset(blankTilePack('memory'));
+		this.app.setStatus(`Memory set to ${count} tiles.`);
+		this.app.render();
+	}
+
+	autoArrange() {
+		this.stop();
+		this.board.resetBoardTiles();
+		const positions = squareLayout(this.selectedCount);
+		const blankItems = this.board.availablePackItems('blank').slice(0, this.selectedCount);
+		blankItems.forEach((item, index) => {
+			this.board.addTileFromPack(item.key, positions[index].row, positions[index].col);
+		});
+		this.app.setStatus(`${this.selectedCount} white tiles placed by software.`);
+	}
+
+	start() {
+		const boardTiles = this.board.placedTileList();
+		if (boardTiles.length < this.selectedCount) {
+			this.app.setStatus(`Add ${this.selectedCount - boardTiles.length} more white tile${this.selectedCount - boardTiles.length === 1 ? '' : 's'} before starting.`);
+			return;
+		}
+
+		this.running = true;
+		this.locked = false;
+		this.attempts = 0;
+		this.matches = 0;
+		this.selection = [];
+		this.turnToken += 1;
+		const faces = this.makeFaceSet();
+		boardTiles.slice(0, this.selectedCount).forEach((tile, index) => {
+			tile.gameData.memoryFace = faces[index];
+			tile.gameData.matched = false;
+			this.board.setTileDisplay(tile, '', 'blank');
+		});
+		this.app.setStatus('Memory game running.');
+		this.app.render();
+	}
+
+	stop() {
+		this.running = false;
+		this.locked = false;
+		this.selection = [];
+		this.turnToken += 1;
+	}
+
+	makeFaceSet() {
+		const pairCount = this.selectedCount / 2;
+		return [...memoryFaces.slice(0, pairCount), ...memoryFaces.slice(0, pairCount)].sort(() => Math.random() - 0.5);
+	}
+
+	handleTileClick(tile) {
+		if (!this.running) return false;
+		if (this.locked || tile.gameData.matched || this.selection.includes(tile)) return true;
+
+		this.selection.push(tile);
+		this.board.setTileDisplay(tile, tile.gameData.memoryFace, 'revealed');
+
+		if (this.selection.length !== 2) {
+			this.app.render();
+			return true;
+		}
+
+		this.attempts += 1;
+		const [first, second] = this.selection;
+		const matched = first.gameData.memoryFace === second.gameData.memoryFace;
+
+		if (matched) {
+			first.gameData.matched = true;
+			second.gameData.matched = true;
+			this.matches += 1;
+			this.board.setTileDisplay(first, first.gameData.memoryFace, 'matched');
+			this.board.setTileDisplay(second, second.gameData.memoryFace, 'matched');
+			this.selection = [];
+			this.app.setStatus('Match found.');
+			if (this.matches === this.selectedCount / 2) {
+				this.running = false;
+				this.app.setStatus(`Memory complete in ${this.attempts} attempts.`);
+			}
+			this.app.render();
+			return true;
+		}
+
+		this.locked = true;
+		const turnToken = this.turnToken;
+		setTimeout(() => {
+			if (turnToken !== this.turnToken) return;
+			this.board.setTileDisplay(first, '', 'blank');
+			this.board.setTileDisplay(second, '', 'blank');
+			this.selection = [];
+			this.locked = false;
+			this.app.setStatus('Try another pair.');
+			this.app.render();
+		}, 4000);
+		this.app.render();
+		return true;
+	}
+
+	metrics() {
+		return [
+			['Matches', `${this.matches}/${this.selectedCount / 2}`],
+			['Attempts', this.attempts],
+			['Score', this.matches * 10],
+		];
+	}
+}

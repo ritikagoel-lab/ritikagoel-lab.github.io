@@ -22,21 +22,48 @@ import '../styles/play-tiles.css';
 					<header class="topbar">
 						<div>
 							<p class="eyebrow">smart_tiles</p>
-							<h1>Build a play board</h1>
+							<h1>Play with tiles</h1>
 						</div>
 						<div class="mode-tabs" role="tablist" aria-label="Game mode">
-							<button class="mode-tab active" type="button" data-mode="equation">Equation</button>
-							<button class="mode-tab" type="button" data-mode="maze">Maze</button>
+							<button class="mode-tab active" type="button" data-mode="whack">Whack-a-Mole</button>
+							<button class="mode-tab" type="button" data-mode="equation">Equation</button>
 							<button class="mode-tab" type="button" data-mode="memory">Memory</button>
-							<button class="mode-tab" type="button" data-mode="story">Story</button>
 						</div>
 					</header>
 
-					<div class="play-area">
-						<div class="tray" aria-label="Available tiles"></div>
-						<div class="grid-wrap">
-							<div class="grid" aria-label="Tile board"></div>
+					<section class="game-instructions" aria-label="Game instructions">
+						<div>
+							<p class="step-label">Current Game</p>
+							<h2 id="gameName">Whack-a-Mole</h2>
+							<p id="setupInstructions" class="setup-instructions"></p>
 						</div>
+						<div class="setup-actions">
+							<label id="memoryControls" class="setup-select hidden">
+								Tiles
+								<select id="memoryTileCount">
+									<option value="4">4</option>
+									<option value="8">8</option>
+									<option value="12">12</option>
+									<option value="16" selected>16</option>
+								</select>
+							</label>
+							<button class="small-button" type="button" id="autoArrange">Auto Arrange Tiles</button>
+							<button class="primary-button" type="button" id="startGame">Start Game</button>
+							<button class="small-button" type="button" id="checkGame">Check</button>
+						</div>
+					</section>
+
+					<div class="play-area">
+						<section class="pack-panel" aria-label="Tile pack">
+							<div class="area-title">Tile Pack</div>
+							<div class="tray" aria-label="Available tiles"></div>
+						</section>
+						<section class="board-area" aria-label="Tile board area">
+							<div class="area-title">Tile Board</div>
+							<div class="grid-wrap">
+								<div class="grid" aria-label="Tile board"></div>
+							</div>
+						</section>
 					</div>
 				</section>
 
@@ -49,15 +76,15 @@ import '../styles/play-tiles.css';
 						<p id="modePrompt" class="prompt"></p>
 						<div class="metric-row">
 							<div>
-								<span class="metric-label">Tiles</span>
+								<span class="metric-label" id="metricOneLabel">Tiles</span>
 								<strong id="tileCount">0</strong>
 							</div>
 							<div>
-								<span class="metric-label">Links</span>
+								<span class="metric-label" id="metricTwoLabel">Links</span>
 								<strong id="linkCount">0</strong>
 							</div>
 							<div>
-								<span class="metric-label">Score</span>
+								<span class="metric-label" id="metricThreeLabel">Score</span>
 								<strong id="scoreValue">0</strong>
 							</div>
 						</div>
@@ -82,10 +109,9 @@ import '../styles/play-tiles.css';
 						<label>
 							Most interesting game
 							<select id="favoriteMode">
+								<option>Whack-a-Mole</option>
 								<option>Equation Builder</option>
-								<option>Maze Runner</option>
 								<option>Memory Match</option>
-								<option>Story Builder</option>
 							</select>
 						</label>
 						<label>
@@ -103,6 +129,6 @@ import '../styles/play-tiles.css';
 			</section>
 		</main>
 		<Footer />
-		<script is:inline src="/scripts/play-tiles.js"></script>
+		<script type="module" is:inline src="/scripts/play-tiles.js"></script>
 	</body>
 </html>

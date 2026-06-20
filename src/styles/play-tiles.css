@@ -107,12 +107,83 @@
 	color: #fff;
 }
 
+.tiles-page .game-instructions {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto;
+	gap: 16px;
+	align-items: center;
+	margin-bottom: 18px;
+	padding: 16px;
+	border: 1px solid var(--tiles-line);
+	border-radius: 8px;
+	background: rgba(255, 255, 255, 0.82);
+}
+
+.tiles-page .step-label {
+	margin: 0 0 4px;
+	color: var(--tiles-muted);
+	font-size: 12px;
+	font-weight: 800;
+	line-height: 1.2;
+	text-indent: 0;
+	text-transform: uppercase;
+}
+
+.tiles-page .setup-instructions {
+	margin-bottom: 0;
+	color: var(--tiles-muted);
+	font-size: 16px;
+	line-height: 1.4;
+	text-indent: 0;
+}
+
+.tiles-page .setup-actions {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+	gap: 8px;
+}
+
+.tiles-page .setup-select {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	min-height: 40px;
+	color: var(--tiles-muted);
+	font-size: 13px;
+	font-weight: 800;
+}
+
+.tiles-page .setup-select select {
+	width: 76px;
+	min-height: 40px;
+}
+
+.tiles-page .hidden {
+	display: none !important;
+}
+
 .tiles-page .play-area {
 	display: grid;
 	grid-template-columns: 180px minmax(0, 1fr);
 	gap: 18px;
 	flex: 1;
 	min-height: 0;
+}
+
+.tiles-page .pack-panel,
+.tiles-page .board-area {
+	display: grid;
+	grid-template-rows: auto minmax(0, 1fr);
+	gap: 8px;
+	min-width: 0;
+}
+
+.tiles-page .area-title {
+	color: var(--tiles-muted);
+	font-size: 13px;
+	font-weight: 800;
+	line-height: 1.2;
 }
 
 .tiles-page .tray {
@@ -124,7 +195,12 @@
 	overflow: auto;
 	border: 1px solid var(--tiles-line);
 	border-radius: 8px;
-	background: rgba(255, 255, 255, 0.72);
+	background: #d8dee6;
+}
+
+.tiles-page .tray.drop-ready {
+	border-color: var(--tiles-blue);
+	background: #c9d8e8;
 }
 
 .tiles-page .grid-wrap {
@@ -165,7 +241,8 @@
 	border: 2px solid rgba(23, 33, 43, 0.86);
 	border-radius: 8px;
 	box-shadow: var(--tiles-shadow);
-	color: #fff;
+	background: #fff;
+	color: var(--tiles-ink);
 	cursor: grab;
 	user-select: none;
 	touch-action: none;
@@ -185,27 +262,81 @@
 	place-items: center;
 	width: 68%;
 	aspect-ratio: 1;
+	padding: 4px;
+	overflow: hidden;
 	border-radius: 8px;
-	background: rgba(255, 255, 255, 0.2);
+	border: 1px solid rgba(23, 33, 43, 0.12);
+	background: #f8fafc;
 	color: inherit;
 	font-size: 26px;
 	font-weight: 900;
+	line-height: 1.05;
+	text-align: center;
+	word-break: break-word;
 }
 
-.tiles-page .tile[data-kind='number'] {
+.tiles-page .tile.long-label .tile-face {
+	font-size: 18px;
+}
+
+.tiles-page .tile.extra-long-label .tile-face {
+	font-size: 13px;
+}
+
+.tiles-page .tile[data-kind='blank'] .tile-face {
+	color: transparent;
+}
+
+.tiles-page .pack-tile[data-kind='blank'] .tile-face {
+	color: var(--tiles-muted);
+	font-size: 16px;
+}
+
+.tiles-page .tile[data-kind='equation'] .tile-face {
+	color: var(--tiles-ink);
+}
+
+.tiles-page .tile.question-tile {
+	border-color: var(--tiles-blue);
+}
+
+.tiles-page .tile.question-tile .tile-face {
+	border-color: rgba(39, 119, 196, 0.35);
+	background: #eef6ff;
+}
+
+.tiles-page .tile.mole {
+	border-color: #9b4a12;
+	background: #fff5df;
+}
+
+.tiles-page .tile.mole .tile-face {
+	border-color: #9b4a12;
+	background: #7a3b15;
+	color: #fff;
+	font-size: 13px;
+	letter-spacing: 0;
+}
+
+.tiles-page .tile.revealed .tile-face {
+	border-color: var(--tiles-blue);
 	background: var(--tiles-blue);
+	color: #fff;
+	font-size: 15px;
 }
 
-.tiles-page .tile[data-kind='operator'] {
-	background: var(--tiles-coral);
+.tiles-page .tile.matched {
+	border-color: #9aa6b2;
+	background: #d9dee5;
+	color: var(--tiles-muted);
+	cursor: default;
 }
 
-.tiles-page .tile[data-kind='path'] {
-	background: var(--tiles-green);
-}
-
-.tiles-page .tile[data-kind='story'] {
-	background: #6b55aa;
+.tiles-page .tile.matched .tile-face {
+	border-color: #9aa6b2;
+	background: #aeb8c4;
+	color: #fff;
+	font-size: 15px;
 }
 
 .tiles-page .tray .tile {
@@ -346,6 +477,14 @@
 
 	.tiles-page .play-area {
 		grid-template-columns: 1fr;
+	}
+
+	.tiles-page .game-instructions {
+		grid-template-columns: 1fr;
+	}
+
+	.tiles-page .setup-actions {
+		justify-content: flex-start;
 	}
 
 	.tiles-page .tray {
