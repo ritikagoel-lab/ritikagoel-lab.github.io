@@ -1,7 +1,7 @@
-import { TileBoard } from './board.js';
-import { WhackGame } from './games/whack.js';
-import { EquationGame } from './games/equation.js';
-import { MemoryGame } from './games/memory.js';
+import { TileBoard } from './board.js?v=3';
+import { WhackGame } from './games/whack.js?v=3';
+import { EquationGame } from './games/equation.js?v=3';
+import { MemoryGame } from './games/memory.js?v=3';
 
 export class SmartTilesApp {
 	constructor() {

@@ -8,7 +8,16 @@ export const DIRECTIONS = [
 	{ deltaRow: 0, deltaCol: -1, from: 'west', to: 'east' },
 ];
 
-export const memoryFaces = ['Sun', 'Moon', 'Key', 'Star', 'Bell', 'Boat', 'Gem', 'Hat'];
+export const memoryFaces = [
+	{ key: 'sun', image: '☀' },
+	{ key: 'moon', image: '☾' },
+	{ key: 'key', image: '⚿' },
+	{ key: 'heart', image: '♥' },
+	{ key: 'circle', image: '●' },
+	{ key: 'triangle', image: '▲' },
+	{ key: 'diamond', image: '◆' },
+	{ key: 'plus', image: '+' },
+];
 
 export function blankTilePack(prefix = 'blank') {
 	return Array.from({ length: TILE_LIMIT }, (_, index) => ({

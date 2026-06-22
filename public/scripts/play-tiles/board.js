@@ -1,4 +1,4 @@
-import { DIRECTIONS, GRID_SIZE, TILE_LIMIT } from './config.js';
+import { DIRECTIONS, GRID_SIZE, TILE_LIMIT } from './config.js?v=3';
 
 export class TileBoard {
 	constructor(elements, hooks) {
@@ -246,12 +246,33 @@ export class TileBoard {
 	}
 
 	setTileDisplay(tile, label, state = 'blank') {
-		tile.element.classList.remove('mole', 'revealed', 'matched', 'wrong', 'question-tile', 'long-label', 'extra-long-label');
+		tile.element.classList.remove('mole', 'revealed', 'matched', 'wrong', 'question-tile', 'long-label', 'extra-long-label', 'pixel-display');
 		tile.element.dataset.state = state;
 		if (state) tile.element.classList.add(state);
+		const face = tile.element.querySelector('.tile-face');
+		face.replaceChildren();
+
+		if (Array.isArray(label)) {
+			tile.element.classList.add('pixel-display');
+			face.appendChild(this.makePixelMatrix(label));
+			return;
+		}
+
 		tile.element.classList.toggle('long-label', String(label).length > 1);
 		tile.element.classList.toggle('extra-long-label', String(label).length > 3);
-		tile.element.querySelector('.tile-face').textContent = label;
+		face.textContent = label;
+	}
+
+	makePixelMatrix(pixelRows) {
+		const matrix = document.createElement('span');
+		matrix.className = 'pixel-matrix';
+		pixelRows.flat().forEach((color) => {
+			const pixel = document.createElement('span');
+			pixel.className = 'pixel';
+			pixel.dataset.color = color;
+			matrix.appendChild(pixel);
+		});
+		return matrix;
 	}
 
 	placedTileList() {

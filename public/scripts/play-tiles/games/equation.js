@@ -1,5 +1,5 @@
-import { equationTilePack } from '../config.js';
-import { makeQuestion, levelForScore } from '../equations.js';
+import { equationTilePack } from '../config.js?v=3';
+import { makeQuestion, levelForScore } from '../equations.js?v=3';
 
 export class EquationGame {
 	constructor(app, board) {

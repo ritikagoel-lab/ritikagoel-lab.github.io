@@ -1,4 +1,4 @@
-import { blankTilePack, memoryFaces, squareLayout } from '../config.js';
+import { blankTilePack, memoryFaces, squareLayout } from '../config.js?v=3';
 
 export class MemoryGame {
 	constructor(app, board) {
@@ -28,7 +28,7 @@ export class MemoryGame {
 	}
 
 	instructions() {
-		return `Choose how many tiles to play with, then drag that many white tiles into the board or use software placement. Click two tiles to reveal them. Matching tiles turn gray immediately.`;
+		return `Choose how many tiles to play with. Drag that many white tiles into the board or use software placement. Click two tiles to reveal their images. Matching images turn gray immediately.`;
 	}
 
 	setTileCount(count) {
@@ -39,7 +39,7 @@ export class MemoryGame {
 		this.app.render();
 	}
 
-	autoArrange() {
+	autoArrange({ silent = false } = {}) {
 		this.stop();
 		this.board.resetBoardTiles();
 		const positions = squareLayout(this.selectedCount);
@@ -47,16 +47,16 @@ export class MemoryGame {
 		blankItems.forEach((item, index) => {
 			this.board.addTileFromPack(item.key, positions[index].row, positions[index].col);
 		});
-		this.app.setStatus(`${this.selectedCount} white tiles placed by software.`);
+		if (!silent) this.app.setStatus(`${this.selectedCount} white tiles placed by software.`);
 	}
 
 	start() {
 		const boardTiles = this.board.placedTileList();
 		if (boardTiles.length < this.selectedCount) {
-			this.app.setStatus(`Add ${this.selectedCount - boardTiles.length} more white tile${this.selectedCount - boardTiles.length === 1 ? '' : 's'} before starting.`);
-			return;
+			this.autoArrange({ silent: true });
 		}
 
+		const readyTiles = this.board.placedTileList();
 		this.running = true;
 		this.locked = false;
 		this.attempts = 0;
@@ -64,8 +64,9 @@ export class MemoryGame {
 		this.selection = [];
 		this.turnToken += 1;
 		const faces = this.makeFaceSet();
-		boardTiles.slice(0, this.selectedCount).forEach((tile, index) => {
-			tile.gameData.memoryFace = faces[index];
+		readyTiles.slice(0, this.selectedCount).forEach((tile, index) => {
+			tile.gameData.memoryKey = faces[index].key;
+			tile.gameData.memoryFace = faces[index].face;
 			tile.gameData.matched = false;
 			this.board.setTileDisplay(tile, '', 'blank');
 		});
@@ -82,7 +83,13 @@ export class MemoryGame {
 
 	makeFaceSet() {
 		const pairCount = this.selectedCount / 2;
-		return [...memoryFaces.slice(0, pairCount), ...memoryFaces.slice(0, pairCount)].sort(() => Math.random() - 0.5);
+		const pairs = memoryFaces.slice(0, pairCount);
+		return pairs
+			.flatMap((pair) => [
+				{ key: pair.key, face: pair.image },
+				{ key: pair.key, face: pair.image },
+			])
+			.sort(() => Math.random() - 0.5);
 	}
 
 	handleTileClick(tile) {
@@ -99,7 +106,7 @@ export class MemoryGame {
 
 		this.attempts += 1;
 		const [first, second] = this.selection;
-		const matched = first.gameData.memoryFace === second.gameData.memoryFace;
+		const matched = first.gameData.memoryKey === second.gameData.memoryKey;
 
 		if (matched) {
 			first.gameData.matched = true;

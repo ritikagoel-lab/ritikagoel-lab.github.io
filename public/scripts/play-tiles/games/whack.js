@@ -1,4 +1,15 @@
-import { blankTilePack, squareLayout } from '../config.js';
+import { blankTilePack, squareLayout } from '../config.js?v=3';
+
+const molePixels = [
+	['off', 'off', 'brown', 'brown', 'brown', 'brown', 'off', 'off'],
+	['off', 'brown', 'tan', 'brown', 'brown', 'tan', 'brown', 'off'],
+	['brown', 'tan', 'black', 'tan', 'tan', 'black', 'tan', 'brown'],
+	['brown', 'tan', 'tan', 'pink', 'pink', 'tan', 'tan', 'brown'],
+	['brown', 'tan', 'black', 'tan', 'tan', 'black', 'tan', 'brown'],
+	['off', 'brown', 'tan', 'tan', 'tan', 'tan', 'brown', 'off'],
+	['off', 'off', 'brown', 'brown', 'brown', 'brown', 'off', 'off'],
+	['off', 'soil', 'soil', 'soil', 'soil', 'soil', 'soil', 'off'],
+];
 
 export class WhackGame {
 	constructor(app, board) {
@@ -31,10 +42,10 @@ export class WhackGame {
 	}
 
 	instructions() {
-		return 'Drag all 16 white tiles from the Tile Pack into the board, or place them with software. Start the round, then click each MOLE tile before it disappears.';
+		return 'Drag all 16 white tiles from the Tile Pack into the board, or place them with software. Start the round, then click each mole picture before it disappears.';
 	}
 
-	autoArrange() {
+	autoArrange({ silent = false } = {}) {
 		this.stop();
 		this.board.resetBoardTiles();
 		const positions = squareLayout(this.setupCount);
@@ -42,14 +53,13 @@ export class WhackGame {
 		blankItems.forEach((item, index) => {
 			this.board.addTileFromPack(item.key, positions[index].row, positions[index].col);
 		});
-		this.app.setStatus('16 white tiles placed by software.');
+		if (!silent) this.app.setStatus('16 white tiles placed by software.');
 	}
 
 	start() {
 		const count = this.board.placedTileList().length;
 		if (count < this.setupCount) {
-			this.app.setStatus(`Add ${this.setupCount - count} more white tile${this.setupCount - count === 1 ? '' : 's'} before starting.`);
-			return;
+			this.autoArrange({ silent: true });
 		}
 
 		this.stop();
@@ -102,7 +112,7 @@ export class WhackGame {
 		const shuffled = [...boardTiles].sort(() => Math.random() - 0.5);
 		shuffled.slice(0, count).forEach((tile) => {
 			tile.gameData.activeMole = true;
-			this.board.setTileDisplay(tile, 'MOLE', 'mole');
+			this.board.setTileDisplay(tile, molePixels, 'mole');
 			const timer = setTimeout(() => {
 				if (!this.running || !tile.gameData.activeMole) return;
 				tile.gameData.activeMole = false;
