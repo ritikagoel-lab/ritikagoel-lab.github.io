@@ -19,7 +19,6 @@ export class SmartTilesApp {
 			modePrompt: document.querySelector('#modePrompt'),
 			gameName: document.querySelector('#gameName'),
 			setupInstructions: document.querySelector('#setupInstructions'),
-			autoArrangeButton: document.querySelector('#autoArrange'),
 			startGameButton: document.querySelector('#startGame'),
 			checkGameButton: document.querySelector('#checkGame'),
 			memoryControls: document.querySelector('#memoryControls'),
@@ -55,7 +54,6 @@ export class SmartTilesApp {
 			button.addEventListener('click', () => this.switchMode(button.dataset.mode));
 		});
 		document.querySelector('#resetBoard').addEventListener('click', () => this.switchMode(this.mode));
-		this.elements.autoArrangeButton.addEventListener('click', () => this.currentGame().autoArrange());
 		this.elements.startGameButton.addEventListener('click', () => this.currentGame().start());
 		this.elements.checkGameButton.addEventListener('click', () => this.currentGame().check());
 		this.elements.memoryTileCount.addEventListener('change', () => this.games.memory.setTileCount(Number(this.elements.memoryTileCount.value)));
@@ -68,6 +66,9 @@ export class SmartTilesApp {
 		this.statusMessage = '';
 		const packItems = this.currentGame().enter();
 		this.board.reset(packItems);
+		if (this.currentGame().autoArrange) {
+			this.currentGame().autoArrange({ silent: true });
+		}
 		this.render();
 	}
 
@@ -81,12 +82,8 @@ export class SmartTilesApp {
 		this.elements.modeTitle.textContent = game.title;
 		this.elements.gameName.textContent = game.title;
 		this.elements.setupInstructions.textContent = game.instructions();
-		const setupPrompt = game.setupCount
-			? `Need ${game.setupCount} tile${game.setupCount === 1 ? '' : 's'} on the board.`
-			: 'Use Place Question, or build the question manually and add your answer.';
-		this.elements.modePrompt.textContent = this.statusMessage || setupPrompt;
+		this.elements.modePrompt.textContent = this.statusMessage || game.prompt();
 
-		this.elements.autoArrangeButton.textContent = this.mode === 'equation' ? 'Place Question' : `Place ${game.setupCount} Tiles`;
 		this.elements.startGameButton.classList.toggle('hidden', this.mode === 'equation');
 		this.elements.checkGameButton.classList.toggle('hidden', this.mode !== 'equation');
 		this.elements.memoryControls.classList.toggle('hidden', this.mode !== 'memory');

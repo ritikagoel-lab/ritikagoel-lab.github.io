@@ -22,10 +22,14 @@ export class EquationGame {
 	}
 
 	instructions() {
-		return `Solve: ${this.question.left} ${this.question.op} ${this.question.right} = ?. Drag the question onto one horizontal row, or use Place Question. Then place answer digit tiles after the equals sign.`;
+		return `Solve: ${this.question.left} ${this.question.op} ${this.question.right} = ?. The question is placed automatically. Add answer digit tiles after the equals sign.`;
 	}
 
-	autoArrange() {
+	prompt() {
+		return 'Place the answer digits after the equals sign, then press Check.';
+	}
+
+	autoArrange({ silent = false } = {}) {
 		this.board.resetBoardTiles();
 		const row = 2;
 		[this.question.left, this.question.op, this.question.right, '='].forEach((label, index) => {
@@ -44,7 +48,7 @@ export class EquationGame {
 				this.board.setTileDisplay(tile, label, 'question-tile');
 			}
 		});
-		this.app.setStatus('Question placed. Add answer digits after the equals sign.');
+		if (!silent) this.app.setStatus('Question placed. Add answer digits after the equals sign.');
 	}
 
 	start() {}
@@ -61,6 +65,7 @@ export class EquationGame {
 			this.score += 10;
 			this.question = makeQuestion(this.score);
 			this.board.resetBoardTiles();
+			this.autoArrange({ silent: true });
 			this.app.setStatus(`Correct. Score ${this.score}. New question ready.`);
 		} else {
 			this.app.setStatus(`Not quite. You entered ${answer}. Try again.`);

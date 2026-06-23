@@ -42,7 +42,11 @@ export class WhackGame {
 	}
 
 	instructions() {
-		return 'Drag all 16 white tiles from the Tile Pack into the board, or place them with software. Start the round, then click each mole picture before it disappears.';
+		return 'The board starts with 16 white tiles. Start the round, then click each mole picture before it disappears.';
+	}
+
+	prompt() {
+		return 'Click Start Game when you are ready.';
 	}
 
 	autoArrange({ silent = false } = {}) {

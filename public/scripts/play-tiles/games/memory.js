@@ -28,13 +28,18 @@ export class MemoryGame {
 	}
 
 	instructions() {
-		return `Choose how many tiles to play with. Drag that many white tiles into the board or use software placement. Click two tiles to reveal their images. Matching images turn gray immediately.`;
+		return 'Choose how many tiles to play with. The board is placed automatically. Click two tiles to reveal their images. Matching images turn gray immediately.';
+	}
+
+	prompt() {
+		return `Memory is set to ${this.selectedCount} tiles. Click Start Game when you are ready.`;
 	}
 
 	setTileCount(count) {
 		this.selectedCount = count;
 		this.stop();
 		this.board.reset(blankTilePack('memory'));
+		this.autoArrange({ silent: true });
 		this.app.setStatus(`Memory set to ${count} tiles.`);
 		this.app.render();
 	}
