@@ -384,6 +384,41 @@
 	line-height: 1;
 }
 
+.tiles-page .tile.set-tile .tile-face {
+	padding: 5px;
+}
+
+.tiles-page .tile.set-selected {
+	outline: 4px solid var(--tiles-yellow);
+	outline-offset: 2px;
+}
+
+.tiles-page .set-face {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 2px;
+	width: 100%;
+	height: 100%;
+}
+
+.tiles-page .set-mark {
+	font-size: 17px;
+	line-height: 1;
+}
+
+.tiles-page .set-face[data-color='red'] .set-mark {
+	color: #ff6b6b;
+}
+
+.tiles-page .set-face[data-color='green'] .set-mark {
+	color: #34d399;
+}
+
+.tiles-page .set-face[data-color='blue'] .set-mark {
+	color: #60a5fa;
+}
+
 .tiles-page .tray .tile {
 	min-width: 66px;
 }

@@ -246,7 +246,7 @@ export class TileBoard {
 	}
 
 	setTileDisplay(tile, label, state = 'blank') {
-		tile.element.classList.remove('mole', 'revealed', 'matched', 'wrong', 'question-tile', 'long-label', 'extra-long-label', 'pixel-display');
+		tile.element.classList.remove('mole', 'revealed', 'matched', 'wrong', 'question-tile', 'long-label', 'extra-long-label', 'pixel-display', 'set-tile', 'set-selected');
 		tile.element.dataset.state = state;
 		if (state) tile.element.classList.add(state);
 		const face = tile.element.querySelector('.tile-face');
@@ -258,9 +258,29 @@ export class TileBoard {
 			return;
 		}
 
+		if (label && typeof label === 'object' && label.type === 'set') {
+			tile.element.classList.add('set-tile');
+			face.appendChild(this.makeSetFace(label));
+			return;
+		}
+
 		tile.element.classList.toggle('long-label', String(label).length > 1);
 		tile.element.classList.toggle('extra-long-label', String(label).length > 3);
 		face.textContent = label;
+	}
+
+	makeSetFace(setCard) {
+		const wrapper = document.createElement('span');
+		wrapper.className = 'set-face';
+		wrapper.dataset.color = setCard.color;
+		wrapper.dataset.shape = setCard.shape;
+		for (let index = 0; index < setCard.count; index += 1) {
+			const mark = document.createElement('span');
+			mark.className = 'set-mark';
+			mark.textContent = setCard.shape === 'circle' ? '●' : setCard.shape === 'triangle' ? '▲' : '◆';
+			wrapper.appendChild(mark);
+		}
+		return wrapper;
 	}
 
 	makePixelMatrix(pixelRows) {
