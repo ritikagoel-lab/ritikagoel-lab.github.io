@@ -12,9 +12,15 @@ export class SmartTilesApp {
 			tileCount: document.querySelector('#tileCount'),
 			linkCount: document.querySelector('#linkCount'),
 			scoreValue: document.querySelector('#scoreValue'),
+			quickTileCount: document.querySelector('#quickTileCount'),
+			quickLinkCount: document.querySelector('#quickLinkCount'),
+			quickScoreValue: document.querySelector('#quickScoreValue'),
 			metricOneLabel: document.querySelector('#metricOneLabel'),
 			metricTwoLabel: document.querySelector('#metricTwoLabel'),
 			metricThreeLabel: document.querySelector('#metricThreeLabel'),
+			quickMetricOneLabel: document.querySelector('#quickMetricOneLabel'),
+			quickMetricTwoLabel: document.querySelector('#quickMetricTwoLabel'),
+			quickMetricThreeLabel: document.querySelector('#quickMetricThreeLabel'),
 			modeTitle: document.querySelector('#modeTitle'),
 			modePrompt: document.querySelector('#modePrompt'),
 			gameName: document.querySelector('#gameName'),
@@ -104,6 +110,12 @@ export class SmartTilesApp {
 		this.elements.linkCount.textContent = second[1];
 		this.elements.metricThreeLabel.textContent = third[0];
 		this.elements.scoreValue.textContent = third[1];
+		this.elements.quickMetricOneLabel.textContent = first[0];
+		this.elements.quickTileCount.textContent = first[1];
+		this.elements.quickMetricTwoLabel.textContent = second[0];
+		this.elements.quickLinkCount.textContent = second[1];
+		this.elements.quickMetricThreeLabel.textContent = third[0];
+		this.elements.quickScoreValue.textContent = third[1];
 	}
 
 	renderGraph() {
