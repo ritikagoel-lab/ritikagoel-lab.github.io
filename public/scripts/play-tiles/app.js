@@ -1,6 +1,6 @@
-import { TileBoard } from './board.js?v=3';
+import { TileBoard } from './board.js?v=5';
 import { WhackGame } from './games/whack.js?v=3';
-import { EquationGame } from './games/equation.js?v=3';
+import { EquationGame } from './games/equation.js?v=5';
 import { MemoryGame } from './games/memory.js?v=3';
 
 export class SmartTilesApp {
@@ -37,6 +37,8 @@ export class SmartTilesApp {
 		this.mode = 'whack';
 		this.board = new TileBoard(this.elements, {
 			isLocked: () => this.currentGame().isLocked(),
+			canPlace: (source, row, col) => this.currentGame().canPlace(source, row, col),
+			cellState: (row, col) => (this.currentGame().cellState ? this.currentGame().cellState(row, col) : ''),
 			onChange: () => this.render(),
 			onTileClick: (tile) => this.currentGame().handleTileClick(tile),
 			onMessage: (message) => this.setStatus(message),
@@ -61,7 +63,13 @@ export class SmartTilesApp {
 		document.querySelectorAll('.mode-tab').forEach((button) => {
 			button.addEventListener('click', () => this.switchMode(button.dataset.mode));
 		});
-		document.querySelector('#resetBoard').addEventListener('click', () => this.switchMode(this.mode));
+		document.querySelector('#resetBoard').addEventListener('click', () => {
+			if (this.currentGame().reset) {
+				this.currentGame().reset();
+				return;
+			}
+			this.switchMode(this.mode);
+		});
 		this.elements.startGameButton.addEventListener('click', () => this.currentGame().start());
 		this.elements.checkGameButton.addEventListener('click', () => this.currentGame().check());
 		this.elements.memoryTileCount.addEventListener('change', () => this.games.memory.setTileCount(Number(this.elements.memoryTileCount.value)));
@@ -78,6 +86,11 @@ export class SmartTilesApp {
 		if (this.currentGame().autoArrange) {
 			this.currentGame().autoArrange({ silent: true });
 		}
+		this.board.refreshCellStates();
+		if (this.currentGame().autoStartOnEnter) {
+			this.currentGame().start();
+			return;
+		}
 		this.render();
 	}
 
@@ -90,7 +103,7 @@ export class SmartTilesApp {
 		const game = this.currentGame();
 		this.elements.modeTitle.textContent = game.title;
 		this.elements.gameName.textContent = game.title;
-		this.elements.setupInstructions.textContent = game.instructions();
+		this.elements.setupInstructions.textContent = this.statusMessage ? `${game.instructions()} ${this.statusMessage}` : game.instructions();
 		this.elements.modePrompt.textContent = this.statusMessage || game.prompt();
 
 		this.elements.startGameButton.classList.toggle('hidden', this.mode === 'equation');

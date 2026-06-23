@@ -53,6 +53,7 @@ export class TileBoard {
 				cell.dataset.col = col;
 				cell.addEventListener('dragover', (event) => {
 					if (this.hooks.isLocked()) return;
+					if (this.dragPayload && !this.canPlaceDragPayload(row, col)) return;
 					event.preventDefault();
 					cell.classList.add('drop-ready');
 				});
@@ -201,6 +202,10 @@ export class TileBoard {
 		}
 		const source = this.packItems.find((item) => item.key === key && (item.reusable || item.available));
 		if (!source) return null;
+		if (!this.hooks.canPlace(source, row, col)) {
+			this.hooks.onMessage('Use one of the highlighted answer slots.');
+			return null;
+		}
 
 		const tile = this.makeBoardTile(source);
 		if (!source.reusable) {
@@ -224,6 +229,10 @@ export class TileBoard {
 	moveTileToCell(id, row, col) {
 		const tile = this.placedTiles.get(id);
 		if (!tile) return;
+		if (!this.hooks.canPlace(tile, row, col)) {
+			this.hooks.onMessage('Use one of the highlighted answer slots.');
+			return;
+		}
 		const existing = this.placedTileList().find((candidate) => candidate.row === row && candidate.col === col);
 		if (existing && existing.id !== id) this.returnTileToPack(existing.id);
 		tile.row = row;
@@ -246,7 +255,21 @@ export class TileBoard {
 	}
 
 	setTileDisplay(tile, label, state = 'blank') {
-		tile.element.classList.remove('mole', 'revealed', 'matched', 'wrong', 'question-tile', 'long-label', 'extra-long-label', 'pixel-display', 'set-tile', 'set-selected');
+		tile.element.classList.remove(
+			'mole',
+			'revealed',
+			'matched',
+			'wrong',
+			'question-tile',
+			'question-checked',
+			'question-correct',
+			'question-wrong',
+			'long-label',
+			'extra-long-label',
+			'pixel-display',
+			'set-tile',
+			'set-selected',
+		);
 		tile.element.dataset.state = state;
 		if (state) tile.element.classList.add(state);
 		const face = tile.element.querySelector('.tile-face');
@@ -303,6 +326,29 @@ export class TileBoard {
 		return this.packItems.filter((item) => (item.reusable || item.available) && (!kind || item.kind === kind));
 	}
 
+	canPlaceDragPayload(row, col) {
+		if (this.dragPayload?.source === 'pack') {
+			const source = this.packItems.find((item) => item.key === this.dragPayload.key);
+			return source ? this.hooks.canPlace(source, row, col) : false;
+		}
+		if (this.dragPayload?.source === 'board') {
+			const tile = this.placedTiles.get(this.dragPayload.id);
+			return tile ? this.hooks.canPlace(tile, row, col) : false;
+		}
+		return false;
+	}
+
+	refreshCellStates() {
+		this.cells.forEach((cell) => {
+			const row = Number(cell.dataset.row);
+			const col = Number(cell.dataset.col);
+			const hasTile = Boolean(this.placedTileList().find((tile) => tile.row === row && tile.col === col));
+			const state = hasTile ? '' : this.hooks.cellState(row, col);
+			cell.classList.toggle('answer-slot', state === 'answer');
+			cell.classList.toggle('inactive-slot', state === 'inactive');
+		});
+	}
+
 	cellKey(row, col) {
 		return `${row},${col}`;
 	}
@@ -321,6 +367,7 @@ export class TileBoard {
 		document.querySelectorAll('.tile').forEach((tile) => {
 			tile.classList.toggle('selected', tile.dataset.packKey === this.selectedPackKey || tile.dataset.tileId === this.selectedBoardTileId);
 		});
+		this.refreshCellStates();
 	}
 
 	adjacencyGraph() {

@@ -41,6 +41,10 @@ export class WhackGame {
 		return this.running;
 	}
 
+	canPlace() {
+		return true;
+	}
+
 	instructions() {
 		return 'The board starts with 16 white tiles. Start the round, then click each mole picture before it disappears.';
 	}

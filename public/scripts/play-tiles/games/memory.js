@@ -13,6 +13,7 @@ export class MemoryGame {
 		this.selection = [];
 		this.turnToken = 0;
 		this.speedMode = 'regular';
+		this.autoStartOnEnter = true;
 	}
 
 	enter() {
@@ -28,6 +29,10 @@ export class MemoryGame {
 		return this.running;
 	}
 
+	canPlace() {
+		return true;
+	}
+
 	instructions() {
 		return 'Choose tile count and Regular or Challenge mode. Matching images turn gray immediately.';
 	}
@@ -41,8 +46,7 @@ export class MemoryGame {
 		this.stop();
 		this.board.reset(blankTilePack('memory'));
 		this.autoArrange({ silent: true });
-		this.app.setStatus(`Memory set to ${count} tiles.`);
-		this.app.render();
+		this.start();
 	}
 
 	setSpeedMode(mode) {
