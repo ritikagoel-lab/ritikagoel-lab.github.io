@@ -1,0 +1,89 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead
+			title="Contact | TikaTiles"
+			description="Contact information for TikaTiles."
+		/>
+	</head>
+	<body>
+		<Header />
+		<main class="contact-page">
+			<section class="contact-card">
+				<p class="eyebrow">Contact</p>
+				<h1>Ritika Goel</h1>
+				<p>
+					Ritika lives in Orange County with her husband and 8-year-old daughter. TikaTiles is
+					being built from her personal lab as a playful hardware experiment for kids and families.
+				</p>
+				<div class="contact-links">
+					<a href="https://www.linkedin.com/in/ritikagoel23/" target="_blank">LinkedIn</a>
+					<a href="https://github.com/ritikagoel-lab" target="_blank">GitHub</a>
+				</div>
+			</section>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.contact-page {
+		display: grid;
+		place-items: center;
+		min-height: calc(100vh - 220px);
+	}
+
+	.contact-card {
+		width: min(680px, 100%);
+		padding: clamp(1.5rem, 4vw, 3rem);
+		border: 1px solid rgb(var(--gray-light));
+		border-radius: 8px;
+		background: rgba(255, 255, 255, 0.82);
+		box-shadow: var(--box-shadow);
+	}
+
+	.eyebrow {
+		margin: 0 0 0.75rem;
+		color: var(--accent);
+		font-size: 0.78rem;
+		font-weight: 800;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+
+	.contact-card p {
+		color: rgb(var(--gray-dark));
+		text-indent: 0;
+	}
+
+	.contact-links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.8rem;
+		margin-top: 1.5rem;
+	}
+
+	.contact-links a {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 42px;
+		padding: 0 1rem;
+		border: 1px solid rgb(var(--black));
+		border-radius: 999px;
+		background: rgb(var(--black));
+		color: #fff;
+		font-weight: 800;
+		text-decoration: none;
+	}
+
+	.contact-links a:hover {
+		color: #fff;
+	}
+</style>

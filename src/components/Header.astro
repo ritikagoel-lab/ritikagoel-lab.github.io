@@ -7,21 +7,24 @@ import HeaderLink from './HeaderLink.astro';
 	<nav>
 		<h2><a href="/">{SITE_TITLE}</a></h2>
 		<div class="internal-links">
-			<HeaderLink href="/">Home</HeaderLink>
-			<HeaderLink href="/play-tiles/">Play Tiles</HeaderLink>
+			<HeaderLink href="/">Product</HeaderLink>
+			<HeaderLink href="/play-tiles/">TikaTiles Games</HeaderLink>
+			<HeaderLink href="/contact/">Contact</HeaderLink>
 		</div>
 	</nav>
 </header>
 <style>
 	header {
 		margin: 0;
-		padding: 0 1em;
-		background: white;
-		box-shadow: 0 2px 8px rgba(var(--black), 5%);
+		padding: 0 1.25em;
+		background: rgba(255, 255, 255, 0.92);
+		box-shadow: 0 1px 0 rgba(var(--black), 8%);
+		backdrop-filter: blur(16px);
 	}
 	h2 {
 		margin: 0;
-		font-size: 1em;
+		font-size: 1.05em;
+		letter-spacing: 0;
 	}
 
 	h2 a,
@@ -33,6 +36,7 @@ import HeaderLink from './HeaderLink.astro';
 		align-items: center;
 		justify-content: space-between;
 		gap: 0.5rem 1rem;
+		min-height: 72px;
 	}
 	nav a {
 		padding: 1em 0.5em;
@@ -51,7 +55,8 @@ import HeaderLink from './HeaderLink.astro';
 		nav {
 			flex-wrap: wrap;
 			justify-content: center;
-			padding: 0.35rem 0;
+			min-height: auto;
+			padding: 0.55rem 0;
 		}
 		nav a {
 			padding: 0.5rem;

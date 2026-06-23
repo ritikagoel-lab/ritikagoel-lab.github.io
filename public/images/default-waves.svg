@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-label="Abstract flowing waves">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#dce5e7"/>
+      <stop offset="0.44" stop-color="#819195"/>
+      <stop offset="0.66" stop-color="#70603f"/>
+      <stop offset="1" stop-color="#161b20"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="64%" cy="46%" r="42%">
+      <stop offset="0" stop-color="#f0d68a" stop-opacity="0.6"/>
+      <stop offset="0.42" stop-color="#8b7650" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#101418" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soften">
+      <feGaussianBlur stdDeviation="16"/>
+    </filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect width="1600" height="900" fill="url(#glow)"/>
+  <g fill="none" stroke-linecap="round" filter="url(#soften)" opacity="0.68">
+    <path d="M-60 760C130 620 210 610 360 430C510 250 680 320 760 150C850-45 980 35 1110 190C1240 345 1395 270 1660 120" stroke="#e8eef0" stroke-width="90"/>
+    <path d="M-30 620C115 520 225 525 360 375C510 210 610 240 755 105C890-20 1040 85 1180 210C1330 345 1430 300 1660 220" stroke="#344044" stroke-width="72"/>
+    <path d="M-80 500C80 445 180 475 310 330C445 180 600 215 700 85C805-45 955 35 1075 185C1195 335 1350 330 1660 260" stroke="#cad5d8" stroke-width="54"/>
+    <path d="M-40 310C180 380 260 260 390 190C535 112 690 185 785 65C890-65 1030 62 1165 160C1308 264 1425 205 1665 180" stroke="#1d2428" stroke-width="50"/>
+    <path d="M-80 840C160 710 250 720 395 565C555 395 715 430 840 260C960 98 1078 210 1215 328C1360 455 1450 410 1680 318" stroke="#f4f4ee" stroke-width="44"/>
+    <path d="M620 940C715 762 780 706 890 540C1010 360 1110 315 1210 145C1310-25 1452 5 1680 95" stroke="#645233" stroke-width="120"/>
+    <path d="M695 930C770 755 850 700 945 535C1045 362 1150 310 1265 142C1375-18 1485 20 1680 128" stroke="#161b20" stroke-width="70"/>
+    <path d="M640 880C790 740 835 630 975 505C1135 360 1210 266 1325 92" stroke="#e0c979" stroke-width="24" opacity="0.55"/>
+  </g>
+  <g opacity="0.22" fill="none" stroke="#101418" stroke-width="3">
+    <path d="M1120 205C1240 260 1338 250 1470 210"/>
+    <path d="M1085 255C1218 318 1330 310 1510 260"/>
+    <path d="M1030 330C1180 405 1335 392 1575 300"/>
+    <path d="M1090 455C1220 505 1390 510 1630 430"/>
+  </g>
+</svg>

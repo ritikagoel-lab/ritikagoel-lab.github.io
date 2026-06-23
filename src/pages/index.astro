@@ -12,26 +12,168 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 	</head>
 	<body>
 		<Header />
-		<main>
-			<h1>Hi, I'm Ritika Goel. ⚙️</h1>
-			<p>
-				<strong>Technical Leader in Embedded Systems & Machine Learning</strong>
-			</p>
-			<p>
-				With over 15 years of experience , I specialize in establishing systems architecture and leading high-impact ML integration for resource-constrained consumer electronics. My career is defined by driving end-to-end product lifecycles - from scaling custom RTOS firmware for Apple's AirPods and Airpods Max lineup to delivering gesture inference improvements for millions of users on Ray-Ban Meta smart glasses.
-			</p>
-			<p>
-				Currently based in Orange County, my work exists at the intersection of hardware development and engineering automation. Over the last two years, I have deeply integrated agentic AI into my daily operations, authoring detailed engineering plans to direct multiple simultaneous agents in autonomous code generation. 
-			</p>
-			<p>
-				In my personal lab, I am exploring new device architectures and am currently prototyping screen-free, tactile toys that rely on physical mechanics and audio rather than digital displays - the perfect project as I intentionally step away from the screens this summer to soak up quality time with my daughter..
-			</p>
-			<p>Connect with me:</p>
-			<ul>
-				<li><a href="https://www.linkedin.com/in/ritikagoel23/" target="_blank">LinkedIn</a></li>
-				<li><a href="https://github.com/ritikagoel-lab" target="_blank">GitHub</a></li>
-			</ul>
+		<main class="product-page">
+			<section class="product-hero">
+				<div class="hero-copy">
+					<p class="eyebrow">TikaTiles</p>
+					<h1>Product Coming Soon</h1>
+					<p>
+						Interactive learning tiles are in early prototype. The first product will combine
+						physical play, touch, lights, and simple games that kids can arrange on the floor or
+						table.
+					</p>
+					<a class="hero-link" href="/play-tiles/">Try the games</a>
+				</div>
+				<figure class="hero-visual">
+					<img src="/images/default-waves.svg" alt="" />
+				</figure>
+			</section>
+
+			<section class="coming-grid" aria-label="Coming soon details">
+				<article>
+					<p class="card-label">Product</p>
+					<h2>Tiles are in development</h2>
+					<p>
+						The physical tile system is being prototyped now. More product images, videos, and
+						details will be added as the hardware form factor matures.
+					</p>
+				</article>
+				<article>
+					<p class="card-label">Images</p>
+					<h2>Available soon</h2>
+					<p>
+						High-quality product renders and prototype photos will live here once the design is
+						ready to share.
+					</p>
+				</article>
+				<article>
+					<p class="card-label">Videos</p>
+					<h2>Available soon</h2>
+					<p>
+						Gameplay demos, setup videos, and hardware progress clips will be added as the tiles
+						move closer to product testing.
+					</p>
+				</article>
+			</section>
 		</main>
 		<Footer />
 	</body>
 </html>
+
+<style>
+	.product-page {
+		width: min(1180px, calc(100% - (var(--page-gutter) * 2)));
+		max-width: none;
+		padding-top: clamp(2rem, 6vw, 5rem);
+	}
+
+	.product-hero {
+		display: grid;
+		grid-template-columns: minmax(0, 0.9fr) minmax(360px, 1.1fr);
+		gap: clamp(2rem, 6vw, 5rem);
+		align-items: center;
+		min-height: min(720px, calc(100vh - 180px));
+	}
+
+	.hero-copy {
+		max-width: 560px;
+	}
+
+	.eyebrow,
+	.card-label {
+		margin: 0 0 0.75rem;
+		color: var(--accent);
+		font-size: 0.78rem;
+		font-weight: 800;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+
+	.hero-copy h1 {
+		margin-bottom: 1rem;
+		font-size: clamp(3.4rem, 9vw, 7.2rem);
+		line-height: 0.92;
+	}
+
+	.hero-copy p {
+		max-width: 520px;
+		color: rgb(var(--gray-dark));
+		font-size: clamp(1.05rem, 2vw, 1.3rem);
+		line-height: 1.55;
+		text-indent: 0;
+	}
+
+	.hero-link {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 46px;
+		margin-top: 1rem;
+		padding: 0 1.15rem;
+		border: 1px solid rgb(var(--black));
+		border-radius: 999px;
+		background: rgb(var(--black));
+		color: #fff;
+		font-weight: 800;
+		text-decoration: none;
+	}
+
+	.hero-link:hover {
+		color: #fff;
+	}
+
+	.hero-visual {
+		margin: 0;
+	}
+
+	.hero-visual img {
+		display: block;
+		width: 100%;
+		aspect-ratio: 4 / 5;
+		object-fit: cover;
+		border-radius: 8px;
+		box-shadow: var(--box-shadow);
+	}
+
+	.coming-grid {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 1rem;
+		margin-top: clamp(2rem, 6vw, 5rem);
+	}
+
+	.coming-grid article {
+		min-height: 230px;
+		padding: 1.25rem;
+		border: 1px solid rgb(var(--gray-light));
+		border-radius: 8px;
+		background: rgba(255, 255, 255, 0.76);
+	}
+
+	.coming-grid h2 {
+		font-size: 1.35rem;
+	}
+
+	.coming-grid p:last-child {
+		margin-bottom: 0;
+		color: rgb(var(--gray));
+		font-size: 1rem;
+		line-height: 1.55;
+		text-indent: 0;
+	}
+
+	@media (max-width: 860px) {
+		.product-hero,
+		.coming-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.product-hero {
+			min-height: auto;
+		}
+
+		.hero-visual img {
+			aspect-ratio: 16 / 10;
+		}
+	}
+</style>

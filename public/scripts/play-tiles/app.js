@@ -2,7 +2,6 @@ import { TileBoard } from './board.js?v=3';
 import { WhackGame } from './games/whack.js?v=3';
 import { EquationGame } from './games/equation.js?v=3';
 import { MemoryGame } from './games/memory.js?v=3';
-import { SetGame } from './games/set.js?v=3';
 
 export class SmartTilesApp {
 	constructor() {
@@ -39,7 +38,6 @@ export class SmartTilesApp {
 			whack: new WhackGame(this, this.board),
 			equation: new EquationGame(this, this.board),
 			memory: new MemoryGame(this, this.board),
-			set: new SetGame(this, this.board),
 		};
 	}
 
