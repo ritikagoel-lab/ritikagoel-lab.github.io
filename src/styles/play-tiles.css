@@ -246,7 +246,7 @@
 .tiles-page .grid-wrap {
 	display: grid;
 	place-items: center;
-	min-height: 500px;
+	min-height: 380px;
 	overflow: auto;
 	border: 1px solid var(--tiles-line);
 	border-radius: 8px;
@@ -256,7 +256,7 @@
 .tiles-page .grid {
 	display: grid;
 	grid-template-columns: repeat(6, 86px);
-	grid-template-rows: repeat(6, 86px);
+	grid-template-rows: repeat(4, 86px);
 	gap: 8px;
 	padding: 18px;
 }
@@ -612,7 +612,7 @@
 
 	.tiles-page .grid {
 		grid-template-columns: repeat(6, 72px);
-		grid-template-rows: repeat(6, 72px);
+		grid-template-rows: repeat(4, 72px);
 	}
 }
 
@@ -632,12 +632,12 @@
 	}
 
 	.tiles-page .grid-wrap {
-		min-height: 430px;
+		min-height: 310px;
 	}
 
 	.tiles-page .grid {
 		grid-template-columns: repeat(6, 54px);
-		grid-template-rows: repeat(6, 54px);
+		grid-template-rows: repeat(4, 54px);
 		gap: 6px;
 		padding: 10px;
 	}

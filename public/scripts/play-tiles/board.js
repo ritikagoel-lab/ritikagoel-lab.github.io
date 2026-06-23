@@ -1,4 +1,4 @@
-import { DIRECTIONS, GRID_SIZE, TILE_LIMIT } from './config.js?v=3';
+import { DIRECTIONS, GRID_COLS, GRID_ROWS, TILE_LIMIT } from './config.js?v=3';
 
 export class TileBoard {
 	constructor(elements, hooks) {
@@ -45,8 +45,8 @@ export class TileBoard {
 	buildGrid() {
 		this.elements.grid.innerHTML = '';
 		this.cells.clear();
-		for (let row = 0; row < GRID_SIZE; row += 1) {
-			for (let col = 0; col < GRID_SIZE; col += 1) {
+		for (let row = 0; row < GRID_ROWS; row += 1) {
+			for (let col = 0; col < GRID_COLS; col += 1) {
 				const cell = document.createElement('div');
 				cell.className = 'cell';
 				cell.dataset.row = row;

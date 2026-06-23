@@ -1,4 +1,5 @@
-export const GRID_SIZE = 6;
+export const GRID_ROWS = 4;
+export const GRID_COLS = 6;
 export const TILE_LIMIT = 16;
 
 export const DIRECTIONS = [
@@ -56,8 +57,8 @@ export function equationTilePack() {
 
 export function squareLayout(count) {
 	const width = Math.ceil(Math.sqrt(count));
-	const startRow = Math.max(0, Math.floor((GRID_SIZE - width) / 2));
-	const startCol = Math.max(0, Math.floor((GRID_SIZE - width) / 2));
+	const startRow = Math.max(0, Math.floor((GRID_ROWS - width) / 2));
+	const startCol = Math.max(0, Math.floor((GRID_COLS - width) / 2));
 	return Array.from({ length: count }, (_, index) => ({
 		row: startRow + Math.floor(index / width),
 		col: startCol + (index % width),

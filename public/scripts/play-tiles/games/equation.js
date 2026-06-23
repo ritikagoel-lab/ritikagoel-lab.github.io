@@ -31,7 +31,7 @@ export class EquationGame {
 
 	autoArrange({ silent = false } = {}) {
 		this.board.resetBoardTiles();
-		const row = 2;
+		const row = 1;
 		[this.question.left, this.question.op, this.question.right, '='].forEach((label, index) => {
 			const tile = this.board.placeCustomTile(
 				{
@@ -74,7 +74,7 @@ export class EquationGame {
 	}
 
 	readAnswer() {
-		for (let row = 0; row < 6; row += 1) {
+		for (let row = 0; row < 4; row += 1) {
 			const rowTiles = this.board
 				.placedTileList()
 				.filter((tile) => tile.row === row)
