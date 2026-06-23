@@ -9,16 +9,11 @@
 	--tiles-coral: #d94f45;
 	--tiles-yellow: #e4ab27;
 	--tiles-shadow: 0 8px 18px rgba(23, 33, 43, 0.12);
-	width: 100%;
+	width: min(1120px, calc(100% - (var(--page-gutter) * 2)));
 	max-width: none;
-	padding: 0;
+	margin: auto;
 	color: var(--tiles-ink);
-	background:
-		linear-gradient(90deg, rgba(23, 33, 43, 0.04) 1px, transparent 1px),
-		linear-gradient(rgba(23, 33, 43, 0.04) 1px, transparent 1px),
-		#eef2f5;
-	background-size: 32px 32px;
-	font-family: Inter, var(--site-font);
+	font-family: var(--site-font);
 }
 
 .tiles-page *,
@@ -40,9 +35,8 @@
 }
 
 .tiles-page h1 {
-	margin-bottom: 0;
-	font-size: clamp(30px, 4vw, 54px);
-	line-height: 1;
+	font-size: var(--h1-font-size);
+	line-height: 1.2;
 }
 
 .tiles-page h2 {
@@ -51,17 +45,30 @@
 	line-height: 1.2;
 }
 
+.tiles-page .tiles-intro {
+	margin-bottom: 2rem;
+}
+
+.tiles-page .tiles-intro p:last-child {
+	margin-bottom: 0;
+	color: rgb(var(--gray-dark));
+}
+
 .tiles-page .app-shell {
 	display: grid;
-	grid-template-columns: minmax(0, 1fr) 360px;
-	min-height: calc(100vh - 120px);
+	grid-template-columns: minmax(0, 1fr);
+	gap: 18px;
 }
 
 .tiles-page .board-panel {
 	display: flex;
 	flex-direction: column;
 	min-width: 0;
-	padding: 24px;
+	padding: 18px;
+	border: 1px solid var(--tiles-line);
+	border-radius: 8px;
+	background: rgba(255, 255, 255, 0.78);
+	box-shadow: 0 8px 24px rgba(var(--gray), 12%);
 }
 
 .tiles-page .topbar {
@@ -206,7 +213,7 @@
 .tiles-page .grid-wrap {
 	display: grid;
 	place-items: center;
-	min-height: 520px;
+	min-height: 500px;
 	overflow: auto;
 	border: 1px solid var(--tiles-line);
 	border-radius: 8px;
@@ -424,13 +431,9 @@
 }
 
 .tiles-page .side-panel {
-	display: flex;
-	flex-direction: column;
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
 	gap: 14px;
-	padding: 24px 20px;
-	overflow: auto;
-	border-left: 1px solid var(--tiles-line);
-	background: #fbfcfd;
 }
 
 .tiles-page .status-panel,
@@ -551,8 +554,7 @@
 	}
 
 	.tiles-page .side-panel {
-		border-top: 1px solid var(--tiles-line);
-		border-left: 0;
+		grid-template-columns: 1fr;
 	}
 
 	.tiles-page .play-area {
