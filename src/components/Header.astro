@@ -34,9 +34,15 @@ import HeaderLink from './HeaderLink.astro';
 	nav {
 		display: flex;
 		align-items: center;
-		justify-content: space-between;
+		justify-content: center;
 		gap: 0.5rem 1rem;
 		min-height: 72px;
+		position: relative;
+	}
+
+	nav h2 {
+		position: absolute;
+		left: 0;
 	}
 	nav a {
 		padding: 1em 0.5em;
@@ -57,6 +63,11 @@ import HeaderLink from './HeaderLink.astro';
 			justify-content: center;
 			min-height: auto;
 			padding: 0.55rem 0;
+		}
+		nav h2 {
+			position: static;
+			width: 100%;
+			text-align: center;
 		}
 		nav a {
 			padding: 0.5rem;

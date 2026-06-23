@@ -1,5 +1,5 @@
 export const GRID_ROWS = 4;
-export const GRID_COLS = 6;
+export const GRID_COLS = 4;
 export const TILE_LIMIT = 16;
 
 export const DIRECTIONS = [

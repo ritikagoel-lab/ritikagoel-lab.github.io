@@ -17,10 +17,13 @@ import Footer from '../components/Footer.astro';
 		<main class="contact-page">
 			<section class="contact-card">
 				<p class="eyebrow">Contact</p>
-				<h1>Ritika Goel</h1>
+				<h1>Contact</h1>
+				<h2>Ritika Goel</h2>
 				<p>
 					Ritika lives in Orange County with her husband and 8-year-old daughter. TikaTiles is
 					being built from her personal lab as a playful hardware experiment for kids and families.
+					Over the last 10 years, she has worked at Apple and Meta, building her profile as a
+					systems embedded engineer.
 				</p>
 				<div class="contact-links">
 					<a href="https://www.linkedin.com/in/ritikagoel23/" target="_blank">LinkedIn</a>
@@ -39,12 +42,23 @@ import Footer from '../components/Footer.astro';
 	}
 
 	.contact-card {
-		width: min(680px, 100%);
+		width: min(760px, 100%);
 		padding: clamp(1.5rem, 4vw, 3rem);
 		border: 1px solid rgb(var(--gray-light));
 		border-radius: 8px;
 		background: rgba(255, 255, 255, 0.82);
 		box-shadow: var(--box-shadow);
+	}
+
+	.contact-card h1 {
+		font-size: clamp(4rem, 11vw, 8rem);
+		line-height: 0.9;
+	}
+
+	.contact-card h2 {
+		margin-bottom: 1rem;
+		font-size: clamp(1.4rem, 3vw, 2rem);
+		color: rgb(var(--gray-dark));
 	}
 
 	.eyebrow {

@@ -12,6 +12,7 @@ export class MemoryGame {
 		this.matches = 0;
 		this.selection = [];
 		this.turnToken = 0;
+		this.speedMode = 'regular';
 	}
 
 	enter() {
@@ -28,11 +29,11 @@ export class MemoryGame {
 	}
 
 	instructions() {
-		return 'Choose how many tiles to play with. The board is placed automatically. Click two tiles to reveal their images. Matching images turn gray immediately.';
+		return 'Choose tile count and Regular or Challenge mode. Matching images turn gray immediately.';
 	}
 
 	prompt() {
-		return `Memory is set to ${this.selectedCount} tiles. Click Start Game when you are ready.`;
+		return `Memory is set to ${this.selectedCount} tiles in ${this.speedMode === 'regular' ? 'Regular' : 'Challenge'} mode. Click Start Game when you are ready.`;
 	}
 
 	setTileCount(count) {
@@ -41,6 +42,12 @@ export class MemoryGame {
 		this.board.reset(blankTilePack('memory'));
 		this.autoArrange({ silent: true });
 		this.app.setStatus(`Memory set to ${count} tiles.`);
+		this.app.render();
+	}
+
+	setSpeedMode(mode) {
+		this.speedMode = mode;
+		this.app.setStatus(`${mode === 'regular' ? 'Regular' : 'Challenge'} mode selected.`);
 		this.app.render();
 	}
 
@@ -75,7 +82,7 @@ export class MemoryGame {
 			tile.gameData.matched = false;
 			this.board.setTileDisplay(tile, '', 'blank');
 		});
-		this.app.setStatus('Memory game running.');
+		this.app.setStatus('Click 2 tiles at a time.');
 		this.app.render();
 	}
 
@@ -139,7 +146,7 @@ export class MemoryGame {
 			this.locked = false;
 			this.app.setStatus('Try another pair.');
 			this.app.render();
-		}, 4000);
+		}, this.speedMode === 'regular' ? 4000 : 2500);
 		this.app.render();
 		return true;
 	}

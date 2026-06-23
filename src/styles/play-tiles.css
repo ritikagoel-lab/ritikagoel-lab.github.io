@@ -167,6 +167,10 @@
 	min-height: 40px;
 }
 
+.tiles-page #memorySpeedControls select {
+	width: 118px;
+}
+
 .tiles-page .check-button {
 	min-height: 52px;
 	padding: 0 22px;
@@ -255,7 +259,7 @@
 
 .tiles-page .grid {
 	display: grid;
-	grid-template-columns: repeat(6, 86px);
+	grid-template-columns: repeat(4, 86px);
 	grid-template-rows: repeat(4, 86px);
 	gap: 8px;
 	padding: 18px;
@@ -347,12 +351,12 @@
 }
 
 .tiles-page .tile.mole {
-	border-color: #9b4a12;
+	border-color: #f97316;
 	background: #fff;
 }
 
 .tiles-page .tile.mole .tile-face {
-	border-color: #9b4a12;
+	border-color: #f97316;
 	background: #334155;
 	color: #fff;
 }
@@ -382,11 +386,11 @@
 }
 
 .tiles-page .pixel[data-color='brown'] {
-	background: #8a4b22;
+	background: #f97316;
 }
 
 .tiles-page .pixel[data-color='tan'] {
-	background: #d6a45f;
+	background: #ffc857;
 }
 
 .tiles-page .pixel[data-color='pink'] {
@@ -398,7 +402,7 @@
 }
 
 .tiles-page .pixel[data-color='soil'] {
-	background: #5c3418;
+	background: #9a3412;
 }
 
 .tiles-page .tile.revealed .tile-face {
@@ -611,7 +615,7 @@
 	}
 
 	.tiles-page .grid {
-		grid-template-columns: repeat(6, 72px);
+		grid-template-columns: repeat(4, 72px);
 		grid-template-rows: repeat(4, 72px);
 	}
 }
@@ -636,7 +640,7 @@
 	}
 
 	.tiles-page .grid {
-		grid-template-columns: repeat(6, 54px);
+		grid-template-columns: repeat(4, 54px);
 		grid-template-rows: repeat(4, 54px);
 		gap: 6px;
 		padding: 10px;

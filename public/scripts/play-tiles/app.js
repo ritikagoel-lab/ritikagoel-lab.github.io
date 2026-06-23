@@ -29,6 +29,8 @@ export class SmartTilesApp {
 			checkGameButton: document.querySelector('#checkGame'),
 			memoryControls: document.querySelector('#memoryControls'),
 			memoryTileCount: document.querySelector('#memoryTileCount'),
+			memorySpeedControls: document.querySelector('#memorySpeedControls'),
+			memorySpeedMode: document.querySelector('#memorySpeedMode'),
 			saveStatus: document.querySelector('#saveStatus'),
 		};
 		this.statusMessage = '';
@@ -63,6 +65,7 @@ export class SmartTilesApp {
 		this.elements.startGameButton.addEventListener('click', () => this.currentGame().start());
 		this.elements.checkGameButton.addEventListener('click', () => this.currentGame().check());
 		this.elements.memoryTileCount.addEventListener('change', () => this.games.memory.setTileCount(Number(this.elements.memoryTileCount.value)));
+		this.elements.memorySpeedMode.addEventListener('change', () => this.games.memory.setSpeedMode(this.elements.memorySpeedMode.value));
 		document.querySelector('#saveSignal').addEventListener('click', () => this.saveInterest());
 	}
 
@@ -93,6 +96,7 @@ export class SmartTilesApp {
 		this.elements.startGameButton.classList.toggle('hidden', this.mode === 'equation');
 		this.elements.checkGameButton.classList.toggle('hidden', this.mode !== 'equation');
 		this.elements.memoryControls.classList.toggle('hidden', this.mode !== 'memory');
+		this.elements.memorySpeedControls.classList.toggle('hidden', this.mode !== 'memory');
 
 		document.querySelectorAll('.mode-tab').forEach((button) => {
 			button.classList.toggle('active', button.dataset.mode === this.mode);

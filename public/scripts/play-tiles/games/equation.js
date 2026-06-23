@@ -22,16 +22,16 @@ export class EquationGame {
 	}
 
 	instructions() {
-		return `Solve: ${this.question.left} ${this.question.op} ${this.question.right} = ?. The question is placed automatically. Add answer digit tiles after the equals sign.`;
+		return `Solve: ${this.question.left} ${this.question.op} ${this.question.right} = ?. Add up to 3 answer digit tiles in the answer row.`;
 	}
 
 	prompt() {
-		return 'Place the answer digits after the equals sign, then press Check.';
+		return 'Place the answer digits in the row below the equals sign, then press Check Answer.';
 	}
 
 	autoArrange({ silent = false } = {}) {
 		this.board.resetBoardTiles();
-		const row = 1;
+		const row = 0;
 		[this.question.left, this.question.op, this.question.right, '='].forEach((label, index) => {
 			const tile = this.board.placeCustomTile(
 				{
@@ -74,17 +74,11 @@ export class EquationGame {
 	}
 
 	readAnswer() {
-		for (let row = 0; row < 4; row += 1) {
-			const rowTiles = this.board
-				.placedTileList()
-				.filter((tile) => tile.row === row)
-				.sort((a, b) => a.col - b.col);
-			const equalsIndex = rowTiles.findIndex((tile) => tile.label === '=');
-			if (equalsIndex === -1) continue;
-			const answerTiles = rowTiles.slice(equalsIndex + 1).filter((tile) => /^\d$/.test(tile.label));
-			if (answerTiles.length > 0) return answerTiles.map((tile) => tile.label).join('');
-		}
-		return '';
+		const answerTiles = this.board
+			.placedTileList()
+			.filter((tile) => tile.row === 1 && tile.col >= 1 && tile.col <= 3 && /^\d$/.test(tile.label))
+			.sort((a, b) => a.col - b.col);
+		return answerTiles.map((tile) => tile.label).join('');
 	}
 
 	handleTileClick() {
