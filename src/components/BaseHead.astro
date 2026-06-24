@@ -21,6 +21,9 @@ const { title, description, image = FallbackImage } = Astro.props;
 <!-- Global Metadata -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="color-scheme" content="light dark" />
+<meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#08111f" media="(prefers-color-scheme: dark)" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="icon" href="/favicon.ico" />
 <link rel="sitemap" href="/sitemap-index.xml" />
@@ -35,6 +38,26 @@ const { title, description, image = FallbackImage } = Astro.props;
 <Font cssVariable="--font-atkinson" preload />
 <script is:inline>
 	(() => {
+		const themeKey = 'tikatiles-theme';
+		const root = document.documentElement;
+		try {
+			const savedTheme = localStorage.getItem(themeKey);
+			if (savedTheme === 'light' || savedTheme === 'dark') {
+				root.dataset.theme = savedTheme;
+				root.dataset.themeSource = 'manual';
+			} else {
+				root.dataset.theme = window.matchMedia('(prefers-color-scheme: dark)').matches
+					? 'dark'
+					: 'light';
+				root.dataset.themeSource = 'system';
+			}
+		} catch {
+			root.dataset.theme = window.matchMedia('(prefers-color-scheme: dark)').matches
+				? 'dark'
+				: 'light';
+			root.dataset.themeSource = 'system';
+		}
+
 		const mobileQuery = window.matchMedia('(max-width: 720px), (pointer: coarse)');
 		const setDevice = () => {
 			document.documentElement.dataset.device = mobileQuery.matches ? 'mobile' : 'desktop';

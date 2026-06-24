@@ -44,9 +44,9 @@ import Footer from '../components/Footer.astro';
 	.contact-card {
 		width: min(760px, 100%);
 		padding: clamp(1.5rem, 4vw, 3rem);
-		border: 1px solid rgb(var(--gray-light));
+		border: 1px solid var(--line);
 		border-radius: 8px;
-		background: rgba(255, 255, 255, 0.82);
+		background: var(--surface-raised);
 		box-shadow: var(--box-shadow);
 	}
 
@@ -91,12 +91,12 @@ import Footer from '../components/Footer.astro';
 		border: 1px solid rgb(var(--black));
 		border-radius: 999px;
 		background: rgb(var(--black));
-		color: #fff;
+		color: var(--page-bg);
 		font-weight: 800;
 		text-decoration: none;
 	}
 
 	.contact-links a:hover {
-		color: #fff;
+		color: var(--page-bg);
 	}
 </style>

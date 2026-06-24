@@ -11,14 +11,88 @@ import HeaderLink from './HeaderLink.astro';
 			<HeaderLink href="/play-tiles/">Games</HeaderLink>
 			<HeaderLink href="/contact/">Contact</HeaderLink>
 		</div>
+		<button
+			id="themeToggle"
+			class="theme-toggle"
+			type="button"
+			aria-label="Switch color theme"
+			aria-pressed="false"
+		>
+			<span class="theme-toggle-track" aria-hidden="true">
+				<span class="theme-icon theme-icon-sun"></span>
+				<span class="theme-icon theme-icon-moon"></span>
+				<span class="theme-toggle-thumb"></span>
+			</span>
+		</button>
 	</nav>
 </header>
+<script is:inline>
+	(() => {
+		const themeKey = 'tikatiles-theme';
+		const root = document.documentElement;
+		const button = document.querySelector('#themeToggle');
+		const systemQuery = window.matchMedia('(prefers-color-scheme: dark)');
+		const getSavedTheme = () => {
+			try {
+				const savedTheme = localStorage.getItem(themeKey);
+				return savedTheme === 'light' || savedTheme === 'dark' ? savedTheme : null;
+			} catch {
+				return root.dataset.themeSource === 'manual' ? root.dataset.theme : null;
+			}
+		};
+		const applyTheme = (theme, source) => {
+			root.dataset.theme = theme;
+			root.dataset.themeSource = source;
+		};
+		const setSavedTheme = (theme) => {
+			applyTheme(theme, 'manual');
+			try {
+				localStorage.setItem(themeKey, theme);
+			} catch {
+				return;
+			}
+		};
+		const resolvedTheme = () => {
+			const savedTheme = getSavedTheme();
+			if (savedTheme === 'light' || savedTheme === 'dark') return savedTheme;
+			return systemQuery.matches ? 'dark' : 'light';
+		};
+		const syncTheme = () => {
+			const savedTheme = getSavedTheme();
+			const theme = savedTheme || (systemQuery.matches ? 'dark' : 'light');
+			applyTheme(theme, savedTheme ? 'manual' : 'system');
+			button.dataset.theme = theme;
+			button.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
+			button.setAttribute(
+				'aria-label',
+				theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme',
+			);
+		};
+
+		if (!button) return;
+		syncTheme();
+		button.addEventListener('click', () => {
+			const nextTheme = resolvedTheme() === 'dark' ? 'light' : 'dark';
+			setSavedTheme(nextTheme);
+			syncTheme();
+		});
+		if (systemQuery.addEventListener) {
+			systemQuery.addEventListener('change', () => {
+				if (!getSavedTheme()) syncTheme();
+			});
+		} else {
+			systemQuery.addListener(() => {
+				if (!getSavedTheme()) syncTheme();
+			});
+		}
+	})();
+</script>
 <style>
 	header {
 		margin: 0;
 		padding: 0 1.25em;
-		background: rgba(255, 255, 255, 0.92);
-		box-shadow: 0 1px 0 rgba(var(--black), 8%);
+		background: var(--nav-bg);
+		box-shadow: 0 1px 0 var(--nav-line);
 		backdrop-filter: blur(16px);
 	}
 	h2 {
@@ -46,13 +120,80 @@ import HeaderLink from './HeaderLink.astro';
 	}
 	nav a {
 		padding: 1em 0.5em;
-		color: var(--black);
+		color: rgb(var(--black));
 		border-bottom: 4px solid transparent;
 		text-decoration: none;
 	}
 	nav a.active {
 		text-decoration: none;
 		border-bottom-color: var(--accent);
+	}
+	.theme-toggle {
+		position: absolute;
+		right: 0;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 58px;
+		height: 34px;
+		padding: 0;
+		border: 1px solid var(--theme-toggle-border);
+		border-radius: 999px;
+		background: var(--theme-toggle-bg);
+		box-shadow: var(--theme-toggle-shadow);
+		cursor: pointer;
+	}
+	.theme-toggle:focus-visible {
+		outline: 3px solid var(--accent);
+		outline-offset: 3px;
+	}
+	.theme-toggle-track {
+		position: relative;
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		align-items: center;
+		width: 48px;
+		height: 24px;
+	}
+	.theme-toggle-thumb {
+		position: absolute;
+		left: 0;
+		width: 24px;
+		height: 24px;
+		border-radius: 50%;
+		background: var(--theme-toggle-thumb);
+		box-shadow: 0 2px 8px rgba(2, 6, 23, 0.22);
+		transition: transform 160ms ease;
+	}
+	.theme-toggle[data-theme='dark'] .theme-toggle-thumb {
+		transform: translateX(24px);
+	}
+	.theme-icon {
+		position: relative;
+		z-index: 1;
+		justify-self: center;
+		width: 14px;
+		height: 14px;
+	}
+	.theme-icon-sun {
+		border: 2px solid var(--theme-icon);
+		border-radius: 50%;
+	}
+	.theme-icon-sun::before {
+		content: '';
+		position: absolute;
+		inset: -5px;
+		border-radius: 50%;
+		background:
+			linear-gradient(var(--theme-icon), var(--theme-icon)) center top / 2px 4px no-repeat,
+			linear-gradient(var(--theme-icon), var(--theme-icon)) center bottom / 2px 4px no-repeat,
+			linear-gradient(90deg, var(--theme-icon), var(--theme-icon)) left center / 4px 2px no-repeat,
+			linear-gradient(90deg, var(--theme-icon), var(--theme-icon)) right center / 4px 2px no-repeat;
+	}
+	.theme-icon-moon {
+		border-radius: 50%;
+		box-shadow: -4px 0 0 1px var(--theme-icon);
+		transform: translateX(3px);
 	}
 	@media (max-width: 720px) {
 		header {
@@ -68,6 +209,10 @@ import HeaderLink from './HeaderLink.astro';
 			position: static;
 			width: 100%;
 			text-align: center;
+		}
+		.theme-toggle {
+			top: 0.6rem;
+			right: 0;
 		}
 		nav a {
 			padding: 0.5rem;

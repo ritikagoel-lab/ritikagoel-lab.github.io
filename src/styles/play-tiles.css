@@ -9,11 +9,102 @@
 	--tiles-coral: #d94f45;
 	--tiles-yellow: #e4ab27;
 	--tiles-shadow: 0 8px 18px rgba(23, 33, 43, 0.12);
+	--tiles-panel-bg: rgba(255, 255, 255, 0.78);
+	--tiles-card-bg: #ffffff;
+	--tiles-instruction-bg: rgba(255, 255, 255, 0.82);
+	--tiles-tray-bg: #d8dee6;
+	--tiles-tray-ready-bg: #c9d8e8;
+	--tiles-grid-bg: rgba(255, 255, 255, 0.72);
+	--tiles-cell-line: #b8c1cb;
+	--tiles-cell-bg: rgba(255, 255, 255, 0.62);
+	--tiles-drop-bg: rgba(39, 119, 196, 0.08);
+	--tiles-answer-bg: rgba(22, 132, 92, 0.1);
+	--tiles-inactive-bg: rgba(255, 255, 255, 0.28);
+	--tiles-input-bg: #ffffff;
+	--tiles-tile-shell: #ffffff;
+	--tiles-tile-border: rgba(23, 33, 43, 0.86);
+	--tiles-face-bg: #334155;
+	--tiles-face-ink: #f8fafc;
+	--tiles-active-bg: var(--tiles-ink);
+	--tiles-active-ink: #ffffff;
+	--tiles-question-shell: #ffffff;
+	--tiles-question-border: rgba(23, 33, 43, 0.92);
+	--tiles-question-face: #0f172a;
 	width: min(1120px, calc(100% - (var(--page-gutter) * 2)));
 	max-width: none;
 	margin: auto;
 	color: var(--tiles-ink);
 	font-family: var(--site-font);
+}
+
+@media (prefers-color-scheme: dark) {
+	:root:not([data-theme='light']) .tiles-page {
+		--tiles-ink: #f8fafc;
+		--tiles-muted: #cbd5e1;
+		--tiles-line: #334155;
+		--tiles-surface: #111827;
+		--tiles-soft: #1e293b;
+		--tiles-blue: #78aef2;
+		--tiles-green: #34d399;
+		--tiles-coral: #ff7a70;
+		--tiles-yellow: #facc15;
+		--tiles-shadow: 0 10px 26px rgba(2, 6, 23, 0.42);
+		--tiles-panel-bg: rgba(15, 23, 42, 0.82);
+		--tiles-card-bg: #111827;
+		--tiles-instruction-bg: rgba(15, 23, 42, 0.76);
+		--tiles-tray-bg: #1f2937;
+		--tiles-tray-ready-bg: #253a54;
+		--tiles-grid-bg: rgba(2, 6, 23, 0.34);
+		--tiles-cell-line: #475569;
+		--tiles-cell-bg: rgba(15, 23, 42, 0.52);
+		--tiles-drop-bg: rgba(120, 174, 242, 0.16);
+		--tiles-answer-bg: rgba(52, 211, 153, 0.14);
+		--tiles-inactive-bg: rgba(15, 23, 42, 0.28);
+		--tiles-input-bg: #0f172a;
+		--tiles-tile-shell: #ffffff;
+		--tiles-tile-border: rgba(226, 232, 240, 0.72);
+		--tiles-face-bg: #334155;
+		--tiles-face-ink: #f8fafc;
+		--tiles-active-bg: #f8fafc;
+		--tiles-active-ink: #0f172a;
+		--tiles-question-shell: #ffffff;
+		--tiles-question-border: rgba(226, 232, 240, 0.82);
+		--tiles-question-face: #0f172a;
+	}
+}
+
+:root[data-theme='dark'] .tiles-page {
+	--tiles-ink: #f8fafc;
+	--tiles-muted: #cbd5e1;
+	--tiles-line: #334155;
+	--tiles-surface: #111827;
+	--tiles-soft: #1e293b;
+	--tiles-blue: #78aef2;
+	--tiles-green: #34d399;
+	--tiles-coral: #ff7a70;
+	--tiles-yellow: #facc15;
+	--tiles-shadow: 0 10px 26px rgba(2, 6, 23, 0.42);
+	--tiles-panel-bg: rgba(15, 23, 42, 0.82);
+	--tiles-card-bg: #111827;
+	--tiles-instruction-bg: rgba(15, 23, 42, 0.76);
+	--tiles-tray-bg: #1f2937;
+	--tiles-tray-ready-bg: #253a54;
+	--tiles-grid-bg: rgba(2, 6, 23, 0.34);
+	--tiles-cell-line: #475569;
+	--tiles-cell-bg: rgba(15, 23, 42, 0.52);
+	--tiles-drop-bg: rgba(120, 174, 242, 0.16);
+	--tiles-answer-bg: rgba(52, 211, 153, 0.14);
+	--tiles-inactive-bg: rgba(15, 23, 42, 0.28);
+	--tiles-input-bg: #0f172a;
+	--tiles-tile-shell: #ffffff;
+	--tiles-tile-border: rgba(226, 232, 240, 0.72);
+	--tiles-face-bg: #334155;
+	--tiles-face-ink: #f8fafc;
+	--tiles-active-bg: #f8fafc;
+	--tiles-active-ink: #0f172a;
+	--tiles-question-shell: #ffffff;
+	--tiles-question-border: rgba(226, 232, 240, 0.82);
+	--tiles-question-face: #0f172a;
 }
 
 .tiles-page *,
@@ -51,7 +142,7 @@
 
 .tiles-page .tiles-intro p:last-child {
 	margin-bottom: 0;
-	color: rgb(var(--gray-dark));
+	color: var(--tiles-muted);
 }
 
 .tiles-page .app-shell {
@@ -67,8 +158,8 @@
 	padding: 18px;
 	border: 1px solid var(--tiles-line);
 	border-radius: 8px;
-	background: rgba(255, 255, 255, 0.78);
-	box-shadow: 0 8px 24px rgba(var(--gray), 12%);
+	background: var(--tiles-panel-bg);
+	box-shadow: var(--tiles-shadow);
 }
 
 .tiles-page .topbar {
@@ -111,8 +202,8 @@
 
 .tiles-page .mode-tab.active {
 	border-color: var(--tiles-ink);
-	background: var(--tiles-ink);
-	color: #fff;
+	background: var(--tiles-active-bg);
+	color: var(--tiles-active-ink);
 }
 
 .tiles-page .game-instructions {
@@ -124,7 +215,7 @@
 	padding: 16px;
 	border: 1px solid var(--tiles-line);
 	border-radius: 8px;
-	background: rgba(255, 255, 255, 0.82);
+	background: var(--tiles-instruction-bg);
 }
 
 .tiles-page .step-label {
@@ -197,8 +288,8 @@
 	padding: 12px 14px;
 	border: 1px solid var(--tiles-line);
 	border-radius: 8px;
-	background: #fff;
-	box-shadow: 0 4px 12px rgba(23, 33, 43, 0.08);
+	background: var(--tiles-card-bg);
+	box-shadow: var(--tiles-shadow);
 }
 
 .tiles-page .quick-score strong {
@@ -239,12 +330,12 @@
 	overflow: auto;
 	border: 1px solid var(--tiles-line);
 	border-radius: 8px;
-	background: #d8dee6;
+	background: var(--tiles-tray-bg);
 }
 
 .tiles-page .tray.drop-ready {
 	border-color: var(--tiles-blue);
-	background: #c9d8e8;
+	background: var(--tiles-tray-ready-bg);
 }
 
 .tiles-page .grid-wrap {
@@ -254,7 +345,7 @@
 	overflow: auto;
 	border: 1px solid var(--tiles-line);
 	border-radius: 8px;
-	background: rgba(255, 255, 255, 0.72);
+	background: var(--tiles-grid-bg);
 }
 
 .tiles-page .grid {
@@ -267,30 +358,30 @@
 
 .tiles-page .cell {
 	position: relative;
-	border: 1px dashed #b8c1cb;
+	border: 1px dashed var(--tiles-cell-line);
 	border-radius: 8px;
-	background: rgba(255, 255, 255, 0.62);
+	background: var(--tiles-cell-bg);
 }
 
 .tiles-page .cell.drop-ready {
 	border-color: var(--tiles-blue);
-	background: rgba(39, 119, 196, 0.08);
+	background: var(--tiles-drop-bg);
 }
 
 .tiles-page .cell.answer-slot {
 	border-color: var(--tiles-green);
 	border-style: solid;
-	background: rgba(22, 132, 92, 0.1);
+	background: var(--tiles-answer-bg);
 }
 
 .tiles-page .cell.inactive-slot {
 	opacity: 0.22;
-	background: rgba(255, 255, 255, 0.28);
+	background: var(--tiles-inactive-bg);
 }
 
 .tiles-page .cell.inactive-slot.drop-ready {
-	border-color: #b8c1cb;
-	background: rgba(255, 255, 255, 0.28);
+	border-color: var(--tiles-cell-line);
+	background: var(--tiles-inactive-bg);
 }
 
 .tiles-page .tile {
@@ -298,11 +389,11 @@
 	place-items: center;
 	width: 100%;
 	aspect-ratio: 1;
-	border: 2px solid rgba(23, 33, 43, 0.86);
+	border: 2px solid var(--tiles-tile-border);
 	border-radius: 8px;
 	box-shadow: var(--tiles-shadow);
-	background: #fff;
-	color: #f8fafc;
+	background: var(--tiles-tile-shell);
+	color: var(--tiles-face-ink);
 	cursor: grab;
 	user-select: none;
 	touch-action: none;
@@ -326,7 +417,7 @@
 	overflow: hidden;
 	border-radius: 8px;
 	border: 1px solid rgba(255, 255, 255, 0.16);
-	background: #334155;
+	background: var(--tiles-face-bg);
 	color: inherit;
 	font-size: 26px;
 	font-weight: 900;
@@ -354,17 +445,17 @@
 }
 
 .tiles-page .tile[data-kind='equation'] .tile-face {
-	color: #f8fafc;
+	color: var(--tiles-face-ink);
 }
 
 .tiles-page .tile.question-tile {
-	border-color: rgba(23, 33, 43, 0.92);
-	background: #fff;
+	border-color: var(--tiles-question-border);
+	background: var(--tiles-question-shell);
 }
 
 .tiles-page .tile.question-tile .tile-face {
 	border-color: rgba(255, 255, 255, 0.16);
-	background: #0f172a;
+	background: var(--tiles-question-face);
 	color: #fff;
 }
 
@@ -400,7 +491,7 @@
 
 .tiles-page .tile.mole {
 	border-color: #f97316;
-	background: #fff;
+	background: var(--tiles-tile-shell);
 }
 
 .tiles-page .tile.mole .tile-face {
@@ -609,7 +700,7 @@
 	padding: 0 10px;
 	border: 1px solid var(--tiles-line);
 	border-radius: 8px;
-	background: #fff;
+	background: var(--tiles-input-bg);
 	color: var(--tiles-ink);
 	font-size: 16px;
 }
