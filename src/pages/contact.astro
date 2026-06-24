@@ -16,17 +16,18 @@ import Footer from '../components/Footer.astro';
 		<Header />
 		<main class="contact-page">
 			<section class="contact-card">
-				<p class="eyebrow">Contact</p>
-				<h1>Contact</h1>
-				<h2>Ritika Goel</h2>
+				<h1>Ritika Goel</h1>
 				<p>
-					Ritika lives in Orange County with her husband and 8-year-old daughter. TikaTiles is
-					being built from her personal lab as a playful hardware experiment for kids and families.
-					Over the last 10 years, she has worked at Apple and Meta, building her profile as a
-					systems embedded engineer.
+					Ritika is an embedded systems engineer who likes to build playful hardware for kids
+					and families. Originally starting her journey in hardware at the University of
+					Pennsylvania, she has spent the last decade designing and optimizing consumer electronics
+					at Apple and Meta. Today, TikaTiles is engineered from her personal lab in
+					Orange County, California, where she lives with her husband and their 8-year-old
+					daughter.
 				</p>
 				<div class="contact-links">
 					<a href="https://www.linkedin.com/in/ritikagoel23/" target="_blank">LinkedIn</a>
+					<a href="mailto:info@tikatiles.com">Email: info@tikatiles.com</a>
 				</div>
 			</section>
 		</main>
@@ -51,14 +52,9 @@ import Footer from '../components/Footer.astro';
 	}
 
 	.contact-card h1 {
-		font-size: clamp(4rem, 11vw, 8rem);
-		line-height: 0.9;
-	}
-
-	.contact-card h2 {
 		margin-bottom: 1rem;
-		font-size: clamp(1.4rem, 3vw, 2rem);
-		color: rgb(var(--gray-dark));
+		font-size: clamp(2.25rem, 6vw, 4.25rem);
+		line-height: 1;
 	}
 
 	.eyebrow {

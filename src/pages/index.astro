@@ -14,19 +14,30 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 		<Header />
 		<main class="product-page">
 			<section class="product-hero">
-				<div class="hero-copy">
-					<p class="eyebrow">TikaTiles</p>
-					<h1>Product Coming Soon</h1>
-					<p>
-						Interactive learning tiles are in early prototype. The first product will combine
-						physical play, touch, lights, and simple games that kids can arrange on the floor or
-						table.
-					</p>
-					<a class="hero-link" href="/play-tiles/">Try the games</a>
+				<div class="hero-heading">
+					<h1>A living playground for infinite imagination</h1>
 				</div>
-				<figure class="hero-visual">
-					<img src="/images/default-waves.svg" alt="" />
-				</figure>
+				<div class="hero-content">
+					<div class="hero-copy">
+						<p class="hero-kicker">No screens. No tracks. Just smart space.</p>
+						<p>
+							TikaTiles turns any floor or table into an interactive, screen-free playground.
+							These smart, independent electronic tiles map their own coordinates in real time,
+							even when scattered completely apart. By simply moving, rotating and arranging the tiles,
+							kids unlock a physical gaming console for memory, math, collaborative puzzles and active movement.
+							It is open-ended play meets physical computing, giving kids the power to touch,
+							rearrange and eventually program their own rules.
+						</p>
+						<p class="hero-status">Product Coming Soon</p>
+						<a class="hero-link" href="/play-tiles/" aria-label="Try the games in the Games tab">
+							Try the games
+							<span aria-hidden="true">↗</span>
+						</a>
+					</div>
+					<figure class="hero-visual">
+						<img src="/images/default-waves.svg" alt="" />
+					</figure>
+				</div>
 			</section>
 
 			<section class="coming-grid" aria-label="Coming soon details">
@@ -34,7 +45,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 					<p class="card-label">Product</p>
 					<h2>Tiles are in development</h2>
 					<p>
-						The physical tile system is being prototyped now. More product images, videos, and
+						The physical tile system is being prototyped now. More product images, videos and
 						details will be added as the hardware form factor matures.
 					</p>
 				</article>
@@ -50,7 +61,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 					<p class="card-label">Videos</p>
 					<h2>Available soon</h2>
 					<p>
-						Gameplay demos, setup videos, and hardware progress clips will be added as the tiles
+						Gameplay demos, setup videos and hardware progress clips will be added as the tiles
 						move closer to product testing.
 					</p>
 				</article>
@@ -69,14 +80,23 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 
 	.product-hero {
 		display: grid;
-		grid-template-columns: minmax(0, 0.9fr) minmax(360px, 1.1fr);
-		gap: clamp(2rem, 6vw, 5rem);
-		align-items: center;
+		gap: clamp(2rem, 5vw, 4rem);
 		min-height: min(720px, calc(100vh - 180px));
+	}
+
+	.hero-heading {
+		max-width: 1120px;
 	}
 
 	.hero-copy {
 		max-width: 560px;
+	}
+
+	.hero-content {
+		display: grid;
+		grid-template-columns: minmax(0, 0.88fr) minmax(360px, 1.12fr);
+		gap: clamp(2rem, 6vw, 5rem);
+		align-items: start;
 	}
 
 	.eyebrow,
@@ -89,10 +109,30 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 		text-transform: uppercase;
 	}
 
-	.hero-copy h1 {
-		margin-bottom: 1rem;
-		font-size: clamp(3.4rem, 9vw, 7.2rem);
-		line-height: 0.92;
+	.hero-heading h1 {
+		max-width: 1100px;
+		margin-bottom: 0;
+		font-size: clamp(3rem, 7.6vw, 6.5rem);
+		line-height: 0.95;
+		text-wrap: balance;
+	}
+
+	.hero-kicker {
+		margin-bottom: 0.85rem;
+		color: rgb(var(--black));
+		font-size: clamp(1rem, 1.8vw, 1.25rem);
+		font-weight: 900;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+
+	.hero-status {
+		margin: 1rem 0 0;
+		color: rgb(var(--black));
+		font-size: 0.95rem;
+		font-weight: 900;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
 	}
 
 	.hero-copy p {
@@ -106,6 +146,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 	.hero-link {
 		display: inline-flex;
 		align-items: center;
+		gap: 0.45rem;
 		justify-content: center;
 		min-height: 46px;
 		margin-top: 1rem;
@@ -116,6 +157,12 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 		color: var(--page-bg);
 		font-weight: 800;
 		text-decoration: none;
+	}
+
+	.hero-link span {
+		font-size: 1.1em;
+		line-height: 1;
+		transform: translateY(-1px);
 	}
 
 	.hero-link:hover {
@@ -163,7 +210,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 	}
 
 	@media (max-width: 860px) {
-		.product-hero,
+		.hero-content,
 		.coming-grid {
 			grid-template-columns: 1fr;
 		}
