@@ -61,6 +61,14 @@ import '../styles/play-tiles.css';
 									<option value="fast">Challenge</option>
 								</select>
 							</label>
+							<label id="puzzleDifficultyControls" class="setup-select hidden">
+								Level
+								<select id="puzzleDifficulty">
+									<option value="easy">Easy</option>
+									<option value="medium" selected>Medium</option>
+									<option value="difficult">Difficult</option>
+								</select>
+							</label>
 							<label id="puzzleControls" class="setup-select hidden">
 								Pieces
 								<select id="puzzleTileCount">
@@ -168,6 +176,6 @@ import '../styles/play-tiles.css';
 			</section>
 		</main>
 		<Footer />
-		<script type="module" is:inline src="/scripts/play-tiles.js?v=8"></script>
+		<script type="module" is:inline src="/scripts/play-tiles.js?v=15"></script>
 	</body>
 </html>

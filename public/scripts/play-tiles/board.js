@@ -141,7 +141,12 @@ export class TileBoard {
 			row: null,
 			col: null,
 			element: tile,
-			gameData: {},
+			gameData: source.puzzle
+				? {
+						puzzle: source.puzzle,
+						rotation: source.puzzle.rotation,
+					}
+				: {},
 		};
 
 		tile.addEventListener('dragstart', (event) => {
@@ -271,6 +276,7 @@ export class TileBoard {
 			'set-tile',
 			'set-selected',
 			'puzzle-tile',
+			'puzzle-anchor',
 			'puzzle-solved',
 		);
 		tile.element.dataset.state = state;
