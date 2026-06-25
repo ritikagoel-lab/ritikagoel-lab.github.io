@@ -12,8 +12,8 @@ export class PuzzleGame {
 		this.solveTimers = [];
 		this.puzzleSeed = 0;
 		this.difficulty = 'medium';
-		this.hintMode = 'tile';
-		this.hintIndex = 0;
+		this.hintMode = null;
+		this.hintIndex = null;
 		this.flashSolved = false;
 		this.flashTimer = null;
 	}
@@ -22,6 +22,8 @@ export class PuzzleGame {
 		this.moves = 0;
 		this.solved = false;
 		this.showHint = false;
+		this.hintMode = null;
+		this.hintIndex = null;
 		this.clearSolveTimers();
 		this.clearFlashTimer();
 		this.flashSolved = false;
@@ -93,6 +95,8 @@ export class PuzzleGame {
 		this.moves = 0;
 		this.solved = false;
 		this.showHint = false;
+		this.hintMode = null;
+		this.hintIndex = null;
 		this.clearSolveTimers();
 		this.clearFlashTimer();
 		this.flashSolved = false;
@@ -125,7 +129,7 @@ export class PuzzleGame {
 			.filter((tile) => tile.kind === 'puzzle')
 			.forEach((tile) => this.updateTile(tile));
 		if (this.app.elements.puzzleHintButton) {
-			this.app.elements.puzzleHintButton.textContent = this.showHint ? 'Hide Hint' : 'Hint';
+			this.app.elements.puzzleHintButton.textContent = this.difficulty === 'difficult' && this.showHint ? 'Hide Hint' : 'Hint';
 		}
 		this.renderHint();
 		if (!this.solved) this.checkSolved();
@@ -175,8 +179,16 @@ export class PuzzleGame {
 	}
 
 	toggleHint() {
+		if (this.difficulty !== 'difficult') {
+			this.app.setStatus('Reference image is shown. Match the board to that picture.');
+			return;
+		}
 		this.showHint = !this.showHint;
-		this.app.setStatus(this.showHint ? 'Hint shown. Pick one square, or reveal the whole image.' : 'Hint hidden.');
+		if (!this.showHint) {
+			this.hintMode = null;
+			this.hintIndex = null;
+		}
+		this.app.setStatus(this.showHint ? 'Hint shown. Pick one hidden tile to peek.' : 'Hint hidden.');
 	}
 
 	autoSolve() {
@@ -254,7 +266,7 @@ export class PuzzleGame {
 	}
 
 	shouldShowPuzzlePanel() {
-		return this.showHint || this.solved;
+		return this.difficulty !== 'difficult' || this.showHint || this.solved;
 	}
 
 	difficultyLabel() {
@@ -330,67 +342,66 @@ export class PuzzleGame {
 		const panel = this.app.elements.puzzleHintPanel;
 		if (!panel) return;
 		panel.replaceChildren();
-		if (!this.showHint && !this.solved) return;
+		if (!this.shouldShowPuzzlePanel()) return;
 
 		if (this.solved) {
 			panel.appendChild(this.makeSolvedCelebration());
 			return;
 		}
 
+		if (this.difficulty !== 'difficult') {
+			panel.appendChild(this.makeReferenceImage());
+			return;
+		}
+
 		const title = document.createElement('div');
 		title.className = 'puzzle-hint-title';
-		title.textContent = 'Hint: choose a square to reveal';
+		title.textContent = 'Hint: choose one hidden tile to reveal';
 		panel.appendChild(title);
 
-		const controls = document.createElement('div');
-		controls.className = 'puzzle-hint-controls';
-		this.puzzleLayout().forEach((_, index) => {
+		const preview = document.createElement('div');
+		preview.className = 'puzzle-preview puzzle-hint-grid';
+		preview.style.setProperty('--puzzle-preview-size', this.gridSize);
+		this.puzzleLayout().forEach(({ row, col }, index) => {
 			const button = document.createElement('button');
 			button.type = 'button';
-			button.className = 'hint-square-button';
+			button.className = 'puzzle-preview-tile puzzle-hint-tile';
 			button.classList.toggle('active', this.hintMode === 'tile' && this.hintIndex === index);
-			button.textContent = String(index + 1);
+			button.setAttribute('aria-label', `Reveal hint tile at row ${row + 1}, column ${col + 1}`);
 			button.addEventListener('click', () => {
 				this.hintMode = 'tile';
 				this.hintIndex = index;
 				this.app.render();
 			});
-			controls.appendChild(button);
-		});
-		const fullButton = document.createElement('button');
-		fullButton.type = 'button';
-		fullButton.className = 'hint-square-button hint-full-button';
-		fullButton.classList.toggle('active', this.hintMode === 'full');
-		fullButton.textContent = 'Reveal Full Puzzle';
-		fullButton.addEventListener('click', () => {
-			this.hintMode = 'full';
-			this.app.render();
-		});
-		controls.appendChild(fullButton);
-		panel.appendChild(controls);
-
-		if (this.hintMode === 'tile') {
-			const target = this.puzzleLayout()[this.hintIndex] ?? this.puzzleLayout()[0];
-			const single = document.createElement('div');
-			single.className = 'puzzle-single-preview';
-			const label = document.createElement('span');
-			label.textContent = `Square ${this.hintIndex + 1}`;
-			single.appendChild(label);
-			single.appendChild(this.board.makePixelMatrix(makePuzzlePixels(this.gridSize, target.row, target.col, this.puzzleSeed, this.difficulty)));
-			panel.appendChild(single);
-			return;
-		}
-
-		const preview = document.createElement('div');
-		preview.className = 'puzzle-preview';
-		preview.style.setProperty('--puzzle-preview-size', this.gridSize);
-		this.puzzleLayout().forEach(({ row, col }) => {
-			const cell = document.createElement('div');
-			cell.className = 'puzzle-preview-tile';
-			cell.appendChild(this.board.makePixelMatrix(makePuzzlePixels(this.gridSize, row, col, this.puzzleSeed, this.difficulty)));
-			preview.appendChild(cell);
+			if (this.hintMode === 'tile' && this.hintIndex === index) {
+				button.appendChild(this.board.makePixelMatrix(makePuzzlePixels(this.gridSize, row, col, this.puzzleSeed, this.difficulty)));
+			} else {
+				button.appendChild(this.board.makePixelMatrix(makeBlankCanvas(8)));
+			}
+			preview.appendChild(button);
 		});
 		panel.appendChild(preview);
+	}
+
+	makeReferenceImage() {
+		const wrapper = document.createElement('div');
+		wrapper.className = 'puzzle-reference';
+
+		const copy = document.createElement('div');
+		copy.className = 'puzzle-reference-copy';
+		const title = document.createElement('div');
+		title.className = 'puzzle-hint-title';
+		title.textContent = 'Reference image';
+		const text = document.createElement('p');
+		text.textContent = 'Build this picture on the tile board using the jumbled pieces from the pack.';
+		copy.append(title, text);
+
+		const image = document.createElement('div');
+		image.className = 'puzzle-reference-image';
+		image.appendChild(makeLargePixelMatrix(makeSolvedCanvas(this.gridSize, this.puzzleSeed, this.difficulty)));
+
+		wrapper.append(image, copy);
+		return wrapper;
 	}
 
 	makeSolvedCelebration() {
@@ -487,39 +498,131 @@ function drawPuzzlePaths(canvas, gridSize, seed = 0, difficulty = 'medium') {
 }
 
 function drawEasyPuzzle(canvas, gridSize, seed = 0) {
-	drawEasyBackground(canvas, gridSize);
 	if (gridSize === 2) {
-		if (seed % 2 === 0) drawBird(canvas);
-		else drawFish(canvas);
+		if (seed % 2 === 0) drawFriendlyFishScene(canvas, gridSize);
+		else drawDuckScene(canvas, gridSize);
 		return;
 	}
-	if (seed % 2 === 0) {
-		drawBigFish(canvas);
+	const variant = seed % 3;
+	if (variant === 0) {
+		drawFriendlyFishScene(canvas, gridSize);
 		return;
 	}
-	drawCatFace(canvas);
+	if (variant === 1) {
+		drawDuckScene(canvas, gridSize);
+		return;
+	}
+	drawButterflyScene(canvas, gridSize);
 }
 
-function drawEasyBackground(canvas, gridSize) {
+function drawSimpleOutside(canvas, gridSize, horizonRatio = 0.66) {
 	const size = gridSize * 8;
-	const horizon = Math.floor(size * 0.64);
-	fillRect(canvas, 'blue', 0, 0, size - 1, horizon - 1);
+	const horizon = Math.floor(size * horizonRatio);
+	fillRect(canvas, 'blue', 0, 0, size - 1, horizon);
 	fillRect(canvas, 'green', 0, horizon, size - 1, size - 1);
-	drawLine(canvas, 'cyan', 0, horizon - 1, size - 1, horizon - 1);
+	drawLine(canvas, 'cyan', 0, horizon, size - 1, horizon);
 	drawLine(canvas, 'yellow', 0, size - 2, size - 1, size - 2);
 }
 
 function drawMediumScene(canvas, gridSize, seed = 0) {
 	const variant = seed % 3;
 	if (variant === 0) {
-		drawMediumHouseScene(canvas, gridSize);
+		drawRocketScene(canvas, gridSize);
 		return;
 	}
 	if (variant === 1) {
-		drawMediumBoatScene(canvas, gridSize);
+		drawMediumHouseScene(canvas, gridSize);
 		return;
 	}
-	drawMediumFlowerScene(canvas, gridSize);
+	drawMediumBoatScene(canvas, gridSize);
+}
+
+function drawFriendlyFishScene(canvas, gridSize) {
+	const size = gridSize * 8;
+	fillRect(canvas, 'blue', 0, 0, size - 1, size - 1);
+	for (let y = 2; y < size; y += 7) drawLine(canvas, 'cyan', 0, y, size - 1, y);
+
+	const cx = Math.floor(size * 0.58);
+	const cy = Math.floor(size * 0.5);
+	const rx = gridSize === 2 ? 5 : 8;
+	const ry = gridSize === 2 ? 3 : 5;
+	const tailBaseX = cx - rx + 1;
+	const tailTipX = Math.max(1, tailBaseX - (gridSize === 2 ? 5 : 7));
+	fillFishTail(canvas, 'green', tailTipX, tailBaseX, cy, ry + 1);
+	fillEllipse(canvas, 'orange', cx, cy, rx, ry);
+	fillEllipse(canvas, 'yellow', cx + 1, cy, Math.max(2, rx - 3), Math.max(2, ry - 2));
+	fillEllipse(canvas, 'orange', cx - 2, cy - ry, 2, 1);
+	fillEllipse(canvas, 'orange', cx - 1, cy + ry, 2, 1);
+	setPixel(canvas, cx + Math.floor(rx * 0.45), cy - 1, 'black');
+	drawLine(canvas, 'white', cx + Math.floor(rx * 0.2), cy + 2, cx + Math.floor(rx * 0.55), cy + 2);
+	setPixel(canvas, Math.max(1, cx - rx - 2), Math.max(1, cy - ry - 3), 'white');
+	setPixel(canvas, Math.max(2, cx - rx - 4), Math.max(1, cy - ry - 1), 'white');
+	setPixel(canvas, Math.min(size - 3, cx + rx + 3), Math.min(size - 3, cy + ry + 2), 'white');
+}
+
+function drawDuckScene(canvas, gridSize) {
+	const size = gridSize * 8;
+	const waterY = Math.floor(size * 0.64);
+	fillRect(canvas, 'blue', 0, 0, size - 1, waterY - 1);
+	fillRect(canvas, 'cyan', 0, waterY, size - 1, size - 1);
+	drawLine(canvas, 'white', 0, waterY - 1, size - 1, waterY - 1);
+	drawLine(canvas, 'blue', 0, size - 3, size - 1, size - 3);
+	drawSun(canvas, size - 4, 4, 'yellow');
+
+	const bodyCx = Math.floor(size * 0.48);
+	const bodyCy = Math.floor(size * 0.64);
+	const bodyRx = gridSize === 2 ? 5 : 7;
+	const bodyRy = gridSize === 2 ? 3 : 5;
+	fillEllipse(canvas, 'yellow', bodyCx, bodyCy, bodyRx, bodyRy);
+	fillEllipse(canvas, 'orange', bodyCx + Math.floor(bodyRx * 0.25), bodyCy + Math.floor(bodyRy * 0.15), Math.max(2, bodyRx - 3), Math.max(1, bodyRy - 3));
+	const headCx = bodyCx - Math.floor(bodyRx * 0.5);
+	const headCy = bodyCy - bodyRy - 2;
+	fillEllipse(canvas, 'yellow', headCx, headCy, gridSize === 2 ? 3 : 4, gridSize === 2 ? 3 : 4);
+	drawLine(canvas, 'orange', headCx - 3, headCy, headCx - 6, headCy);
+	drawLine(canvas, 'orange', headCx - 3, headCy + 1, headCx - 5, headCy + 1);
+	setPixel(canvas, headCx + 1, headCy - 1, 'black');
+	drawLine(canvas, 'white', bodyCx - bodyRx, bodyCy + bodyRy + 2, bodyCx + bodyRx, bodyCy + bodyRy + 2);
+}
+
+function drawButterflyScene(canvas, gridSize) {
+	const size = gridSize * 8;
+	drawSimpleOutside(canvas, gridSize, 0.72);
+	const cx = Math.floor(size / 2);
+	const cy = Math.floor(size * 0.44);
+	fillEllipse(canvas, 'magenta', cx - 4, cy - 2, gridSize === 2 ? 3 : 5, gridSize === 2 ? 4 : 6);
+	fillEllipse(canvas, 'orange', cx + 4, cy - 2, gridSize === 2 ? 3 : 5, gridSize === 2 ? 4 : 6);
+	fillEllipse(canvas, 'blue', cx - 4, cy + 4, gridSize === 2 ? 3 : 5, gridSize === 2 ? 3 : 5);
+	fillEllipse(canvas, 'green', cx + 4, cy + 4, gridSize === 2 ? 3 : 5, gridSize === 2 ? 3 : 5);
+	drawLine(canvas, 'white', cx, cy - 6, cx, cy + 7);
+	fillEllipse(canvas, 'yellow', cx, cy - 7, 2, 2);
+	drawLine(canvas, 'yellow', cx - 1, cy - 8, cx - 4, cy - 11);
+	drawLine(canvas, 'yellow', cx + 1, cy - 8, cx + 4, cy - 11);
+	setPixel(canvas, cx - 4, cy - 2, 'cyan');
+	setPixel(canvas, cx + 4, cy - 2, 'yellow');
+	setPixel(canvas, cx - 4, cy + 4, 'white');
+	setPixel(canvas, cx + 4, cy + 4, 'cyan');
+}
+
+function drawRocketScene(canvas, gridSize) {
+	const size = gridSize * 8;
+	fillRect(canvas, 'blue', 0, 0, size - 1, size - 1);
+	for (let index = 0; index < size; index += 5) {
+		setPixel(canvas, (index * 3 + 2) % size, (index * 5 + 1) % Math.max(1, size - 4), 'yellow');
+	}
+	const cx = Math.floor(size / 2);
+	const top = gridSize === 2 ? 2 : 3;
+	const bottom = size - (gridSize === 2 ? 4 : 5);
+	fillTriangle(canvas, 'red', cx, top, cx - (gridSize === 2 ? 3 : 4), top + 5, cx + (gridSize === 2 ? 3 : 4), top + 5);
+	for (let y = top + 3; y <= bottom; y += 1) {
+		const half = y < top + 6 ? Math.floor((y - top) / 2) + 1 : gridSize === 2 ? 2 : 3;
+		drawLine(canvas, 'white', cx - half, y, cx + half, y);
+	}
+	fillEllipse(canvas, 'cyan', cx, top + 9, 2, 2);
+	drawLine(canvas, 'red', cx - 5, bottom - 2, cx - 2, bottom - 4);
+	drawLine(canvas, 'red', cx + 5, bottom - 2, cx + 2, bottom - 4);
+	drawLine(canvas, 'orange', cx - 2, bottom + 1, cx, size - 1);
+	drawLine(canvas, 'yellow', cx, bottom + 1, cx, size - 1);
+	drawLine(canvas, 'orange', cx + 2, bottom + 1, cx, size - 1);
 }
 
 function drawDifficultConnectors(canvas, gridSize, seed = 0) {
@@ -937,30 +1040,22 @@ function drawCloud(canvas, centerX, centerY) {
 
 function drawMediumHouseScene(canvas, gridSize) {
 	const size = gridSize * 8;
-	const groundY = Math.floor(size * 0.66);
-	fillRect(canvas, 'blue', 0, 0, size - 1, groundY - 1);
-	drawPlayField(canvas, groundY, size);
-	drawLine(canvas, 'cyan', 0, groundY - 1, size - 1, groundY - 1);
-	drawSun(canvas, size - 4, 4, 'yellow');
-	drawCloud(canvas, Math.max(4, Math.floor(size * 0.22)), 4);
-
+	const groundY = Math.floor(size * 0.68);
+	drawSimpleOutside(canvas, gridSize, 0.68);
+	drawSun(canvas, size - 5, 5, 'yellow');
+	drawCloud(canvas, Math.max(4, Math.floor(size * 0.2)), 5);
 	const cx = Math.floor(size / 2);
-	const bodyW = gridSize === 2 ? 8 : 11;
+	const bodyW = gridSize === 2 ? 8 : 10;
 	const bodyH = gridSize === 2 ? 6 : 8;
 	const bodyLeft = cx - Math.floor(bodyW / 2);
 	const bodyTop = groundY - bodyH;
-	fillRect(canvas, 'yellow', bodyLeft, bodyTop, bodyLeft + bodyW, groundY);
-	fillRect(canvas, 'orange', cx - 1, groundY - 3, cx + 1, groundY);
-	drawLine(canvas, 'orange', cx, groundY + 1, Math.max(1, cx - 4), size - 2);
-	drawLine(canvas, 'yellow', cx + 1, groundY + 1, Math.min(size - 2, cx + 5), size - 2);
-	fillRect(canvas, 'white', bodyLeft + 1, bodyTop + 2, bodyLeft + 2, bodyTop + 3);
-	fillRect(canvas, 'white', bodyLeft + bodyW - 2, bodyTop + 2, bodyLeft + bodyW - 1, bodyTop + 3);
-	for (let step = 0; step <= Math.ceil(bodyW / 2) + 1; step += 1) {
-		drawLine(canvas, 'red', cx - step, bodyTop - step, cx + step, bodyTop - step);
-	}
-
+	fillRect(canvas, 'yellow', bodyLeft, bodyTop, bodyLeft + bodyW, groundY - 1);
+	fillTriangle(canvas, 'red', cx, bodyTop - 6, bodyLeft - 2, bodyTop, bodyLeft + bodyW + 2, bodyTop);
+	fillRect(canvas, 'orange', cx - 1, groundY - 4, cx + 1, groundY - 1);
+	fillRect(canvas, 'white', bodyLeft + 2, bodyTop + 2, bodyLeft + 3, bodyTop + 3);
+	fillRect(canvas, 'white', bodyLeft + bodyW - 3, bodyTop + 2, bodyLeft + bodyW - 2, bodyTop + 3);
 	const treeX = gridSize === 2 ? 3 : size - 5;
-	drawLine(canvas, 'orange', treeX, groundY - 1, treeX, groundY + 4);
+	drawLine(canvas, 'orange', treeX, groundY - 1, treeX, size - 3);
 	fillCircle(canvas, 'green', treeX, groundY - 5, gridSize === 2 ? 3 : 4);
 }
 
@@ -971,17 +1066,15 @@ function drawMediumBoatScene(canvas, gridSize) {
 	fillRect(canvas, 'cyan', 0, waterY, size - 1, size - 1);
 	drawSun(canvas, size - 5, 5, 'orange');
 	drawCloud(canvas, Math.floor(size * 0.2), 4);
-	drawLine(canvas, 'white', 0, waterY + 2, size - 1, waterY + 2);
+	drawLine(canvas, 'white', 0, waterY, size - 1, waterY);
 	drawLine(canvas, 'blue', 0, size - 3, size - 1, size - 3);
 
 	const mastX = Math.floor(size / 2);
 	const mastTop = gridSize === 2 ? 3 : 4;
 	const deckY = waterY + (gridSize === 2 ? 4 : 5);
 	drawLine(canvas, 'white', mastX, mastTop, mastX, deckY);
-	for (let row = 0; row < deckY - mastTop - 1; row += 1) {
-		drawLine(canvas, row % 2 === 0 ? 'yellow' : 'white', mastX + 1, mastTop + row, Math.min(size - 2, mastX + 1 + row), mastTop + row);
-		drawLine(canvas, row % 2 === 0 ? 'red' : 'orange', mastX - 1, mastTop + row + 1, Math.max(1, mastX - 1 - Math.floor(row * 0.75)), mastTop + row + 1);
-	}
+	fillTriangle(canvas, 'yellow', mastX + 1, mastTop + 1, mastX + 1, deckY - 1, Math.min(size - 2, mastX + 8), deckY - 1);
+	fillTriangle(canvas, 'white', mastX - 1, mastTop + 2, mastX - 1, deckY - 1, Math.max(1, mastX - 7), deckY - 1);
 	drawLine(canvas, 'orange', Math.max(1, mastX - 6), deckY, Math.min(size - 2, mastX + 7), deckY);
 	drawLine(canvas, 'orange', Math.max(2, mastX - 5), deckY + 1, Math.min(size - 3, mastX + 6), deckY + 1);
 	drawLine(canvas, 'red', Math.max(3, mastX - 4), deckY + 2, Math.min(size - 4, mastX + 5), deckY + 2);
@@ -1026,6 +1119,47 @@ function drawPlayField(canvas, horizonY, size) {
 	for (let x = 1; x < size; x += 5) {
 		setPixel(canvas, x, size - 4, 'yellow');
 	}
+}
+
+function fillFishTail(canvas, color, tipX, baseX, centerY, halfHeight) {
+	for (let dy = -halfHeight; dy <= halfHeight; dy += 1) {
+		const scale = 1 - Math.abs(dy) / Math.max(1, halfHeight + 1);
+		const x = Math.round(baseX + (tipX - baseX) * scale);
+		drawLine(canvas, color, x, centerY + dy, baseX, centerY);
+	}
+}
+
+function fillEllipse(canvas, color, centerX, centerY, radiusX, radiusY) {
+	for (let y = centerY - radiusY; y <= centerY + radiusY; y += 1) {
+		for (let x = centerX - radiusX; x <= centerX + radiusX; x += 1) {
+			const dx = (x - centerX) / Math.max(1, radiusX);
+			const dy = (y - centerY) / Math.max(1, radiusY);
+			if (dx * dx + dy * dy <= 1.05) setPixel(canvas, x, y, color);
+		}
+	}
+}
+
+function fillTriangle(canvas, color, x1, y1, x2, y2, x3, y3) {
+	const minX = Math.floor(Math.min(x1, x2, x3));
+	const maxX = Math.ceil(Math.max(x1, x2, x3));
+	const minY = Math.floor(Math.min(y1, y2, y3));
+	const maxY = Math.ceil(Math.max(y1, y2, y3));
+	const area = edgeValue(x1, y1, x2, y2, x3, y3);
+	if (area === 0) return;
+	for (let y = minY; y <= maxY; y += 1) {
+		for (let x = minX; x <= maxX; x += 1) {
+			const w1 = edgeValue(x2, y2, x3, y3, x, y);
+			const w2 = edgeValue(x3, y3, x1, y1, x, y);
+			const w3 = edgeValue(x1, y1, x2, y2, x, y);
+			const hasNegative = w1 < 0 || w2 < 0 || w3 < 0;
+			const hasPositive = w1 > 0 || w2 > 0 || w3 > 0;
+			if (!(hasNegative && hasPositive)) setPixel(canvas, x, y, color);
+		}
+	}
+}
+
+function edgeValue(x1, y1, x2, y2, px, py) {
+	return (px - x1) * (y2 - y1) - (py - y1) * (x2 - x1);
 }
 
 function fillCircle(canvas, color, centerX, centerY, radius) {
