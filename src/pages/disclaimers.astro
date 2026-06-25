@@ -1,0 +1,100 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead
+			title="Disclaimers | TikaTiles"
+			description="Safety, prototype, and product disclaimers for TikaTiles."
+		/>
+	</head>
+	<body>
+		<Header />
+		<main class="legal-page prose">
+			<p class="legal-kicker">Last updated: June 25, 2026</p>
+			<h1>Disclaimers</h1>
+			<p>
+				TikaTiles is an early prototype project. The information on this website is provided
+				to describe the concept, invite feedback, and show browser-based game ideas.
+			</p>
+
+			<h2>No Released Product Yet</h2>
+			<p>
+				Any physical tile product, mobile app, game library, developer API, battery system,
+				wireless feature, spatial mapping behavior, LED display, audio feature, or haptic
+				feature shown or described is subject to change.
+			</p>
+
+			<h2>Safety and Supervision</h2>
+			<p>
+				Future physical prototypes should be used only under appropriate adult supervision.
+				Small parts, batteries, electronics, charging equipment, cords, bright lights, sound,
+				and floor play can present risks if designed, used, stored, or supervised improperly.
+			</p>
+
+			<h2>Certifications</h2>
+			<p>
+				No statement on this website should be interpreted as a claim that any future product
+				has completed toy safety, battery safety, radio, electrical, privacy, accessibility,
+				or app store certification.
+			</p>
+
+			<h2>Educational Content</h2>
+			<p>
+				Game examples involving math, memory, puzzles, coding, or learning are illustrative.
+				They are not a substitute for professional educational, medical, developmental, or
+				therapeutic advice.
+			</p>
+
+			<h2>Third-Party Names</h2>
+			<p>
+				References to game styles, classic games, app stores, platforms, companies, or tools
+				are for descriptive purposes only. TikaTiles is not affiliated with those third parties
+				unless explicitly stated.
+			</p>
+
+			<h2>Legal Review</h2>
+			<p>
+				These website terms, privacy notes, and disclaimers are general starting points. They
+				should be reviewed by qualified counsel before commercial launch, collection of child
+				data, taking payments, shipping hardware, or publishing an app.
+			</p>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.legal-page {
+		padding-top: clamp(2rem, 6vw, 5rem);
+	}
+
+	.legal-kicker {
+		margin: 0 0 0.75rem;
+		color: var(--accent);
+		font-size: 0.82rem;
+		font-weight: 800;
+		letter-spacing: 0.08em;
+		text-indent: 0;
+		text-transform: uppercase;
+	}
+
+	.legal-page h1 {
+		font-size: clamp(2.75rem, 8vw, 5.5rem);
+		line-height: 0.95;
+	}
+
+	.legal-page h2 {
+		margin-top: 2rem;
+		font-size: clamp(1.35rem, 3vw, 2rem);
+	}
+
+	.legal-page p {
+		color: rgb(var(--gray-dark));
+		text-indent: 0;
+	}
+</style>

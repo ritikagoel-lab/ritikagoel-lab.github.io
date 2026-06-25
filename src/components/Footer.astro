@@ -3,7 +3,14 @@ const today = new Date();
 ---
 
 <footer>
-	&copy; {today.getFullYear()} TikaTiles. All rights reserved.
+	<div class="footer-inner">
+		<p>&copy; {today.getFullYear()} TikaTiles. All rights reserved.</p>
+		<nav aria-label="Legal links">
+			<a href="/terms/">Terms</a>
+			<a href="/privacy/">Privacy</a>
+			<a href="/disclaimers/">Disclaimers</a>
+		</nav>
+	</div>
 </footer>
 <style>
 	footer {
@@ -11,5 +18,32 @@ const today = new Date();
 		background: linear-gradient(var(--gray-gradient)) no-repeat;
 		color: rgb(var(--gray));
 		text-align: center;
+	}
+
+	.footer-inner {
+		display: grid;
+		gap: 0.75rem;
+		justify-items: center;
+	}
+
+	.footer-inner p {
+		margin: 0;
+		text-indent: 0;
+	}
+
+	footer nav {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.85rem;
+		justify-content: center;
+		font-size: 0.9rem;
+	}
+
+	footer a {
+		color: rgb(var(--gray));
+	}
+
+	footer a:hover {
+		color: var(--accent);
 	}
 </style>

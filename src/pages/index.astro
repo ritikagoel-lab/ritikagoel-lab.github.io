@@ -15,18 +15,14 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 		<main class="product-page">
 			<section class="product-hero">
 				<div class="hero-heading">
-					<h1>A living playground for infinite imagination</h1>
+					<h1>A playground for infinite imagination</h1>
 				</div>
 				<div class="hero-content">
 					<div class="hero-copy">
-						<p class="hero-kicker">No screens. No tracks. Just smart space.</p>
+						<p class="hero-kicker">Scatter the tiles. Unlock the playground.</p>
 						<p>
-							TikaTiles turns any floor or table into an interactive, screen-free playground.
-							These smart, independent electronic tiles map their own coordinates in real time,
-							even when scattered completely apart. By simply moving, rotating and arranging the tiles,
-							kids unlock a physical gaming console for memory, math, collaborative puzzles and active movement.
-							It is open-ended play meets physical computing, giving kids the power to touch,
-							rearrange and eventually program their own rules.
+							Transform any room into an interactive, screen-free gaming console.
+							Just scatter the smart tiles across a floor or table and let the play begin!
 						</p>
 						<p class="hero-status">Product Coming Soon</p>
 						<a class="hero-link" href="/play-tiles/" aria-label="Try the games in the Games tab">
@@ -40,12 +36,46 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 				</div>
 			</section>
 
+			<section class="features-section" aria-label="TikaTiles features">
+				<div>
+					<p class="card-label">The Features</p>
+					<h2>One set of tiles, many ways to play.</h2>
+				</div>
+				<ol class="feature-list">
+					<li>
+						<h3><span>Play Anywhere</span></h3>
+						<p>100% wireless and standalone. No mats, tracks, or screens required.</p>
+					</li>
+					<li>
+						<h3><span>Smart Spatial Awareness</span></h3>
+						<p>
+							The tiles talk to each other. They instantly map their relative positions,
+							knowing exactly how you arrange and connect them.
+						</p>
+					</li>
+					<li>
+						<h3><span>Endless Games</span></h3>
+						<p>
+							Play high-energy games like Whack-a-Mole and Memory, or snap them together
+							to solve math equations and spatial puzzles.
+						</p>
+					</li>
+					<li>
+						<h3><span>Learn Through Touch</span></h3>
+						<p>
+							Open-ended play that introduces physical computing, eventually letting kids
+							program their own custom rules.
+						</p>
+					</li>
+				</ol>
+			</section>
+
 			<section class="coming-grid" aria-label="Coming soon details">
 				<article>
 					<p class="card-label">Product</p>
 					<h2>Tiles are in development</h2>
 					<p>
-						The physical tile system is being prototyped now. More product images, videos and
+						The physical tile system is being prototyped now. More product images, videos, and
 						details will be added as the hardware form factor matures.
 					</p>
 				</article>
@@ -61,7 +91,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 					<p class="card-label">Videos</p>
 					<h2>Available soon</h2>
 					<p>
-						Gameplay demos, setup videos and hardware progress clips will be added as the tiles
+						Gameplay demos, setup videos, and hardware progress clips will be added as the tiles
 						move closer to product testing.
 					</p>
 				</article>
@@ -189,6 +219,86 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 		margin-top: clamp(2rem, 6vw, 5rem);
 	}
 
+	.features-section {
+		display: grid;
+		grid-template-columns: minmax(260px, 0.58fr) minmax(0, 1.42fr);
+		gap: clamp(1.5rem, 5vw, 4rem);
+		margin-top: clamp(2rem, 6vw, 5rem);
+		padding: clamp(1.35rem, 3.5vw, 2.6rem);
+		border: 1px solid var(--line);
+		border-radius: 8px;
+		background: var(--surface-raised);
+		box-shadow: var(--box-shadow);
+	}
+
+	.features-section h2 {
+		max-width: 9ch;
+		font-size: clamp(2.25rem, 5vw, 4rem);
+		line-height: 0.95;
+		letter-spacing: 0;
+		text-wrap: balance;
+	}
+
+	.feature-list {
+		counter-reset: feature;
+		display: grid;
+		gap: 1.15rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.feature-list li {
+		counter-increment: feature;
+		display: grid;
+		grid-template-columns: 3.25rem minmax(0, 1fr);
+		gap: 0.9rem;
+		align-items: start;
+		padding-bottom: 1.15rem;
+		border-bottom: 1px solid var(--line);
+	}
+
+	.feature-list li::before {
+		content: counter(feature);
+		display: grid;
+		place-items: center;
+		width: 2.5rem;
+		aspect-ratio: 1;
+		border: 1px solid rgb(var(--black));
+		border-radius: 999px;
+		background: rgb(var(--black));
+		color: var(--page-bg);
+		font-size: 1rem;
+		font-weight: 900;
+		line-height: 1;
+	}
+
+	.feature-list li:last-child {
+		padding-bottom: 0;
+		border-bottom: 0;
+	}
+
+	.feature-list h3 {
+		margin: 0 0 0.35rem;
+		font-size: clamp(1.35rem, 2.7vw, 2.05rem);
+		line-height: 1.05;
+		letter-spacing: 0;
+	}
+
+	.feature-list h3 span {
+		display: inline;
+		color: rgb(var(--black));
+		font-weight: 900;
+	}
+
+	.feature-list p {
+		margin: 0;
+		color: rgb(var(--gray-dark));
+		font-size: clamp(1rem, 1.55vw, 1.18rem);
+		line-height: 1.5;
+		text-indent: 0;
+	}
+
 	.coming-grid article {
 		min-height: 230px;
 		padding: 1.25rem;
@@ -211,6 +321,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 
 	@media (max-width: 860px) {
 		.hero-content,
+		.features-section,
 		.coming-grid {
 			grid-template-columns: 1fr;
 		}

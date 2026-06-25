@@ -1,0 +1,112 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead
+			title="Privacy Policy | TikaTiles"
+			description="Privacy policy for the TikaTiles website and game prototype."
+		/>
+	</head>
+	<body>
+		<Header />
+		<main class="legal-page prose">
+			<p class="legal-kicker">Last updated: June 25, 2026</p>
+			<h1>Privacy Policy</h1>
+			<p>
+				This Privacy Policy explains how tikatiles.com handles information when you visit the
+				website or try the browser-based game prototype.
+			</p>
+
+			<h2>Information You Provide</h2>
+			<p>
+				If you email TikaTiles, the information you send, including your email address and
+				message content, may be used to reply to you and keep a record of the conversation.
+			</p>
+
+			<h2>Information Stored on Your Device</h2>
+			<p>
+				The website uses browser local storage to remember your light or dark theme preference
+				and to store limited local game prototype interaction data. This information stays in
+				your browser unless you choose to send it separately.
+			</p>
+
+			<h2>Analytics and Cookies</h2>
+			<p>
+				The current website does not use third-party analytics, advertising cookies, account
+				logins, or payment processing. Hosting providers may process standard technical data,
+				such as IP address, browser type, pages requested, and timestamps, to deliver and
+				secure the website.
+			</p>
+
+			<h2>Children</h2>
+			<p>
+				TikaTiles is being designed for kids and families, but this website is intended for
+				parents, caregivers, educators, and interested adults. The website does not knowingly
+				request personal information from children. If you believe a child has sent personal
+				information, contact TikaTiles so it can be deleted.
+			</p>
+
+			<h2>How Information Is Used</h2>
+			<p>
+				Information may be used to respond to messages, improve the website and prototype,
+				debug technical issues, protect the site, and understand interest in the product.
+			</p>
+
+			<h2>Sharing</h2>
+			<p>
+				TikaTiles does not sell personal information. Information may be shared with service
+				providers who help operate the website or email, or when required by law.
+			</p>
+
+			<h2>Data Choices</h2>
+			<p>
+				You can clear local storage in your browser settings. You can also contact
+				<a href="mailto:info@tikatiles.com">info@tikatiles.com</a> to request deletion of
+				information you previously emailed.
+			</p>
+
+			<h2>Future Updates</h2>
+			<p>
+				If TikaTiles adds accounts, analytics, app features, purchases, waitlists, or other
+				data collection, this policy should be updated before those features launch.
+			</p>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.legal-page {
+		padding-top: clamp(2rem, 6vw, 5rem);
+	}
+
+	.legal-kicker {
+		margin: 0 0 0.75rem;
+		color: var(--accent);
+		font-size: 0.82rem;
+		font-weight: 800;
+		letter-spacing: 0.08em;
+		text-indent: 0;
+		text-transform: uppercase;
+	}
+
+	.legal-page h1 {
+		font-size: clamp(2.75rem, 8vw, 5.5rem);
+		line-height: 0.95;
+	}
+
+	.legal-page h2 {
+		margin-top: 2rem;
+		font-size: clamp(1.35rem, 3vw, 2rem);
+	}
+
+	.legal-page p {
+		color: rgb(var(--gray-dark));
+		text-indent: 0;
+	}
+</style>
