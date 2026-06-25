@@ -34,6 +34,7 @@ import '../styles/play-tiles.css';
 							<button class="mode-tab active" type="button" data-mode="whack">Whack-a-Mole</button>
 							<button class="mode-tab" type="button" data-mode="equation">Equation</button>
 							<button class="mode-tab" type="button" data-mode="memory">Memory</button>
+							<button class="mode-tab" type="button" data-mode="puzzle">Puzzle</button>
 						</div>
 					</header>
 
@@ -58,6 +59,13 @@ import '../styles/play-tiles.css';
 								<select id="memorySpeedMode">
 									<option value="regular" selected>Regular</option>
 									<option value="fast">Challenge</option>
+								</select>
+							</label>
+							<label id="puzzleControls" class="setup-select hidden">
+								Pieces
+								<select id="puzzleTileCount">
+									<option value="4">4</option>
+									<option value="9" selected>9</option>
 								</select>
 							</label>
 							<button class="primary-button" type="button" id="startGame">Start Game</button>
@@ -139,6 +147,7 @@ import '../styles/play-tiles.css';
 								<option>Whack-a-Mole</option>
 								<option>Equation Builder</option>
 								<option>Memory Match</option>
+								<option>Puzzle</option>
 							</select>
 						</label>
 						<label>
@@ -156,6 +165,6 @@ import '../styles/play-tiles.css';
 			</section>
 		</main>
 		<Footer />
-		<script type="module" is:inline src="/scripts/play-tiles.js?v=5"></script>
+		<script type="module" is:inline src="/scripts/play-tiles.js?v=6"></script>
 	</body>
 </html>

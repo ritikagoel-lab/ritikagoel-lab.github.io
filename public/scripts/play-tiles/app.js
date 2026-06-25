@@ -1,7 +1,8 @@
-import { TileBoard } from './board.js?v=5';
+import { TileBoard } from './board.js?v=6';
 import { WhackGame } from './games/whack.js?v=3';
 import { EquationGame } from './games/equation.js?v=5';
 import { MemoryGame } from './games/memory.js?v=3';
+import { PuzzleGame } from './games/puzzle.js?v=2';
 
 export class SmartTilesApp {
 	constructor() {
@@ -31,6 +32,8 @@ export class SmartTilesApp {
 			memoryTileCount: document.querySelector('#memoryTileCount'),
 			memorySpeedControls: document.querySelector('#memorySpeedControls'),
 			memorySpeedMode: document.querySelector('#memorySpeedMode'),
+			puzzleControls: document.querySelector('#puzzleControls'),
+			puzzleTileCount: document.querySelector('#puzzleTileCount'),
 			saveStatus: document.querySelector('#saveStatus'),
 		};
 		this.statusMessage = '';
@@ -47,6 +50,7 @@ export class SmartTilesApp {
 			whack: new WhackGame(this, this.board),
 			equation: new EquationGame(this, this.board),
 			memory: new MemoryGame(this, this.board),
+			puzzle: new PuzzleGame(this, this.board),
 		};
 	}
 
@@ -74,6 +78,7 @@ export class SmartTilesApp {
 		this.elements.checkGameButton.addEventListener('click', () => this.currentGame().check());
 		this.elements.memoryTileCount.addEventListener('change', () => this.games.memory.setTileCount(Number(this.elements.memoryTileCount.value)));
 		this.elements.memorySpeedMode.addEventListener('change', () => this.games.memory.setSpeedMode(this.elements.memorySpeedMode.value));
+		this.elements.puzzleTileCount.addEventListener('change', () => this.games.puzzle.setTileCount(Number(this.elements.puzzleTileCount.value)));
 		document.querySelector('#saveSignal').addEventListener('click', () => this.saveInterest());
 	}
 
@@ -105,11 +110,13 @@ export class SmartTilesApp {
 		this.elements.gameName.textContent = game.title;
 		this.elements.setupInstructions.textContent = this.statusMessage ? `${game.instructions()} ${this.statusMessage}` : game.instructions();
 		this.elements.modePrompt.textContent = this.statusMessage || game.prompt();
+		if (game.render) game.render();
 
 		this.elements.startGameButton.classList.toggle('hidden', this.mode === 'equation');
 		this.elements.checkGameButton.classList.toggle('hidden', this.mode !== 'equation');
 		this.elements.memoryControls.classList.toggle('hidden', this.mode !== 'memory');
 		this.elements.memorySpeedControls.classList.toggle('hidden', this.mode !== 'memory');
+		this.elements.puzzleControls.classList.toggle('hidden', this.mode !== 'puzzle');
 
 		document.querySelectorAll('.mode-tab').forEach((button) => {
 			button.classList.toggle('active', button.dataset.mode === this.mode);

@@ -269,6 +269,8 @@ export class TileBoard {
 			'pixel-display',
 			'set-tile',
 			'set-selected',
+			'puzzle-tile',
+			'puzzle-solved',
 		);
 		tile.element.dataset.state = state;
 		if (state) tile.element.classList.add(state);
@@ -287,9 +289,23 @@ export class TileBoard {
 			return;
 		}
 
+		if (label && typeof label === 'object' && label.type === 'puzzle') {
+			tile.element.classList.add('puzzle-tile');
+			tile.element.style.setProperty('--puzzle-rotation', `${label.rotation}deg`);
+			face.appendChild(this.makePuzzleFace(label));
+			return;
+		}
+
 		tile.element.classList.toggle('long-label', String(label).length > 1);
 		tile.element.classList.toggle('extra-long-label', String(label).length > 3);
 		face.textContent = label;
+	}
+
+	makePuzzleFace(piece) {
+		const wrapper = document.createElement('span');
+		wrapper.className = 'puzzle-face';
+		wrapper.appendChild(this.makePixelMatrix(piece.pixels));
+		return wrapper;
 	}
 
 	makeSetFace(setCard) {

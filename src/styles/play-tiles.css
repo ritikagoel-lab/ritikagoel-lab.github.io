@@ -262,6 +262,10 @@
 	width: 118px;
 }
 
+.tiles-page #puzzleControls select {
+	width: 86px;
+}
+
 .tiles-page .check-button {
 	min-height: 52px;
 	padding: 0 22px;
@@ -576,6 +580,47 @@
 	outline-offset: 2px;
 }
 
+.tiles-page .tile.puzzle-tile {
+	border-color: var(--tiles-tile-border);
+	background: #f8fafc;
+}
+
+.tiles-page .tile.puzzle-tile .tile-face {
+	width: 74%;
+	padding: 0;
+	overflow: hidden;
+	border-color: rgba(15, 23, 42, 0.28);
+	background: #0f172a;
+	transform: rotate(var(--puzzle-rotation, 0deg));
+	transition:
+		transform 160ms ease,
+		box-shadow 160ms ease;
+}
+
+.tiles-page .tile.puzzle-tile:focus-visible .tile-face,
+.tiles-page .tile.puzzle-tile:hover .tile-face {
+	box-shadow: 0 0 0 3px rgba(39, 119, 196, 0.22);
+}
+
+.tiles-page .tile.puzzle-solved {
+	border-color: var(--tiles-green);
+	box-shadow: 0 14px 28px rgba(22, 132, 92, 0.22);
+}
+
+.tiles-page .puzzle-face {
+	display: grid;
+	place-items: center;
+	width: 100%;
+	height: 100%;
+	background: #0f172a;
+}
+
+.tiles-page .puzzle-face .pixel-matrix {
+	width: 100%;
+	padding: 4px;
+	background: #0f172a;
+}
+
 .tiles-page .set-face {
 	display: flex;
 	align-items: center;
@@ -600,6 +645,46 @@
 
 .tiles-page .set-face[data-color='blue'] .set-mark {
 	color: #60a5fa;
+}
+
+.tiles-page .pixel[data-color='red'] {
+	background: #ff2d2d;
+	box-shadow: 0 0 5px rgba(255, 45, 45, 0.82);
+}
+
+.tiles-page .pixel[data-color='blue'] {
+	background: #2f7cff;
+	box-shadow: 0 0 5px rgba(47, 124, 255, 0.82);
+}
+
+.tiles-page .pixel[data-color='green'] {
+	background: #22e35f;
+	box-shadow: 0 0 5px rgba(34, 227, 95, 0.82);
+}
+
+.tiles-page .pixel[data-color='yellow'] {
+	background: #ffd43b;
+	box-shadow: 0 0 5px rgba(255, 212, 59, 0.82);
+}
+
+.tiles-page .pixel[data-color='magenta'] {
+	background: #f43bff;
+	box-shadow: 0 0 5px rgba(244, 59, 255, 0.82);
+}
+
+.tiles-page .pixel[data-color='cyan'] {
+	background: #3ee7ff;
+	box-shadow: 0 0 5px rgba(62, 231, 255, 0.82);
+}
+
+.tiles-page .pixel[data-color='orange'] {
+	background: #ff8a1f;
+	box-shadow: 0 0 5px rgba(255, 138, 31, 0.82);
+}
+
+.tiles-page .pixel[data-color='white'] {
+	background: #f8fafc;
+	box-shadow: 0 0 5px rgba(248, 250, 252, 0.7);
 }
 
 .tiles-page .tray .tile {
