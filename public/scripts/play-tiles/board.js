@@ -104,7 +104,8 @@ export class TileBoard {
 		tile.draggable = true;
 		tile.dataset.packKey = item.key;
 		tile.dataset.kind = item.kind;
-		tile.innerHTML = `<span class="tile-face">${item.face}</span>`;
+		tile.innerHTML = '<span class="tile-face"></span>';
+		this.renderTileFace(tile, item.face);
 		tile.addEventListener('dragstart', () => {
 			this.dragPayload = { source: 'pack', key: item.key };
 		});
@@ -160,7 +161,7 @@ export class TileBoard {
 		});
 
 		this.placedTiles.set(id, model);
-		this.setTileDisplay(model, source.label, 'blank');
+		this.setTileDisplay(model, source.face ?? source.label, source.kind === 'puzzle' ? 'puzzle-tile' : 'blank');
 		return model;
 	}
 
@@ -274,30 +275,34 @@ export class TileBoard {
 		);
 		tile.element.dataset.state = state;
 		if (state) tile.element.classList.add(state);
-		const face = tile.element.querySelector('.tile-face');
+		this.renderTileFace(tile.element, label);
+	}
+
+	renderTileFace(tileElement, label) {
+		const face = tileElement.querySelector('.tile-face');
 		face.replaceChildren();
 
 		if (Array.isArray(label)) {
-			tile.element.classList.add('pixel-display');
+			tileElement.classList.add('pixel-display');
 			face.appendChild(this.makePixelMatrix(label));
 			return;
 		}
 
 		if (label && typeof label === 'object' && label.type === 'set') {
-			tile.element.classList.add('set-tile');
+			tileElement.classList.add('set-tile');
 			face.appendChild(this.makeSetFace(label));
 			return;
 		}
 
 		if (label && typeof label === 'object' && label.type === 'puzzle') {
-			tile.element.classList.add('puzzle-tile');
-			tile.element.style.setProperty('--puzzle-rotation', `${label.rotation}deg`);
+			tileElement.classList.add('puzzle-tile');
+			tileElement.style.setProperty('--puzzle-rotation', `${label.rotation}deg`);
 			face.appendChild(this.makePuzzleFace(label));
 			return;
 		}
 
-		tile.element.classList.toggle('long-label', String(label).length > 1);
-		tile.element.classList.toggle('extra-long-label', String(label).length > 3);
+		tileElement.classList.toggle('long-label', String(label).length > 1);
+		tileElement.classList.toggle('extra-long-label', String(label).length > 3);
 		face.textContent = label;
 	}
 

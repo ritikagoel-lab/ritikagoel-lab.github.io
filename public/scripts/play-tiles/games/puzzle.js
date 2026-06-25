@@ -7,19 +7,26 @@ export class PuzzleGame {
 		this.moves = 0;
 		this.solved = false;
 		this.gridSize = 3;
+		this.showHint = false;
+		this.autoSolving = false;
+		this.solveTimers = [];
 	}
 
 	enter() {
 		this.moves = 0;
 		this.solved = false;
+		this.showHint = false;
+		this.clearSolveTimers();
 		this.gridSize = Math.sqrt(this.selectedCount);
 		return this.makePuzzlePack();
 	}
 
-	exit() {}
+	exit() {
+		this.clearSolveTimers();
+	}
 
 	isLocked() {
-		return this.solved;
+		return this.solved || this.autoSolving;
 	}
 
 	canPlace(_source, row, col) {
@@ -41,6 +48,7 @@ export class PuzzleGame {
 	setTileCount(count) {
 		this.selectedCount = count;
 		this.app.statusMessage = '';
+		this.clearSolveTimers();
 		const packItems = this.enter();
 		this.board.reset(packItems);
 		this.board.refreshCellStates();
@@ -50,6 +58,7 @@ export class PuzzleGame {
 	start() {
 		this.moves = 0;
 		this.solved = false;
+		this.clearSolveTimers();
 		this.board.resetBoardTiles();
 		const positions = this.shuffled(this.puzzleLayout());
 		const pieces = this.shuffled(this.board.availablePackItems('puzzle').slice(0, this.selectedCount));
@@ -76,6 +85,10 @@ export class PuzzleGame {
 		this.board.placedTileList()
 			.filter((tile) => tile.kind === 'puzzle')
 			.forEach((tile) => this.updateTile(tile));
+		if (this.app.elements.puzzleHintButton) {
+			this.app.elements.puzzleHintButton.textContent = this.showHint ? 'Hide Hint' : 'Hint';
+		}
+		this.renderHint();
 		if (!this.solved) this.checkSolved({ silent: true });
 	}
 
@@ -95,7 +108,11 @@ export class PuzzleGame {
 			return {
 				key: `puzzle-${this.selectedCount}-${index}`,
 				label: String(index + 1),
-				face: String(index + 1),
+				face: {
+					type: 'puzzle',
+					pixels: makePuzzlePixels(this.gridSize, row, col),
+					rotation: 0,
+				},
 				kind: 'puzzle',
 				reusable: false,
 				puzzle: {
@@ -106,6 +123,38 @@ export class PuzzleGame {
 					pixels: makePuzzlePixels(this.gridSize, row, col),
 				},
 			};
+		});
+	}
+
+	toggleHint() {
+		this.showHint = !this.showHint;
+		this.app.setStatus(this.showHint ? 'Hint shown. Match this connected LED pattern.' : 'Hint hidden.');
+	}
+
+	autoSolve() {
+		this.clearSolveTimers();
+		this.autoSolving = true;
+		this.solved = false;
+		this.showHint = true;
+		this.app.setStatus('Auto solving the puzzle one tile at a time.');
+		const targets = this.puzzleLayout();
+
+		targets.forEach((target, index) => {
+			const timer = setTimeout(() => {
+				const tile = this.findOrCreateTileForPiece(index);
+				if (!tile) return;
+				this.board.moveTileToCell(tile.id, target.row, target.col);
+				tile.gameData.rotation = 0;
+				this.updateTile(tile);
+				this.moves += 1;
+
+				if (index === targets.length - 1) {
+					this.autoSolving = false;
+					this.checkSolved();
+				}
+				this.app.render();
+			}, index * 260);
+			this.solveTimers.push(timer);
 		});
 	}
 
@@ -157,6 +206,45 @@ export class PuzzleGame {
 			row: Math.floor(index / this.gridSize),
 			col: index % this.gridSize,
 		}));
+	}
+
+	findOrCreateTileForPiece(index) {
+		const placed = this.board.placedTileList().find((tile) => tile.kind === 'puzzle' && tile.gameData.puzzle?.index === index);
+		if (placed) return placed;
+
+		const source = this.board.availablePackItems('puzzle').find((item) => item.puzzle.index === index);
+		if (!source) return null;
+		const target = this.puzzleLayout()[index];
+		return this.board.addTileFromPack(source.key, target.row, target.col);
+	}
+
+	renderHint() {
+		const panel = this.app.elements.puzzleHintPanel;
+		if (!panel) return;
+		panel.replaceChildren();
+		if (!this.showHint) return;
+
+		const title = document.createElement('div');
+		title.className = 'puzzle-hint-title';
+		title.textContent = 'Hint: solved LED pattern';
+		panel.appendChild(title);
+
+		const preview = document.createElement('div');
+		preview.className = 'puzzle-preview';
+		preview.style.setProperty('--puzzle-preview-size', this.gridSize);
+		this.puzzleLayout().forEach(({ row, col }) => {
+			const cell = document.createElement('div');
+			cell.className = 'puzzle-preview-tile';
+			cell.appendChild(this.board.makePixelMatrix(makePuzzlePixels(this.gridSize, row, col)));
+			preview.appendChild(cell);
+		});
+		panel.appendChild(preview);
+	}
+
+	clearSolveTimers() {
+		this.solveTimers.forEach((timer) => clearTimeout(timer));
+		this.solveTimers = [];
+		this.autoSolving = false;
 	}
 }
 

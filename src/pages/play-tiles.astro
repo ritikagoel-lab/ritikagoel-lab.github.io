@@ -68,10 +68,13 @@ import '../styles/play-tiles.css';
 									<option value="9" selected>9</option>
 								</select>
 							</label>
+							<button class="small-button hidden" type="button" id="puzzleHint">Hint</button>
+							<button class="small-button hidden" type="button" id="puzzleAutoSolve">Auto Solve</button>
 							<button class="primary-button" type="button" id="startGame">Start Game</button>
 							<button class="check-button" type="button" id="checkGame">Check Answer</button>
 						</div>
 					</section>
+					<section id="puzzleHintPanel" class="puzzle-hint-panel hidden" aria-label="Puzzle hint"></section>
 
 					<section class="quick-score" aria-label="Current game score">
 						<div>
@@ -165,6 +168,6 @@ import '../styles/play-tiles.css';
 			</section>
 		</main>
 		<Footer />
-		<script type="module" is:inline src="/scripts/play-tiles.js?v=6"></script>
+		<script type="module" is:inline src="/scripts/play-tiles.js?v=7"></script>
 	</body>
 </html>

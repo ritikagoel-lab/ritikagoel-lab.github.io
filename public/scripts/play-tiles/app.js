@@ -1,8 +1,8 @@
-import { TileBoard } from './board.js?v=6';
+import { TileBoard } from './board.js?v=7';
 import { WhackGame } from './games/whack.js?v=3';
 import { EquationGame } from './games/equation.js?v=5';
 import { MemoryGame } from './games/memory.js?v=3';
-import { PuzzleGame } from './games/puzzle.js?v=2';
+import { PuzzleGame } from './games/puzzle.js?v=4';
 
 export class SmartTilesApp {
 	constructor() {
@@ -34,6 +34,9 @@ export class SmartTilesApp {
 			memorySpeedMode: document.querySelector('#memorySpeedMode'),
 			puzzleControls: document.querySelector('#puzzleControls'),
 			puzzleTileCount: document.querySelector('#puzzleTileCount'),
+			puzzleHintButton: document.querySelector('#puzzleHint'),
+			puzzleAutoSolveButton: document.querySelector('#puzzleAutoSolve'),
+			puzzleHintPanel: document.querySelector('#puzzleHintPanel'),
 			saveStatus: document.querySelector('#saveStatus'),
 		};
 		this.statusMessage = '';
@@ -79,6 +82,8 @@ export class SmartTilesApp {
 		this.elements.memoryTileCount.addEventListener('change', () => this.games.memory.setTileCount(Number(this.elements.memoryTileCount.value)));
 		this.elements.memorySpeedMode.addEventListener('change', () => this.games.memory.setSpeedMode(this.elements.memorySpeedMode.value));
 		this.elements.puzzleTileCount.addEventListener('change', () => this.games.puzzle.setTileCount(Number(this.elements.puzzleTileCount.value)));
+		this.elements.puzzleHintButton.addEventListener('click', () => this.games.puzzle.toggleHint());
+		this.elements.puzzleAutoSolveButton.addEventListener('click', () => this.games.puzzle.autoSolve());
 		document.querySelector('#saveSignal').addEventListener('click', () => this.saveInterest());
 	}
 
@@ -117,6 +122,9 @@ export class SmartTilesApp {
 		this.elements.memoryControls.classList.toggle('hidden', this.mode !== 'memory');
 		this.elements.memorySpeedControls.classList.toggle('hidden', this.mode !== 'memory');
 		this.elements.puzzleControls.classList.toggle('hidden', this.mode !== 'puzzle');
+		this.elements.puzzleHintButton.classList.toggle('hidden', this.mode !== 'puzzle');
+		this.elements.puzzleAutoSolveButton.classList.toggle('hidden', this.mode !== 'puzzle');
+		this.elements.puzzleHintPanel.classList.toggle('hidden', this.mode !== 'puzzle' || !game.showHint);
 
 		document.querySelectorAll('.mode-tab').forEach((button) => {
 			button.classList.toggle('active', button.dataset.mode === this.mode);
