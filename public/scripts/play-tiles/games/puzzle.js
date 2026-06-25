@@ -261,39 +261,32 @@ function makePuzzlePixels(gridSize, pieceRow, pieceCol) {
 
 function drawPuzzlePaths(canvas, gridSize) {
 	if (gridSize === 2) {
-		drawLine(canvas, 'blue', 0, 3, 7, 3);
-		drawLine(canvas, 'blue', 7, 3, 7, 11);
-		drawLine(canvas, 'blue', 7, 11, 15, 11);
-		drawLine(canvas, 'green', 3, 15, 3, 8);
-		drawLine(canvas, 'green', 3, 8, 11, 8);
-		drawLine(canvas, 'green', 11, 8, 11, 0);
-		drawRing(canvas, 'yellow', 11, 3, 3);
-		drawLine(canvas, 'magenta', 0, 14, 15, 14);
+		drawRing(canvas, 'cyan', 10, 6, 2);
+		drawRing(canvas, 'orange', 4, 10, 2);
+		drawLine(canvas, 'blue', 0, 3, 15, 3);
+		drawLine(canvas, 'magenta', 0, 12, 15, 12);
 		return;
 	}
 
-	drawLine(canvas, 'blue', 0, 3, 10, 3);
-	drawLine(canvas, 'blue', 10, 3, 10, 10);
-	drawLine(canvas, 'blue', 10, 10, 15, 10);
-	drawLine(canvas, 'red', 8, 6, 8, 1);
-	drawLine(canvas, 'red', 8, 1, 15, 1);
-	drawLine(canvas, 'red', 15, 1, 15, 6);
-	drawRing(canvas, 'red', 12, 4, 3);
-	drawLine(canvas, 'yellow', 16, 4, 23, 4);
-	drawLine(canvas, 'yellow', 20, 4, 20, 12);
-	drawLine(canvas, 'yellow', 14, 12, 20, 12);
-	drawLine(canvas, 'magenta', 0, 13, 8, 13);
-	drawLine(canvas, 'magenta', 8, 13, 8, 19);
-	drawLine(canvas, 'magenta', 8, 19, 3, 19);
-	drawLine(canvas, 'white', 6, 15, 14, 15);
-	drawLine(canvas, 'white', 12, 9, 12, 20);
-	drawLine(canvas, 'green', 18, 9, 18, 18);
-	drawLine(canvas, 'green', 18, 18, 23, 18);
-	drawRing(canvas, 'green', 21, 14, 3);
-	drawLine(canvas, 'cyan', 8, 20, 16, 20);
-	drawLine(canvas, 'cyan', 16, 20, 16, 23);
-	drawLine(canvas, 'orange', 16, 8, 16, 16);
-	drawLine(canvas, 'orange', 16, 16, 12, 16);
+	// Local landmarks add uniqueness without being the primary boundary clue.
+	drawRing(canvas, 'blue', 5, 5, 2);
+	drawRing(canvas, 'red', 13, 5, 2);
+	drawRing(canvas, 'yellow', 21, 5, 2);
+	drawRing(canvas, 'magenta', 5, 13, 2);
+	drawRing(canvas, 'white', 13, 13, 2);
+	drawRing(canvas, 'green', 21, 13, 2);
+	drawRing(canvas, 'cyan', 5, 21, 2);
+	drawRing(canvas, 'orange', 13, 21, 2);
+	drawRing(canvas, 'green', 21, 21, 2);
+
+	// Continuous "wire" tracks. Boundary crossings are deliberately straight and
+	// same-color, so a child can match neighboring tile edges by sight.
+	drawLine(canvas, 'blue', 0, 2, 23, 2);
+	drawLine(canvas, 'cyan', 0, 5, 23, 5);
+	drawLine(canvas, 'magenta', 0, 10, 23, 10);
+	drawLine(canvas, 'orange', 0, 13, 23, 13);
+	drawLine(canvas, 'green', 0, 18, 23, 18);
+	drawLine(canvas, 'yellow', 0, 21, 23, 21);
 }
 
 function drawLine(canvas, color, x1, y1, x2, y2) {
