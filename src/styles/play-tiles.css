@@ -563,7 +563,7 @@
 	place-items: center;
 	width: 100%;
 	aspect-ratio: 1;
-	border: 2px solid var(--tiles-tile-border);
+	border: 1px solid var(--tiles-tile-border);
 	border-radius: 8px;
 	box-shadow: var(--tiles-shadow);
 	background: var(--tiles-tile-shell);
@@ -585,11 +585,11 @@
 .tiles-page .tile-face {
 	display: grid;
 	place-items: center;
-	width: 68%;
+	width: 90%;
 	aspect-ratio: 1;
-	padding: 4px;
+	padding: 2px;
 	overflow: hidden;
-	border-radius: 8px;
+	border-radius: 7px;
 	border: 1px solid rgba(255, 255, 255, 0.16);
 	background: var(--tiles-face-bg);
 	color: inherit;
@@ -679,9 +679,9 @@
 	grid-template-columns: repeat(8, 1fr);
 	grid-template-rows: repeat(8, 1fr);
 	gap: 1px;
-	width: 92%;
+	width: 96%;
 	aspect-ratio: 1;
-	padding: 2px;
+	padding: 1px;
 	border-radius: 4px;
 	background: #334155;
 	box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
@@ -756,7 +756,7 @@
 }
 
 .tiles-page .tile.puzzle-tile .tile-face {
-	width: 86%;
+	width: 94%;
 	padding: 0;
 	overflow: hidden;
 	border-color: rgba(15, 23, 42, 0.28);
