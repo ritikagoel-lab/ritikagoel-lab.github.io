@@ -1,0 +1,215 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import FormattedDate from '../../components/FormattedDate.astro';
+import Header from '../../components/Header.astro';
+import { SITE_TITLE } from '../../consts';
+
+const chronologicalPosts = (await getCollection('devlog')).sort(
+	(a, b) => a.data.pubDate.valueOf() - b.data.pubDate.valueOf(),
+);
+const posts = await Promise.all(
+	chronologicalPosts.map(async (post, index) => {
+		const { Content } = await render(post);
+		return {
+			Content,
+			post,
+			weekLabel: `Week ${index + 1}`,
+		};
+	}),
+);
+const weeks = [...posts].reverse();
+const description = 'Weekly notes from the development of TikaTiles.';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`Devlog | ${SITE_TITLE}`} description={description} />
+		<style>
+			main {
+				box-sizing: border-box;
+				width: min(960px, 100%);
+				padding-right: var(--page-gutter);
+				padding-left: var(--page-gutter);
+			}
+			.intro {
+				margin: 0 0 2rem;
+			}
+			.intro h1 {
+				margin-bottom: 0.35em;
+			}
+			.intro p {
+				max-width: 44rem;
+				margin: 0;
+				color: rgb(var(--gray-dark));
+			}
+			.devlog-shell {
+				display: grid;
+				grid-template-columns: minmax(8rem, 11rem) minmax(0, 1fr);
+				gap: 2rem;
+				align-items: start;
+			}
+			.week-tabs {
+				position: sticky;
+				top: 1rem;
+				display: grid;
+				gap: 0.45rem;
+			}
+			.week-tab {
+				width: 100%;
+				padding: 0.6rem 0.75rem;
+				border: 1px solid var(--nav-line);
+				border-radius: 8px;
+				background: var(--surface);
+				color: rgb(var(--black));
+				font: inherit;
+				font-size: 0.9rem;
+				line-height: 1.1;
+				text-align: left;
+				cursor: pointer;
+			}
+			.week-tab:hover,
+			.week-tab[aria-selected='true'] {
+				border-color: var(--accent);
+				color: var(--accent);
+			}
+			.week-tab[aria-selected='true'] {
+				box-shadow: inset 4px 0 0 var(--accent);
+			}
+			.week-panel {
+				min-width: 0;
+			}
+			.week-panel[hidden] {
+				display: none;
+			}
+			.week-kicker {
+				margin: 0;
+				color: var(--accent);
+				font-size: 0.9rem;
+				font-weight: 700;
+			}
+			.week-title {
+				margin-bottom: 0.25rem;
+				line-height: 1.05;
+			}
+			.week-date,
+			.week-description,
+			.empty-state {
+				color: rgb(var(--gray));
+			}
+			.week-date,
+			.week-description {
+				margin: 0;
+			}
+			.week-description {
+				margin-top: 0.5rem;
+			}
+			.week-content {
+				margin-top: 2rem;
+			}
+			.week-content :global(p:first-child) {
+				margin-top: 0;
+			}
+			@media (max-width: 720px) {
+				.devlog-shell {
+					grid-template-columns: 1fr;
+					gap: 1.25rem;
+				}
+				.week-tabs {
+					position: static;
+					display: flex;
+					overflow-x: auto;
+					padding-bottom: 0.25rem;
+				}
+				.week-tab {
+					flex: 0 0 auto;
+					width: auto;
+					min-width: 6.5rem;
+					text-align: center;
+				}
+				.week-tab[aria-selected='true'] {
+					box-shadow: inset 0 -4px 0 var(--accent);
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<section class="intro">
+				<h1>Devlog</h1>
+				<p>{description}</p>
+			</section>
+			<section class="devlog-shell" aria-label="Development log entries">
+				{
+					weeks.length ? (
+						<>
+							<div class="week-tabs" role="tablist" aria-label="Devlog weeks">
+								{weeks.map(({ post, weekLabel }, index) => (
+									<button
+										class="week-tab"
+										type="button"
+										role="tab"
+										aria-selected={index === 0 ? 'true' : 'false'}
+										aria-controls={`panel-${post.id}`}
+										id={`tab-${post.id}`}
+										data-week-target={post.id}
+									>
+										{weekLabel}
+									</button>
+								))}
+							</div>
+							<div>
+								{weeks.map(({ Content, post, weekLabel }, index) => (
+									<article
+										class="week-panel"
+										id={`panel-${post.id}`}
+										role="tabpanel"
+										aria-labelledby={`tab-${post.id}`}
+										data-week-panel={post.id}
+										hidden={index !== 0}
+									>
+										<p class="week-kicker">{weekLabel}</p>
+										<h2 class="week-title">{post.data.title}</h2>
+										<p class="week-date">
+											<FormattedDate date={post.data.pubDate} />
+										</p>
+										<p class="week-description">{post.data.description}</p>
+										<div class="week-content">
+											<Content />
+										</div>
+									</article>
+								))}
+							</div>
+						</>
+					) : (
+						<p class="empty-state">No devlog posts yet. Check back soon for build notes.</p>
+					)
+				}
+			</section>
+		</main>
+		<Footer />
+		<script>
+			const tabs = Array.from(document.querySelectorAll('[data-week-target]'));
+			const panels = Array.from(document.querySelectorAll('[data-week-panel]'));
+
+			const showWeek = (weekId) => {
+				tabs.forEach((tab) => {
+					const isActive = tab.dataset.weekTarget === weekId;
+					tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+				});
+				panels.forEach((panel) => {
+					panel.hidden = panel.dataset.weekPanel !== weekId;
+				});
+			};
+
+			tabs.forEach((tab) => {
+				tab.addEventListener('click', () => {
+					showWeek(tab.dataset.weekTarget);
+				});
+			});
+		</script>
+	</body>
+</html>
