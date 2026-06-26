@@ -15,16 +15,27 @@ import Footer from '../components/Footer.astro';
 	<body>
 		<Header />
 		<main class="contact-page">
-			<section class="contact-card">
-				<h1>Ritika Goel</h1>
-				<p>
-					Ritika is an embedded systems engineer who loves building playful hardware for kids
-					and families. Her engineering journey started in India in 2004, eventually bringing her
-					to the University of Pennsylvania. She has spent over a decade designing and optimizing
-					consumer electronics at Apple, Intel and Meta among others. Today, TikaTiles is engineered
-					from her personal lab in Orange County, California, where she lives with her husband and
-					their 8-year-old daughter.
-				</p>
+			<section class="contact-card" aria-labelledby="contact-title">
+				<h1 id="contact-title">Ritika Goel</h1>
+				<div class="contact-content">
+					<img
+						class="profile-photo"
+						src="/images/ritika-goel.jpeg"
+						alt="Ritika Goel"
+						width="792"
+						height="994"
+					/>
+					<div class="contact-copy">
+						<p>
+							Ritika is an embedded systems engineer who loves building playful hardware for kids
+							and families. Her engineering journey started in India in 2004, eventually bringing her
+							to the University of Pennsylvania. She has spent over a decade designing and optimizing
+							consumer electronics at Apple, Intel and Meta among others. Today, TikaTiles is engineered
+							from her personal lab in Orange County, California, where she lives with her husband and
+							their 8-year-old daughter.
+						</p>
+					</div>
+				</div>
 				<div class="contact-links">
 					<a href="https://www.linkedin.com/in/ritikagoel23/" target="_blank">LinkedIn</a>
 					<a href="mailto:info@tikatiles.com">Email: info@tikatiles.com</a>
@@ -43,7 +54,7 @@ import Footer from '../components/Footer.astro';
 	}
 
 	.contact-card {
-		width: min(760px, 100%);
+		width: min(980px, 100%);
 		padding: clamp(1.5rem, 4vw, 3rem);
 		border: 1px solid var(--line);
 		border-radius: 8px;
@@ -51,10 +62,27 @@ import Footer from '../components/Footer.astro';
 		box-shadow: var(--box-shadow);
 	}
 
+	.contact-content {
+		display: grid;
+		grid-template-columns: minmax(220px, 0.78fr) minmax(0, 1fr);
+		gap: clamp(1.5rem, 4vw, 3rem);
+		align-items: start;
+	}
+
+	.profile-photo {
+		display: block;
+		width: 100%;
+		aspect-ratio: 4 / 5;
+		object-fit: cover;
+		object-position: center top;
+		border-radius: 8px;
+	}
+
 	.contact-card h1 {
-		margin-bottom: 1rem;
+		margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
 		font-size: clamp(2.25rem, 6vw, 4.25rem);
 		line-height: 1;
+		text-align: center;
 	}
 
 	.eyebrow {
@@ -75,7 +103,8 @@ import Footer from '../components/Footer.astro';
 		display: flex;
 		flex-wrap: wrap;
 		gap: 0.8rem;
-		margin-top: 1.5rem;
+		justify-content: center;
+		margin-top: clamp(1.75rem, 4vw, 2.75rem);
 	}
 
 	.contact-links a {
@@ -94,5 +123,15 @@ import Footer from '../components/Footer.astro';
 
 	.contact-links a:hover {
 		color: var(--page-bg);
+	}
+
+	@media (max-width: 760px) {
+		.contact-content {
+			grid-template-columns: 1fr;
+		}
+
+		.profile-photo {
+			max-width: 360px;
+		}
 	}
 </style>
