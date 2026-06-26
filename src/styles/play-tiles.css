@@ -533,9 +533,16 @@
 .tiles-page .pack-panel,
 .tiles-page .board-area {
 	display: grid;
-	grid-template-rows: auto minmax(0, 1fr);
 	gap: 8px;
 	min-width: 0;
+}
+
+.tiles-page .pack-panel {
+	grid-template-rows: auto minmax(0, 1fr);
+}
+
+.tiles-page .board-area {
+	grid-template-rows: auto auto minmax(0, 1fr);
 }
 
 .tiles-page .area-title {
@@ -580,6 +587,55 @@
 	padding: 18px;
 }
 
+.tiles-page .equation-answer-panel {
+	display: grid;
+	grid-template-columns: minmax(190px, 1fr) minmax(150px, 190px) auto;
+	gap: 10px;
+	align-items: end;
+	margin-bottom: 4px;
+	padding: 12px;
+	border: 1px solid var(--tiles-line);
+	border-radius: 8px;
+	background: var(--tiles-card-bg);
+	box-shadow: var(--tiles-shadow);
+}
+
+.tiles-page .equation-answer-panel strong {
+	display: block;
+	color: var(--tiles-ink);
+	font-size: 16px;
+	line-height: 1.2;
+}
+
+.tiles-page .equation-answer-panel span {
+	display: block;
+	margin-top: 3px;
+	color: var(--tiles-muted);
+	font-size: 13px;
+	line-height: 1.35;
+}
+
+.tiles-page .equation-answer-panel label {
+	display: grid;
+	gap: 4px;
+	color: var(--tiles-muted);
+	font-size: 12px;
+	font-weight: 800;
+	line-height: 1.2;
+}
+
+.tiles-page .equation-answer-panel input {
+	min-height: 52px;
+	padding: 0 14px;
+	border: 1px solid var(--tiles-line);
+	border-radius: 8px;
+	background: var(--tiles-card-bg);
+	color: var(--tiles-ink);
+	font-size: 26px;
+	font-weight: 900;
+	letter-spacing: 0;
+}
+
 .tiles-page .cell {
 	position: relative;
 	border: 1px dashed var(--tiles-cell-line);
@@ -596,6 +652,26 @@
 	border-color: var(--tiles-green);
 	border-style: solid;
 	background: var(--tiles-answer-bg);
+}
+
+.tiles-page .cell.answer-slot:focus-visible {
+	outline: 3px solid var(--tiles-blue);
+	outline-offset: 2px;
+}
+
+.tiles-page .cell.answer-slot::before {
+	content: attr(data-slot-label);
+	position: absolute;
+	top: 5px;
+	left: 7px;
+	z-index: 0;
+	color: var(--tiles-green);
+	font-size: 10px;
+	font-weight: 900;
+	line-height: 1;
+	text-transform: uppercase;
+	opacity: 0.9;
+	pointer-events: none;
 }
 
 .tiles-page .cell.inactive-slot {
@@ -1072,6 +1148,11 @@
 	.tiles-page .grid {
 		grid-template-columns: repeat(4, 72px);
 		grid-template-rows: repeat(4, 72px);
+	}
+
+	.tiles-page .equation-answer-panel {
+		grid-template-columns: 1fr;
+		align-items: stretch;
 	}
 }
 

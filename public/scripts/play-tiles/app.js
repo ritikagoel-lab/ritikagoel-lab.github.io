@@ -1,6 +1,6 @@
-import { TileBoard } from './board.js?v=9';
+import { TileBoard } from './board.js?v=11';
 import { WhackGame } from './games/whack.js?v=3';
-import { EquationGame } from './games/equation.js?v=5';
+import { EquationGame } from './games/equation.js?v=7';
 import { MemoryGame } from './games/memory.js?v=3';
 import { PuzzleGame } from './games/puzzle.js?v=13';
 
@@ -28,6 +28,9 @@ export class SmartTilesApp {
 			setupInstructions: document.querySelector('#setupInstructions'),
 			startGameButton: document.querySelector('#startGame'),
 			checkGameButton: document.querySelector('#checkGame'),
+			equationAnswerPanel: document.querySelector('#equationAnswerPanel'),
+			equationAnswerInput: document.querySelector('#equationAnswerInput'),
+			equationCheckButton: document.querySelector('#equationCheckBoard'),
 			memoryControls: document.querySelector('#memoryControls'),
 			memoryTileCount: document.querySelector('#memoryTileCount'),
 			memorySpeedControls: document.querySelector('#memorySpeedControls'),
@@ -47,6 +50,11 @@ export class SmartTilesApp {
 			isLocked: () => this.currentGame().isLocked(),
 			canPlace: (source, row, col) => this.currentGame().canPlace(source, row, col),
 			cellState: (row, col) => (this.currentGame().cellState ? this.currentGame().cellState(row, col) : ''),
+			cellLabel: (row, col) => (this.currentGame().cellLabel ? this.currentGame().cellLabel(row, col) : ''),
+			onCellClick: (row, col) => (this.currentGame().handleCellClick ? this.currentGame().handleCellClick(row, col) : false),
+			onCellKey: (row, col, event) => {
+				if (this.currentGame().handleCellKey) this.currentGame().handleCellKey(row, col, event);
+			},
 			onChange: () => this.render(),
 			onTileClick: (tile) => this.currentGame().handleTileClick(tile),
 			onMessage: (message) => this.setStatus(message),
@@ -81,6 +89,13 @@ export class SmartTilesApp {
 		});
 		this.elements.startGameButton.addEventListener('click', () => this.currentGame().start());
 		this.elements.checkGameButton.addEventListener('click', () => this.currentGame().check());
+		this.elements.equationCheckButton.addEventListener('click', () => this.games.equation.check());
+		this.elements.equationAnswerInput.addEventListener('keydown', (event) => {
+			if (event.key === 'Enter') this.games.equation.check();
+		});
+		this.elements.equationAnswerInput.addEventListener('input', () => {
+			this.elements.equationAnswerInput.value = this.elements.equationAnswerInput.value.replace(/\D/g, '').slice(0, 3);
+		});
 		this.elements.memoryTileCount.addEventListener('change', () => this.games.memory.setTileCount(Number(this.elements.memoryTileCount.value)));
 		this.elements.memorySpeedMode.addEventListener('change', () => this.games.memory.setSpeedMode(this.elements.memorySpeedMode.value));
 		this.elements.puzzleDifficulty.addEventListener('change', () => this.games.puzzle.setDifficulty(this.elements.puzzleDifficulty.value));
@@ -122,7 +137,8 @@ export class SmartTilesApp {
 		this.elements.startGameButton.textContent = this.mode === 'puzzle' && game.solved ? 'Play Again' : 'Start Game';
 
 		this.elements.startGameButton.classList.toggle('hidden', this.mode === 'equation');
-		this.elements.checkGameButton.classList.toggle('hidden', this.mode !== 'equation');
+		this.elements.checkGameButton.classList.toggle('hidden', true);
+		this.elements.equationAnswerPanel.classList.toggle('hidden', this.mode !== 'equation');
 		this.elements.memoryControls.classList.toggle('hidden', this.mode !== 'memory');
 		this.elements.memorySpeedControls.classList.toggle('hidden', this.mode !== 'memory');
 		this.elements.puzzleDifficultyControls.classList.toggle('hidden', this.mode !== 'puzzle');

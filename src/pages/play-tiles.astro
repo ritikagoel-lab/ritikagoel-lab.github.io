@@ -79,7 +79,7 @@ import '../styles/play-tiles.css';
 							<button class="small-button hidden" type="button" id="puzzleHint">Hint</button>
 							<button class="small-button hidden" type="button" id="puzzleAutoSolve">Auto Solve</button>
 							<button class="primary-button" type="button" id="startGame">Start Game</button>
-							<button class="check-button" type="button" id="checkGame">Check Answer</button>
+							<button class="check-button hidden" type="button" id="checkGame">Check Answer</button>
 						</div>
 					</section>
 					<section id="puzzleHintPanel" class="puzzle-hint-panel hidden" aria-label="Puzzle hint"></section>
@@ -106,6 +106,17 @@ import '../styles/play-tiles.css';
 						</section>
 						<section class="board-area" aria-label="Tile board area">
 							<div class="area-title">Tile Board</div>
+							<div id="equationAnswerPanel" class="equation-answer-panel hidden" aria-label="Equation answer entry">
+								<div>
+									<strong>Answer</strong>
+									<span>Drag digits into the numbered slots, or type the answer here.</span>
+								</div>
+								<label>
+									Type answer
+									<input id="equationAnswerInput" type="text" inputmode="numeric" autocomplete="off" maxlength="3" placeholder="12" />
+								</label>
+								<button class="check-button" type="button" id="equationCheckBoard">Check Answer</button>
+							</div>
 							<div class="grid-wrap">
 								<div class="grid" aria-label="Tile board"></div>
 							</div>
@@ -176,6 +187,6 @@ import '../styles/play-tiles.css';
 			</section>
 		</main>
 		<Footer />
-		<script type="module" is:inline src="/scripts/play-tiles.js?v=15"></script>
+		<script type="module" is:inline src="/scripts/play-tiles.js?v=17"></script>
 	</body>
 </html>

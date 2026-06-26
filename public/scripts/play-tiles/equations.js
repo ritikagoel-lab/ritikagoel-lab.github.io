@@ -10,8 +10,8 @@ export function levelForScore(score) {
 	return Math.min(8, 1 + Math.floor(score / 30));
 }
 
-export function makeQuestion(score) {
-	const level = levelForScore(score);
+export function makeQuestion(score, requestedLevel = null) {
+	const level = requestedLevel ?? levelForScore(score);
 
 	if (level === 1) {
 		const left = randomInt(1, 9);

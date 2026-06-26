@@ -51,6 +51,7 @@ export class TileBoard {
 				cell.className = 'cell';
 				cell.dataset.row = row;
 				cell.dataset.col = col;
+				cell.tabIndex = -1;
 				cell.addEventListener('dragover', (event) => {
 					if (this.hooks.isLocked()) return;
 					if (this.dragPayload && !this.canPlaceDragPayload(row, col)) return;
@@ -64,6 +65,9 @@ export class TileBoard {
 					if (!this.hooks.isLocked()) this.handleCellDrop(row, col);
 				});
 				cell.addEventListener('click', () => this.handleCellClick(row, col));
+				cell.addEventListener('keydown', (event) => {
+					if (!this.hooks.isLocked()) this.hooks.onCellKey?.(row, col, event);
+				});
 				this.cells.set(this.cellKey(row, col), cell);
 				this.elements.grid.appendChild(cell);
 			}
@@ -188,6 +192,8 @@ export class TileBoard {
 		} else if (this.selectedBoardTileId) {
 			this.moveTileToCell(this.selectedBoardTileId, row, col);
 			this.clearSelection();
+		} else if (this.hooks.onCellClick?.(row, col)) {
+			this.cells.get(this.cellKey(row, col))?.focus();
 		}
 	}
 
@@ -371,8 +377,12 @@ export class TileBoard {
 			const col = Number(cell.dataset.col);
 			const hasTile = Boolean(this.placedTileList().find((tile) => tile.row === row && tile.col === col));
 			const state = hasTile ? '' : this.hooks.cellState(row, col);
+			const label = hasTile ? '' : this.hooks.cellLabel?.(row, col) || '';
 			cell.classList.toggle('answer-slot', state === 'answer');
 			cell.classList.toggle('inactive-slot', state === 'inactive');
+			cell.tabIndex = state === 'answer' ? 0 : -1;
+			if (label) cell.dataset.slotLabel = label;
+			else delete cell.dataset.slotLabel;
 		});
 	}
 
