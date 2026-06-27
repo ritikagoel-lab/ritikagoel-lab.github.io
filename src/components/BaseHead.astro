@@ -16,6 +16,7 @@ interface Props {
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 const { title, description, image = FallbackImage } = Astro.props;
+const gaMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID;
 ---
 
 <!-- Global Metadata -->
@@ -71,6 +72,46 @@ const { title, description, image = FallbackImage } = Astro.props;
 		}
 	})();
 </script>
+{
+	gaMeasurementId && (
+		<>
+			<script async src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`} />
+			<script is:inline define:vars={{ gaMeasurementId }}>
+				window.dataLayer = window.dataLayer || [];
+				function gtag() {
+					window.dataLayer.push(arguments);
+				}
+				gtag('js', new Date());
+				gtag('config', gaMeasurementId);
+
+				document.addEventListener('click', (event) => {
+					const target = event.target instanceof Element ? event.target : null;
+					const link = target?.closest('a');
+					if (!link || typeof gtag !== 'function') return;
+
+					const href = link.getAttribute('href') || '';
+					if (href.startsWith('mailto:')) {
+						gtag('event', 'email_click', { link_url: href });
+						return;
+					}
+
+					const url = new URL(link.href, window.location.href);
+					if (url.pathname.startsWith('/play-tiles/')) {
+						gtag('event', 'try_games_click', { link_url: url.href });
+						return;
+					}
+					if (url.pathname.startsWith('/devlog/')) {
+						gtag('event', 'devlog_click', { link_url: url.href });
+						return;
+					}
+					if (url.origin !== window.location.origin) {
+						gtag('event', 'outbound_click', { link_url: url.href });
+					}
+				});
+			</script>
+		</>
+	)
+}
 
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
