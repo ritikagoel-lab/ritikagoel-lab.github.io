@@ -2,7 +2,7 @@ import { TileBoard } from './board.js?v=11';
 import { WhackGame } from './games/whack.js?v=6';
 import { EquationGame } from './games/equation.js?v=7';
 import { MemoryGame } from './games/memory.js?v=3';
-import { PuzzleGame } from './games/puzzle.js?v=14';
+import { PuzzleGame } from './games/puzzle.js?v=19';
 
 export class SmartTilesApp {
 	constructor() {
@@ -41,6 +41,7 @@ export class SmartTilesApp {
 			puzzleTileCount: document.querySelector('#puzzleTileCount'),
 			puzzleHintButton: document.querySelector('#puzzleHint'),
 			puzzleAutoSolveButton: document.querySelector('#puzzleAutoSolve'),
+			puzzleChangeButton: document.querySelector('#puzzleChange'),
 			puzzleHintPanel: document.querySelector('#puzzleHintPanel'),
 			saveStatus: document.querySelector('#saveStatus'),
 		};
@@ -102,6 +103,7 @@ export class SmartTilesApp {
 		this.elements.puzzleTileCount.addEventListener('change', () => this.games.puzzle.setTileCount(Number(this.elements.puzzleTileCount.value)));
 		this.elements.puzzleHintButton.addEventListener('click', () => this.games.puzzle.toggleHint());
 		this.elements.puzzleAutoSolveButton.addEventListener('click', () => this.games.puzzle.autoSolve());
+		this.elements.puzzleChangeButton.addEventListener('click', () => this.games.puzzle.changePuzzle());
 		document.querySelector('#saveSignal').addEventListener('click', () => this.saveInterest());
 	}
 
@@ -134,9 +136,9 @@ export class SmartTilesApp {
 		this.elements.setupInstructions.textContent = this.statusMessage ? `${game.instructions()} ${this.statusMessage}` : game.instructions();
 		this.elements.modePrompt.textContent = this.statusMessage || game.prompt();
 		if (game.render) game.render();
-		this.elements.startGameButton.textContent = this.mode === 'puzzle' && game.solved ? 'Play Again' : 'Start Game';
+		this.elements.startGameButton.textContent = 'Start Game';
 
-		this.elements.startGameButton.classList.toggle('hidden', this.mode === 'equation');
+		this.elements.startGameButton.classList.toggle('hidden', this.mode === 'equation' || this.mode === 'puzzle');
 		this.elements.checkGameButton.classList.toggle('hidden', true);
 		this.elements.equationAnswerPanel.classList.toggle('hidden', this.mode !== 'equation');
 		this.elements.memoryControls.classList.toggle('hidden', this.mode !== 'memory');
@@ -145,6 +147,7 @@ export class SmartTilesApp {
 		this.elements.puzzleControls.classList.toggle('hidden', this.mode !== 'puzzle');
 		this.elements.puzzleHintButton.classList.toggle('hidden', this.mode !== 'puzzle');
 		this.elements.puzzleAutoSolveButton.classList.toggle('hidden', this.mode !== 'puzzle');
+		this.elements.puzzleChangeButton.classList.toggle('hidden', this.mode !== 'puzzle');
 		this.elements.puzzleHintPanel.classList.toggle(
 			'hidden',
 			this.mode !== 'puzzle' || !(game.shouldShowPuzzlePanel ? game.shouldShowPuzzlePanel() : game.showHint),

@@ -56,14 +56,14 @@ export class PuzzleGame {
 	}
 
 	instructions() {
-		if (this.difficulty === 'easy') {
-			return 'Easy puzzle. Pieces stay upright. Place the picture pieces on the board so the animal or shape comes together.';
+		if (this.difficulty === 'difficult') {
+			return 'Straws puzzle. Place the LED pattern pieces on the board. Click a placed piece to rotate it until the straw-like edge clues connect.';
 		}
-		return `${this.difficultyLabel()} puzzle. Place the LED pattern pieces on the board. Click a placed piece to rotate it until the image or edge clues connect.`;
+		return 'Regular puzzle. Place the picture pieces on the board. Click a placed piece to rotate it until the image comes together.';
 	}
 
 	prompt() {
-		return `${this.selectedCount}-piece ${this.difficultyLabel().toLowerCase()} puzzle selected. Drag pieces from the pack, or click Start Game for a new puzzle.`;
+		return `${this.selectedCount}-piece ${this.difficultyLabel().toLowerCase()} puzzle selected. Drag pieces from the pack, or use New Puzzle for a fresh layout.`;
 	}
 
 	setTileCount(count) {
@@ -79,7 +79,7 @@ export class PuzzleGame {
 	}
 
 	setDifficulty(difficulty) {
-		this.difficulty = ['easy', 'medium', 'difficult'].includes(difficulty) ? difficulty : 'medium';
+		this.difficulty = difficulty === 'difficult' ? 'difficult' : 'medium';
 		this.app.statusMessage = '';
 		this.clearSolveTimers();
 		this.puzzleSeed += 1;
@@ -92,6 +92,15 @@ export class PuzzleGame {
 	}
 
 	start() {
+		this.changePuzzle();
+	}
+
+	changePuzzle() {
+		this.puzzleSeed += 1;
+		this.resetCurrentPuzzle();
+	}
+
+	resetCurrentPuzzle() {
 		this.moves = 0;
 		this.solved = false;
 		this.showHint = false;
@@ -100,22 +109,16 @@ export class PuzzleGame {
 		this.clearSolveTimers();
 		this.clearFlashTimer();
 		this.flashSolved = false;
-		this.puzzleSeed += 1;
 		this.gridSize = Math.sqrt(this.selectedCount);
 		this.board.reset(this.makePuzzlePack());
 		this.placeAnchorPiece();
 		this.board.refreshCellStates();
-		this.app.setStatus(
-			this.shouldAnchorPiece()
-				? 'New puzzle ready. The anchor tile is placed; move the remaining pieces from the pack.'
-				: 'New puzzle ready. All pieces are back in the pack.',
-		);
+		this.app.setStatus('');
 	}
 
 	handleTileClick(tile) {
 		if (tile.kind !== 'puzzle' || this.solved) return false;
 		if (tile.gameData.lockedAnchor) return true;
-		if (this.difficulty === 'easy') return false;
 		tile.gameData.rotation = (Number(tile.gameData.rotation || 0) + 90) % 360;
 		this.moves += 1;
 		this.updateTile(tile);
@@ -148,7 +151,7 @@ export class PuzzleGame {
 		const pack = Array.from({ length: this.selectedCount }, (_, index) => {
 			const row = Math.floor(index / this.gridSize);
 			const col = index % this.gridSize;
-			const rotation = this.difficulty === 'easy' ? 0 : this.randomRotation();
+			const rotation = this.randomRotation();
 			const pixels = makePuzzlePixels(this.gridSize, row, col, this.puzzleSeed, this.difficulty);
 			return {
 				key: `puzzle-${this.difficulty}-${this.selectedCount}-${this.puzzleSeed}-${index}`,
@@ -271,9 +274,8 @@ export class PuzzleGame {
 
 	difficultyLabel() {
 		return {
-			easy: 'Easy',
-			medium: 'Medium',
-			difficult: 'Difficult',
+			medium: 'Regular',
+			difficult: 'Straws',
 		}[this.difficulty];
 	}
 
@@ -486,10 +488,6 @@ function makeLargePixelMatrix(pixelRows) {
 }
 
 function drawPuzzlePaths(canvas, gridSize, seed = 0, difficulty = 'medium') {
-	if (difficulty === 'easy') {
-		drawEasyPuzzle(canvas, gridSize, seed);
-		return;
-	}
 	if (difficulty === 'difficult') {
 		drawDifficultConnectors(canvas, gridSize, seed);
 		return;
@@ -525,16 +523,16 @@ function drawSimpleOutside(canvas, gridSize, horizonRatio = 0.66) {
 }
 
 function drawMediumScene(canvas, gridSize, seed = 0) {
-	if (gridSize === 3) {
+	const variant = seed % (gridSize === 3 ? 4 : 3);
+	if (gridSize === 3 && variant === 0) {
 		drawHotAirBalloonScene(canvas);
 		return;
 	}
-	const variant = seed % 3;
-	if (variant === 0) {
+	if (variant === 1 || (gridSize === 2 && variant === 0)) {
 		drawRocketScene(canvas, gridSize);
 		return;
 	}
-	if (variant === 1) {
+	if (variant === 2 || (gridSize === 2 && variant === 1)) {
 		drawMediumHouseScene(canvas, gridSize);
 		return;
 	}
@@ -543,49 +541,45 @@ function drawMediumScene(canvas, gridSize, seed = 0) {
 
 function drawHotAirBalloonScene(canvas) {
 	const size = 24;
-	fillRect(canvas, 'blue', 0, 0, size - 1, 12);
-	fillRect(canvas, 'cyan', 0, 13, size - 1, 15);
-	fillRect(canvas, 'pink', 0, 16, size - 1, 18);
-	fillRect(canvas, 'blue', 0, 19, size - 1, 20);
-	fillRect(canvas, 'green', 0, 21, size - 1, 23);
+	fillRect(canvas, 'blue', 0, 0, size - 1, size - 1);
 
-	drawSun(canvas, 4, 17, 'yellow');
-	fillTriangle(canvas, 'magenta', 0, 23, 7, 16, 14, 23);
-	fillTriangle(canvas, 'blue', 5, 23, 15, 15, 23, 23);
-	fillTriangle(canvas, 'green', 16, 23, 23, 19, 23, 23);
-	drawLine(canvas, 'cyan', 0, 15, size - 1, 15);
+	fillRect(canvas, 'magenta', 0, 12, size - 1, 23);
+	fillRect(canvas, 'pink', 0, 15, size - 1, 23);
+	fillRect(canvas, 'cyan', 0, 18, size - 1, 23);
+	fillRect(canvas, 'blue', 0, 20, size - 1, 23);
+
 	drawCloud(canvas, 4, 4);
-	drawCloud(canvas, 19, 6);
+	drawCloud(canvas, 19, 5);
+	drawCloud(canvas, 4, 12);
+	drawCloud(canvas, 20, 13);
 
 	const cx = 12;
-	const cy = 8;
+	const cy = 6;
 	const rx = 6;
-	const ry = 7;
+	const ry = 6;
 	for (let y = cy - ry; y <= cy + ry; y += 1) {
 		for (let x = cx - rx; x <= cx + rx; x += 1) {
 			const dx = (x - cx) / rx;
 			const dy = (y - cy) / ry;
 			if (dx * dx + dy * dy <= 1.05) {
-				const stripe = Math.max(0, Math.min(4, Math.floor(((x - (cx - rx)) / (rx * 2 + 1)) * 5)));
-				setPixel(canvas, x, y, ['red', 'orange', 'yellow', 'orange', 'red'][stripe]);
+				let color = 'orange';
+				if (Math.abs(x - cx) <= 2) color = 'yellow';
+				if (y <= cy - 4) color = 'red';
+				if (x <= cx - 5 || x >= cx + 5) color = 'red';
+				setPixel(canvas, x, y, color);
 			}
 		}
 	}
 
-	drawLine(canvas, 'magenta', cx - 5, cy - 2, cx - 5, cy + 4);
-	drawLine(canvas, 'magenta', cx, cy - 6, cx, cy + 5);
-	drawLine(canvas, 'magenta', cx + 5, cy - 2, cx + 5, cy + 4);
-	drawLine(canvas, 'white', cx - 4, cy + 5, cx + 4, cy + 5);
-	drawLine(canvas, 'white', cx - 3, cy + 6, cx - 4, cy + 11);
-	drawLine(canvas, 'white', cx + 3, cy + 6, cx + 4, cy + 11);
-	drawLine(canvas, 'white', cx - 4, cy + 11, cx - 4, cy + 12);
-	drawLine(canvas, 'white', cx + 4, cy + 11, cx + 4, cy + 12);
-	drawLine(canvas, 'black', cx - 4, cy + 11, cx + 4, cy + 11);
-	drawLine(canvas, 'soil', cx - 5, cy + 12, cx + 5, cy + 12);
-	fillRect(canvas, 'soil', cx - 4, cy + 13, cx + 4, cy + 15);
-	fillRect(canvas, 'orange', cx - 3, cy + 13, cx - 2, cy + 15);
-	fillRect(canvas, 'orange', cx + 2, cy + 13, cx + 3, cy + 15);
-	drawLine(canvas, 'black', cx - 4, cy + 15, cx + 4, cy + 15);
+	drawLine(canvas, 'yellow', cx, cy - 4, cx, cy + 5);
+	drawLine(canvas, 'orange', cx - 4, cy + 5, cx + 4, cy + 5);
+	drawLine(canvas, 'white', cx - 3, cy + 6, cx - 3, cy + 10);
+	drawLine(canvas, 'white', cx + 3, cy + 6, cx + 3, cy + 10);
+	fillRect(canvas, 'tan', cx - 3, cy + 10, cx + 3, cy + 10);
+	fillRect(canvas, 'soil', cx - 3, cy + 11, cx + 3, cy + 15);
+	fillRect(canvas, 'tan', cx - 2, cy + 12, cx - 2, cy + 14);
+	fillRect(canvas, 'tan', cx + 2, cy + 12, cx + 2, cy + 14);
+	drawLine(canvas, 'orange', cx - 3, cy + 13, cx + 3, cy + 13);
 }
 
 function drawFriendlyFishScene(canvas, gridSize) {
