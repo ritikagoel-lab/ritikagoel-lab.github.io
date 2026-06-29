@@ -39,6 +39,17 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 						/>
 					</figure>
 				</div>
+				<figure class="hero-video">
+					<video
+						src="/images/master_tile_4side_spin_12fps_start1.mp4"
+						aria-label="Rotating TikaTiles smart tile render"
+						muted
+						loop
+						playsinline
+						controls
+						preload="metadata"
+					></video>
+				</figure>
 			</section>
 
 			<section class="features-section" aria-label="TikaTiles features">
@@ -71,7 +82,6 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 					</li>
 				</ul>
 			</section>
-
 			<section class="coming-grid" aria-label="Coming soon details">
 				<article>
 					<p class="card-label">Product</p>
@@ -216,6 +226,21 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 		box-shadow: var(--box-shadow);
 	}
 
+	.hero-video {
+		width: min(760px, 100%);
+		margin: clamp(1.5rem, 4vw, 2.5rem) 0 0;
+	}
+
+	.hero-video video {
+		display: block;
+		width: 100%;
+		aspect-ratio: 16 / 9;
+		object-fit: cover;
+		object-position: center;
+		border-radius: 8px;
+		box-shadow: var(--box-shadow);
+	}
+
 	.features-section {
 		width: min(860px, 100%);
 		margin-top: clamp(2.5rem, 6vw, 5rem);
@@ -292,6 +317,10 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 		}
 
 		.hero-visual img {
+			aspect-ratio: 16 / 10;
+		}
+
+		.hero-video video {
 			aspect-ratio: 16 / 10;
 		}
 
