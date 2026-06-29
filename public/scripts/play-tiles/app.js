@@ -1,5 +1,5 @@
 import { TileBoard } from './board.js?v=11';
-import { WhackGame } from './games/whack.js?v=3';
+import { WhackGame } from './games/whack.js?v=6';
 import { EquationGame } from './games/equation.js?v=7';
 import { MemoryGame } from './games/memory.js?v=3';
 import { PuzzleGame } from './games/puzzle.js?v=13';
@@ -160,18 +160,33 @@ export class SmartTilesApp {
 
 	renderMetrics(metrics) {
 		const [first, second, third] = metrics;
+		const metricValues = [
+			this.elements.tileCount,
+			this.elements.linkCount,
+			this.elements.scoreValue,
+			this.elements.quickTileCount,
+			this.elements.quickLinkCount,
+			this.elements.quickScoreValue,
+		];
+		metricValues.forEach((element) => {
+			element.classList.remove('running-time', 'stopped-time', 'normal-score', 'complete-score');
+		});
 		this.elements.metricOneLabel.textContent = first[0];
 		this.elements.tileCount.textContent = first[1];
 		this.elements.metricTwoLabel.textContent = second[0];
 		this.elements.linkCount.textContent = second[1];
+		if (second[2]) this.elements.linkCount.classList.add(second[2]);
 		this.elements.metricThreeLabel.textContent = third[0];
 		this.elements.scoreValue.textContent = third[1];
+		if (third[2]) this.elements.scoreValue.classList.add(third[2]);
 		this.elements.quickMetricOneLabel.textContent = first[0];
 		this.elements.quickTileCount.textContent = first[1];
 		this.elements.quickMetricTwoLabel.textContent = second[0];
 		this.elements.quickLinkCount.textContent = second[1];
+		if (second[2]) this.elements.quickLinkCount.classList.add(second[2]);
 		this.elements.quickMetricThreeLabel.textContent = third[0];
 		this.elements.quickScoreValue.textContent = third[1];
+		if (third[2]) this.elements.quickScoreValue.classList.add(third[2]);
 	}
 
 	renderGraph() {

@@ -306,6 +306,22 @@
 	line-height: 1;
 }
 
+.tiles-page strong.running-time {
+	color: #34d399;
+}
+
+.tiles-page strong.stopped-time {
+	color: #fff;
+}
+
+.tiles-page strong.normal-score {
+	color: #fff;
+}
+
+.tiles-page strong.complete-score {
+	color: #facc15;
+}
+
 .tiles-page .puzzle-hint-panel {
 	display: grid;
 	gap: 10px;
@@ -790,13 +806,17 @@
 }
 
 .tiles-page .tile.mole {
-	border-color: #f97316;
-	background: var(--tiles-tile-shell);
+	border-color: #38bdf8;
+	background: #e0f2fe;
+	box-shadow:
+		0 0 0 2px rgba(56, 189, 248, 0.72),
+		0 0 20px rgba(244, 59, 255, 0.54),
+		0 18px 42px rgba(56, 189, 248, 0.24);
 }
 
 .tiles-page .tile.mole .tile-face {
-	border-color: #f97316;
-	background: #334155;
+	border-color: #38bdf8;
+	background: #05070c;
 	color: #fff;
 }
 

@@ -1,14 +1,14 @@
 import { blankTilePack, squareLayout } from '../config.js?v=3';
 
 const molePixels = [
-	['off', 'off', 'brown', 'brown', 'brown', 'brown', 'off', 'off'],
-	['off', 'brown', 'tan', 'brown', 'brown', 'tan', 'brown', 'off'],
-	['brown', 'tan', 'black', 'tan', 'tan', 'black', 'tan', 'brown'],
-	['brown', 'tan', 'tan', 'pink', 'pink', 'tan', 'tan', 'brown'],
-	['brown', 'tan', 'black', 'tan', 'tan', 'black', 'tan', 'brown'],
-	['off', 'brown', 'tan', 'tan', 'tan', 'tan', 'brown', 'off'],
-	['off', 'off', 'brown', 'brown', 'brown', 'brown', 'off', 'off'],
-	['off', 'soil', 'soil', 'soil', 'soil', 'soil', 'soil', 'off'],
+	['yellow', 'yellow', 'magenta', 'magenta', 'magenta', 'magenta', 'yellow', 'yellow'],
+	['yellow', 'magenta', 'yellow', 'magenta', 'magenta', 'yellow', 'magenta', 'yellow'],
+	['magenta', 'yellow', 'black', 'yellow', 'yellow', 'black', 'yellow', 'magenta'],
+	['magenta', 'yellow', 'yellow', 'red', 'red', 'yellow', 'yellow', 'magenta'],
+	['magenta', 'yellow', 'black', 'yellow', 'yellow', 'black', 'yellow', 'magenta'],
+	['yellow', 'magenta', 'yellow', 'yellow', 'yellow', 'yellow', 'magenta', 'yellow'],
+	['yellow', 'yellow', 'magenta', 'cyan', 'cyan', 'magenta', 'yellow', 'yellow'],
+	['red', 'red', 'red', 'white', 'white', 'red', 'red', 'red'],
 ];
 
 export class WhackGame {
@@ -21,6 +21,7 @@ export class WhackGame {
 		this.score = 0;
 		this.remaining = this.roundSeconds;
 		this.running = false;
+		this.roundComplete = false;
 		this.tickTimer = null;
 		this.spawnTimer = null;
 		this.activeTimeouts = [];
@@ -30,6 +31,7 @@ export class WhackGame {
 		this.score = 0;
 		this.remaining = this.roundSeconds;
 		this.running = false;
+		this.roundComplete = false;
 		return blankTilePack('whack');
 	}
 
@@ -46,7 +48,7 @@ export class WhackGame {
 	}
 
 	instructions() {
-		return 'The board starts with 16 white tiles. Start the round, then click each mole picture before it disappears.';
+		return 'The board starts with 16 tiles. Start the round and watch for moles that pop up for a short time. Tap each mole before it disappears; as the round goes on, multiple moles can appear at once.';
 	}
 
 	prompt() {
@@ -61,7 +63,7 @@ export class WhackGame {
 		blankItems.forEach((item, index) => {
 			this.board.addTileFromPack(item.key, positions[index].row, positions[index].col);
 		});
-		if (!silent) this.app.setStatus('16 white tiles placed by software.');
+		if (!silent) this.app.setStatus('16 tiles placed by software.');
 	}
 
 	start() {
@@ -72,10 +74,11 @@ export class WhackGame {
 
 		this.stop();
 		this.running = true;
+		this.roundComplete = false;
 		this.score = 0;
 		this.remaining = this.roundSeconds;
 		this.clearMoles();
-		this.app.setStatus('Round running.');
+		this.app.setStatus('');
 		this.tickTimer = setInterval(() => this.tick(), 1000);
 		this.scheduleMoles();
 		this.app.render();
@@ -95,10 +98,10 @@ export class WhackGame {
 	tick() {
 		this.remaining -= 1;
 		if (this.remaining <= 0) {
-			const finalScore = this.score;
 			this.stop();
 			this.remaining = 0;
-			this.app.setStatus(`Round complete. Score: ${finalScore}.`);
+			this.roundComplete = true;
+			this.app.setStatus('Round complete.');
 		}
 		this.app.render();
 	}
@@ -152,8 +155,8 @@ export class WhackGame {
 	metrics() {
 		return [
 			['Tiles', this.board.placedTileList().length],
-			['Time', this.running ? this.remaining : this.roundSeconds],
-			['Score', this.score],
+			['Time', this.remaining, this.running ? 'running-time' : 'stopped-time'],
+			['Score', this.score, this.roundComplete ? 'complete-score' : 'normal-score'],
 		];
 	}
 }
