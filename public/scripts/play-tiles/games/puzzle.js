@@ -525,6 +525,10 @@ function drawSimpleOutside(canvas, gridSize, horizonRatio = 0.66) {
 }
 
 function drawMediumScene(canvas, gridSize, seed = 0) {
+	if (gridSize === 3) {
+		drawHotAirBalloonScene(canvas);
+		return;
+	}
 	const variant = seed % 3;
 	if (variant === 0) {
 		drawRocketScene(canvas, gridSize);
@@ -535,6 +539,53 @@ function drawMediumScene(canvas, gridSize, seed = 0) {
 		return;
 	}
 	drawMediumBoatScene(canvas, gridSize);
+}
+
+function drawHotAirBalloonScene(canvas) {
+	const size = 24;
+	fillRect(canvas, 'blue', 0, 0, size - 1, 12);
+	fillRect(canvas, 'cyan', 0, 13, size - 1, 15);
+	fillRect(canvas, 'pink', 0, 16, size - 1, 18);
+	fillRect(canvas, 'blue', 0, 19, size - 1, 20);
+	fillRect(canvas, 'green', 0, 21, size - 1, 23);
+
+	drawSun(canvas, 4, 17, 'yellow');
+	fillTriangle(canvas, 'magenta', 0, 23, 7, 16, 14, 23);
+	fillTriangle(canvas, 'blue', 5, 23, 15, 15, 23, 23);
+	fillTriangle(canvas, 'green', 16, 23, 23, 19, 23, 23);
+	drawLine(canvas, 'cyan', 0, 15, size - 1, 15);
+	drawCloud(canvas, 4, 4);
+	drawCloud(canvas, 19, 6);
+
+	const cx = 12;
+	const cy = 8;
+	const rx = 6;
+	const ry = 7;
+	for (let y = cy - ry; y <= cy + ry; y += 1) {
+		for (let x = cx - rx; x <= cx + rx; x += 1) {
+			const dx = (x - cx) / rx;
+			const dy = (y - cy) / ry;
+			if (dx * dx + dy * dy <= 1.05) {
+				const stripe = Math.max(0, Math.min(4, Math.floor(((x - (cx - rx)) / (rx * 2 + 1)) * 5)));
+				setPixel(canvas, x, y, ['red', 'orange', 'yellow', 'orange', 'red'][stripe]);
+			}
+		}
+	}
+
+	drawLine(canvas, 'magenta', cx - 5, cy - 2, cx - 5, cy + 4);
+	drawLine(canvas, 'magenta', cx, cy - 6, cx, cy + 5);
+	drawLine(canvas, 'magenta', cx + 5, cy - 2, cx + 5, cy + 4);
+	drawLine(canvas, 'white', cx - 4, cy + 5, cx + 4, cy + 5);
+	drawLine(canvas, 'white', cx - 3, cy + 6, cx - 4, cy + 11);
+	drawLine(canvas, 'white', cx + 3, cy + 6, cx + 4, cy + 11);
+	drawLine(canvas, 'white', cx - 4, cy + 11, cx - 4, cy + 12);
+	drawLine(canvas, 'white', cx + 4, cy + 11, cx + 4, cy + 12);
+	drawLine(canvas, 'black', cx - 4, cy + 11, cx + 4, cy + 11);
+	drawLine(canvas, 'soil', cx - 5, cy + 12, cx + 5, cy + 12);
+	fillRect(canvas, 'soil', cx - 4, cy + 13, cx + 4, cy + 15);
+	fillRect(canvas, 'orange', cx - 3, cy + 13, cx - 2, cy + 15);
+	fillRect(canvas, 'orange', cx + 2, cy + 13, cx + 3, cy + 15);
+	drawLine(canvas, 'black', cx - 4, cy + 15, cx + 4, cy + 15);
 }
 
 function drawFriendlyFishScene(canvas, gridSize) {

@@ -1,3 +1,3 @@
-import { SmartTilesApp } from './play-tiles/app.js?v=20';
+import { SmartTilesApp } from './play-tiles/app.js?v=21';
 
 new SmartTilesApp().start();
