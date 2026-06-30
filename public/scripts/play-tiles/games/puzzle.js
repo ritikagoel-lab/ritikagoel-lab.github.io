@@ -160,6 +160,12 @@ export class PuzzleGame {
 					type: 'puzzle',
 					pixels,
 					rotation,
+					render: this.difficulty === 'difficult' ? 'pixel' : 'lcd-puzzle',
+					row,
+					col,
+					gridSize: this.gridSize,
+					seed: this.puzzleSeed,
+					difficulty: this.difficulty,
 				},
 				kind: 'puzzle',
 				reusable: false,
@@ -232,6 +238,12 @@ export class PuzzleGame {
 				type: 'puzzle',
 				pixels: source.puzzle.pixels,
 				rotation: tile.gameData.rotation,
+				render: source.puzzle.difficulty === 'difficult' ? 'pixel' : 'lcd-puzzle',
+				row: source.puzzle.row,
+				col: source.puzzle.col,
+				gridSize: source.puzzle.gridSize,
+				seed: this.puzzleSeed,
+				difficulty: source.puzzle.difficulty,
 			},
 			this.solved ? 'puzzle-solved' : 'puzzle-tile',
 		);
@@ -400,7 +412,11 @@ export class PuzzleGame {
 
 		const image = document.createElement('div');
 		image.className = 'puzzle-reference-image';
-		image.appendChild(makeLargePixelMatrix(makeSolvedCanvas(this.gridSize, this.puzzleSeed, this.difficulty)));
+		image.appendChild(
+			this.difficulty === 'difficult'
+				? makeLargePixelMatrix(makeSolvedCanvas(this.gridSize, this.puzzleSeed, this.difficulty))
+				: makeLcdPuzzleReference(this.gridSize, this.puzzleSeed),
+		);
 
 		wrapper.append(image, copy);
 		return wrapper;
@@ -417,7 +433,11 @@ export class PuzzleGame {
 
 		const zoom = document.createElement('div');
 		zoom.className = 'puzzle-complete-zoom';
-		zoom.appendChild(makeLargePixelMatrix(makeSolvedCanvas(this.gridSize, this.puzzleSeed, this.difficulty)));
+		zoom.appendChild(
+			this.difficulty === 'difficult'
+				? makeLargePixelMatrix(makeSolvedCanvas(this.gridSize, this.puzzleSeed, this.difficulty))
+				: makeLcdPuzzleReference(this.gridSize, this.puzzleSeed),
+		);
 		wrapper.appendChild(zoom);
 
 		const playAgain = document.createElement('button');
@@ -485,6 +505,217 @@ function makeLargePixelMatrix(pixelRows) {
 		matrix.appendChild(pixel);
 	});
 	return matrix;
+}
+
+function makeLcdPuzzleReference(gridSize, seed = 0) {
+	const template = document.createElement('template');
+	template.innerHTML = lcdPuzzleReferenceSvg(gridSize, seed).trim();
+	const svg = template.content.firstElementChild;
+	svg.classList.add('lcd-puzzle-reference-svg');
+	return svg;
+}
+
+function lcdPuzzleReferenceSvg(gridSize, seed = 0) {
+	const viewSize = gridSize * 64;
+	const scenes = [
+		() => hotAirBalloonReferenceSvg(viewSize),
+		() => rocketReferenceSvg(viewSize),
+		() => houseReferenceSvg(viewSize),
+		() => boatReferenceSvg(viewSize),
+		() => fishReferenceSvg(viewSize),
+		() => duckReferenceSvg(viewSize),
+		() => butterflyReferenceSvg(viewSize),
+		() => flowerReferenceSvg(viewSize),
+	];
+	return scenes[seed % scenes.length]();
+}
+
+function svgShell(viewSize, body) {
+	return `<svg class="lcd-svg lcd-puzzle-reference-svg" viewBox="0 0 ${viewSize} ${viewSize}" aria-hidden="true">${body}${puzzleTileToneLayer(viewSize)}</svg>`;
+}
+
+function puzzleTileToneLayer(viewSize) {
+	const tileSize = 64;
+	const gridSize = Math.round(viewSize / tileSize);
+	const tones = [
+		['#ffffff', 0.04],
+		['#bae6fd', 0.08],
+		['#fef3c7', 0.07],
+		['#bbf7d0', 0.07],
+		['#fecdd3', 0.06],
+		['#dbeafe', 0.08],
+		['#ffffff', 0.02],
+		['#fed7aa', 0.06],
+		['#cffafe', 0.07],
+	];
+	const panels = [];
+	for (let index = 0; index < gridSize * gridSize; index += 1) {
+		const row = Math.floor(index / gridSize);
+		const col = index % gridSize;
+		const x = col * tileSize;
+		const y = row * tileSize;
+		const [color, opacity] = tones[index % tones.length];
+		panels.push(`<rect x="${x}" y="${y}" width="${tileSize}" height="${tileSize}" fill="${color}" opacity="${opacity}"/>`);
+	}
+	return `<g style="mix-blend-mode:soft-light">${panels.join('')}</g>`;
+}
+
+function hotAirBalloonReferenceSvg(viewSize) {
+	const scale = viewSize / 24;
+	return svgShell(viewSize, `
+		<rect width="${viewSize}" height="${viewSize}" fill="#60a5fa"/>
+		<path d="M0 0h${viewSize}v${9 * scale}H0Z" fill="#3b82f6" opacity=".18"/>
+		<path d="M0 ${12 * scale}h${viewSize}v${12 * scale}H0Z" fill="#f0abfc"/>
+		<path d="M0 ${15 * scale}h${viewSize}v${9 * scale}H0Z" fill="#f9a8d4"/>
+		<path d="M0 ${18 * scale}h${viewSize}v${6 * scale}H0Z" fill="#67e8f9"/>
+		<path d="M0 ${20.2 * scale}c${4 * scale}-${1.2 * scale} ${7 * scale}-${0.7 * scale} ${11 * scale} ${0.3 * scale}c${4.2 * scale} ${1.1 * scale} ${7.2 * scale} ${0.5 * scale} ${13 * scale}-${1.3 * scale}v${5 * scale}H0Z" fill="#22c5c9" opacity=".72"/>
+		<path d="M${1.2 * scale} ${23.2 * scale}c${3.2 * scale}-${1.5 * scale} ${6.3 * scale}-${1.7 * scale} ${10 * scale}-${0.5 * scale}" fill="none" stroke="#c084fc" stroke-width="${0.8 * scale}" stroke-linecap="round" opacity=".86"/>
+		<path d="M${16.3 * scale} ${20.9 * scale}c${2.2 * scale}-${0.8 * scale} ${4.2 * scale}-${0.8 * scale} ${6.1 * scale} .1" fill="none" stroke="#0891b2" stroke-width="${0.75 * scale}" stroke-linecap="round" opacity=".65"/>
+		<g fill="#fde047" opacity=".9">
+			<circle cx="${3.4 * scale}" cy="${21.1 * scale}" r="${0.28 * scale}"/>
+			<circle cx="${6.2 * scale}" cy="${22.5 * scale}" r="${0.24 * scale}"/>
+			<circle cx="${19.4 * scale}" cy="${21.5 * scale}" r="${0.26 * scale}"/>
+		</g>
+		<g fill="#fff" opacity=".95">
+			<ellipse cx="${4 * scale}" cy="${4 * scale}" rx="${3.3 * scale}" ry="${1.4 * scale}"/>
+			<ellipse cx="${19 * scale}" cy="${5 * scale}" rx="${3.5 * scale}" ry="${1.5 * scale}"/>
+			<ellipse cx="${4 * scale}" cy="${12 * scale}" rx="${3.1 * scale}" ry="${1.3 * scale}"/>
+			<ellipse cx="${21 * scale}" cy="${11.5 * scale}" rx="${2.4 * scale}" ry="${1 * scale}"/>
+		</g>
+		<ellipse cx="${11 * scale}" cy="${6.3 * scale}" rx="${5.7 * scale}" ry="${6.3 * scale}" fill="#f97316"/>
+		<path d="M${11 * scale} ${0.5 * scale}c${2.9 * scale} ${3 * scale} ${3.1 * scale} ${8.6 * scale} 0 ${11.4 * scale}c${-3.1 * scale}-${2.8 * scale}-${2.9 * scale}-${8.4 * scale} 0-${11.4 * scale}Z" fill="#facc15"/>
+		<path d="M${5.6 * scale} ${5.6 * scale}c${1.1 * scale}-${3.1 * scale} ${3.1 * scale}-${4.7 * scale} ${5.4 * scale}-${4.9 * scale}c${2.7 * scale} ${0.2 * scale} ${4.6 * scale} ${1.8 * scale} ${5.2 * scale} ${4.7 * scale}" fill="#ef4444"/>
+		<path d="M${8 * scale} ${12.2 * scale} ${8.5 * scale} ${16 * scale}M${14 * scale} ${11.8 * scale} ${14.8 * scale} ${16 * scale}" stroke="#fff" stroke-width="${0.55 * scale}"/>
+		<rect x="${8.3 * scale}" y="${16 * scale}" width="${6 * scale}" height="${4.5 * scale}" rx="${0.7 * scale}" fill="#92400e"/>
+	`);
+}
+
+function rocketReferenceSvg(viewSize) {
+	const scale = viewSize / 24;
+	return svgShell(viewSize, `
+		<rect width="${viewSize}" height="${viewSize}" fill="#1e3a8a"/>
+		<path d="M0 ${18 * scale}c${7 * scale}-${2 * scale} ${13 * scale}-${1 * scale} ${24 * scale}-${4 * scale}v${10 * scale}H0Z" fill="#172554" opacity=".7"/>
+		<circle cx="${4 * scale}" cy="${4 * scale}" r="${0.8 * scale}" fill="#fde047"/><circle cx="${18 * scale}" cy="${5 * scale}" r="${0.7 * scale}" fill="#f8fafc"/>
+		<circle cx="${21 * scale}" cy="${14 * scale}" r="${0.6 * scale}" fill="#fde047"/><circle cx="${6 * scale}" cy="${19 * scale}" r="${0.6 * scale}" fill="#f8fafc"/>
+		<path d="M${10.5 * scale} ${2 * scale}c${4.2 * scale} ${4.4 * scale} ${4.1 * scale} ${12.5 * scale}-${0.6 * scale} ${16.4 * scale}c${-3.6 * scale}-${4.5 * scale}-${3.2 * scale}-${12.4 * scale} ${0.6 * scale}-${16.4 * scale}Z" fill="#f8fafc"/>
+		<path d="M${10.5 * scale} ${2 * scale}c${2.1 * scale} ${2 * scale} ${3.1 * scale} ${4 * scale} ${3.4 * scale} ${6 * scale}h-${6.6 * scale}c${0.6 * scale}-${2 * scale} ${1.6 * scale}-${4 * scale} ${3.2 * scale}-${6 * scale}Z" fill="#ef4444"/>
+		<circle cx="${10.7 * scale}" cy="${11 * scale}" r="${2 * scale}" fill="#38bdf8"/>
+		<path d="M${7 * scale} ${17 * scale} ${4 * scale} ${21 * scale}h${5 * scale}Z M${14 * scale} ${16.8 * scale} ${18.5 * scale} ${20.2 * scale}h-${5.2 * scale}Z" fill="#ef4444"/>
+		<path d="M${8.7 * scale} ${20 * scale}h${4 * scale}l-${2.5 * scale} ${4 * scale}Z" fill="#facc15"/>
+	`);
+}
+
+function houseReferenceSvg(viewSize) {
+	const scale = viewSize / 24;
+	return svgShell(viewSize, `
+		<rect width="${viewSize}" height="${viewSize}" fill="#93c5fd"/>
+		<path d="M0 0h${viewSize}v${7.8 * scale}H0Z" fill="#bfdbfe" opacity=".7"/>
+		<path d="M0 ${8.5 * scale}c${5 * scale}-${1.4 * scale} ${9 * scale}-${1.1 * scale} ${13 * scale}.2c${3.5 * scale} 1 ${6.3 * scale}.7 ${11 * scale}-${1.1 * scale}v${4 * scale}H0Z" fill="#60a5fa" opacity=".34"/>
+		<path d="M${1.5 * scale} ${4.2 * scale}c${2 * scale}-.8 ${3.5 * scale}-.8 ${5.7 * scale}.1M${12.5 * scale} ${2.8 * scale}c${2.2 * scale}-.7 ${4.1 * scale}-.5 ${6.4 * scale}.4" fill="none" stroke="#e0f2fe" stroke-width="${0.9 * scale}" stroke-linecap="round" opacity=".86"/>
+		<circle cx="${19 * scale}" cy="${5 * scale}" r="${2.5 * scale}" fill="#fde047"/>
+		<path d="M0 ${18 * scale}c${6 * scale}-${3 * scale} ${12 * scale}-${2 * scale} ${24 * scale}-${5 * scale}v${11 * scale}H0Z" fill="#22c55e"/>
+		<path d="M${4 * scale} ${13 * scale} ${12 * scale} ${6 * scale} ${20 * scale} ${13 * scale}Z" fill="#ef4444"/>
+		<rect x="${6 * scale}" y="${13 * scale}" width="${12 * scale}" height="${8 * scale}" rx="${1 * scale}" fill="#fde68a"/>
+		<rect x="${10.5 * scale}" y="${16 * scale}" width="${3 * scale}" height="${5 * scale}" fill="#92400e"/>
+		<rect x="${7.5 * scale}" y="${14.5 * scale}" width="${2.5 * scale}" height="${2.5 * scale}" fill="#60a5fa"/>
+		<rect x="${14 * scale}" y="${14.5 * scale}" width="${2.5 * scale}" height="${2.5 * scale}" fill="#60a5fa"/>
+	`);
+}
+
+function boatReferenceSvg(viewSize) {
+	const scale = viewSize / 24;
+	return svgShell(viewSize, `
+		<rect width="${viewSize}" height="${viewSize}" fill="#7dbfff"/>
+		<path d="M0 ${7 * scale}h${viewSize}v${9 * scale}H0Z" fill="#60a5fa" opacity=".82"/>
+		<path d="M0 ${13 * scale}c${4 * scale}-${1.1 * scale} ${7 * scale}-${0.7 * scale} ${10 * scale} 0c${4 * scale} ${1.1 * scale} ${8 * scale} ${0.8 * scale} ${14 * scale}-${1.1 * scale}v${4.1 * scale}H0Z" fill="#93c5fd" opacity=".52"/>
+		<g fill="#f8fafc" opacity=".96">
+			<ellipse cx="${3.1 * scale}" cy="${3.2 * scale}" rx="${2.4 * scale}" ry="${0.9 * scale}"/>
+			<ellipse cx="${3.8 * scale}" cy="${2.7 * scale}" rx="${1.3 * scale}" ry="${0.8 * scale}"/>
+			<ellipse cx="${2 * scale}" cy="${3.5 * scale}" rx="${1.2 * scale}" ry="${0.7 * scale}"/>
+			<ellipse cx="${4.2 * scale}" cy="${10.9 * scale}" rx="${2.1 * scale}" ry="${0.85 * scale}"/>
+			<ellipse cx="${3.3 * scale}" cy="${10.5 * scale}" rx="${1.1 * scale}" ry="${0.65 * scale}"/>
+			<ellipse cx="${21 * scale}" cy="${3.8 * scale}" rx="${2.2 * scale}" ry="${0.85 * scale}"/>
+			<ellipse cx="${20.2 * scale}" cy="${3.4 * scale}" rx="${1.1 * scale}" ry="${0.65 * scale}"/>
+		</g>
+		<path d="M0 ${16 * scale}h${viewSize}v${8 * scale}H0Z" fill="#2563eb"/>
+		<path d="M${5 * scale} ${15 * scale}h${14 * scale}l-${3 * scale} ${5 * scale}H${8 * scale}Z" fill="#92400e"/>
+		<path d="M${12 * scale} ${4 * scale}v${11 * scale}" stroke="#78350f" stroke-width="${0.7 * scale}"/>
+		<path d="M${12 * scale} ${5 * scale} ${12 * scale} ${14 * scale} ${5 * scale} ${14 * scale}Z" fill="#f8fafc"/>
+		<path d="M${13 * scale} ${6 * scale} ${13 * scale} ${14 * scale} ${20 * scale} ${14 * scale}Z" fill="#facc15"/>
+		<path d="M0 ${19 * scale}c${3 * scale} ${1.5 * scale} ${5 * scale} ${1.5 * scale} ${8 * scale} 0c${3 * scale}-${1.5 * scale} ${5 * scale}-${1.5 * scale} ${8 * scale} 0c${3 * scale} ${1.5 * scale} ${5 * scale} ${1.5 * scale} ${8 * scale} 0" fill="none" stroke="#bfdbfe" stroke-width="${0.8 * scale}"/>
+	`);
+}
+
+function fishReferenceSvg(viewSize) {
+	const scale = viewSize / 24;
+	return svgShell(viewSize, `
+		<rect width="${viewSize}" height="${viewSize}" fill="#38bdf8"/>
+		<path d="M0 ${5 * scale}h${viewSize}v${19 * scale}H0Z" fill="#2563eb" opacity=".52"/>
+		<path d="M0 ${18 * scale}c${5 * scale}-${2 * scale} ${9 * scale}-${1 * scale} ${14 * scale} .6c${3 * scale} 1 ${6 * scale} .7 ${10 * scale}-${1.2 * scale}v${6.6 * scale}H0Z" fill="#0f766e" opacity=".45"/>
+		<path d="M${5 * scale} ${12 * scale} ${1.5 * scale} ${7 * scale}v${10 * scale}Z" fill="#22c55e"/>
+		<ellipse cx="${13.5 * scale}" cy="${12 * scale}" rx="${7.5 * scale}" ry="${4.8 * scale}" fill="#f97316"/>
+		<ellipse cx="${15.2 * scale}" cy="${12.2 * scale}" rx="${4.6 * scale}" ry="${3 * scale}" fill="#facc15"/>
+		<path d="M${11 * scale} ${7.8 * scale}c${2 * scale}-${2 * scale} ${4.4 * scale}-${2.5 * scale} ${7 * scale}-${1.2 * scale}c${-1 * scale} ${2.8 * scale}-${3.5 * scale} ${3.9 * scale}-${7 * scale} ${3.2 * scale}Z" fill="#fb923c"/>
+		<circle cx="${18.5 * scale}" cy="${10.7 * scale}" r="${0.6 * scale}" fill="#111827"/>
+		<path d="M${2 * scale} ${4 * scale}c${2 * scale} 1 ${4 * scale} 1 ${6 * scale} 0M${16 * scale} ${19 * scale}c${2.5 * scale} 1.2 ${4.5 * scale} 1 ${6.5 * scale}-.3" fill="none" stroke="#bfdbfe" stroke-width="${0.75 * scale}" stroke-linecap="round"/>
+	`);
+}
+
+function duckReferenceSvg(viewSize) {
+	const scale = viewSize / 24;
+	return svgShell(viewSize, `
+		<rect width="${viewSize}" height="${viewSize}" fill="#93c5fd"/>
+		<path d="M0 ${12 * scale}h${viewSize}v${12 * scale}H0Z" fill="#38bdf8"/>
+		<path d="M0 ${17 * scale}c${3 * scale} ${1.2 * scale} ${5 * scale} ${1.2 * scale} ${8 * scale} 0c${3 * scale}-${1.2 * scale} ${5 * scale}-${1.2 * scale} ${8 * scale} 0c${3 * scale} ${1.2 * scale} ${5 * scale} ${1.2 * scale} ${8 * scale} 0" fill="none" stroke="#dbeafe" stroke-width="${0.85 * scale}"/>
+		<circle cx="${19 * scale}" cy="${4 * scale}" r="${2.4 * scale}" fill="#fde047"/>
+		<ellipse cx="${10.8 * scale}" cy="${14.4 * scale}" rx="${6 * scale}" ry="${3.6 * scale}" fill="#facc15"/>
+		<ellipse cx="${7.2 * scale}" cy="${10.3 * scale}" rx="${3 * scale}" ry="${3.1 * scale}" fill="#facc15"/>
+		<path d="M${4.4 * scale} ${10.5 * scale}h-${3.3 * scale}l${2.8 * scale}-${1.4 * scale}Z" fill="#f97316"/>
+		<path d="M${10 * scale} ${14.2 * scale}c${2.5 * scale}-${1.6 * scale} ${5.5 * scale}-${1 * scale} ${7 * scale} ${1.3 * scale}c-${2.5 * scale} .8-${5 * scale} .6-${7}-${1.3}Z" fill="#f59e0b"/>
+		<circle cx="${7.8 * scale}" cy="${9.5 * scale}" r="${0.55 * scale}" fill="#111827"/>
+		<path d="M0 ${22 * scale}c${4 * scale}-${1 * scale} ${7 * scale}-.8 ${10 * scale} .2c${4 * scale} 1.2 ${8 * scale}.8 ${14 * scale}-${1}" fill="none" stroke="#2563eb" stroke-width="${0.8 * scale}"/>
+	`);
+}
+
+function butterflyReferenceSvg(viewSize) {
+	const scale = viewSize / 24;
+	return svgShell(viewSize, `
+		<rect width="${viewSize}" height="${viewSize}" fill="#86efac"/>
+		<path d="M0 ${17 * scale}c${6 * scale}-${2.5 * scale} ${12 * scale}-${1 * scale} ${24 * scale}-${4 * scale}v${11 * scale}H0Z" fill="#22c55e"/>
+		<path d="M${5 * scale} ${5 * scale}c${-2.5 * scale} ${1.8 * scale}-${2.4 * scale} ${7.2 * scale} ${1.3 * scale} ${8.7 * scale}c${2.4 * scale}-${1.4 * scale} ${3.4 * scale}-${4.3 * scale} ${3 * scale}-${7.5 * scale}c-${1.1 * scale}-${1.4 * scale}-${2.4 * scale}-${1.8 * scale}-${4.3 * scale}-${1.2 * scale}Z" fill="#ec4899"/>
+		<path d="M${16 * scale} ${4 * scale}c${3.8 * scale} ${1.2 * scale} ${4.3 * scale} ${7.1 * scale} .4 ${9.2 * scale}c-${2.9 * scale}-${1.1 * scale}-${4.2 * scale}-${4.1 * scale}-${3.4 * scale}-${7.3 * scale}c.6-1.2 1.5-1.8 3-1.9Z" fill="#f97316"/>
+		<path d="M${8.4 * scale} ${13 * scale}c-${2.4 * scale} ${2.1 * scale}-${1.6 * scale} ${5.2 * scale} ${1.4 * scale} ${6.2 * scale}c${1.2 * scale}-${1.8 * scale} ${1.1 * scale}-${4.1}-${1.4}-${6.2}Z" fill="#60a5fa"/>
+		<path d="M${14 * scale} ${12.2 * scale}c${3.5 * scale} ${1.5 * scale} ${4 * scale} ${5.1 * scale} ${0.8 * scale} ${6.6 * scale}c-${1.7 * scale}-${1.5 * scale}-${2.1 * scale}-${4.1 * scale}-${0.8 * scale}-${6.6 * scale}Z" fill="#a855f7"/>
+		<path d="M${11.8 * scale} ${5.5 * scale}c${1.1 * scale} ${3.5 * scale} ${1.1 * scale} ${9.7 * scale}-.2 ${15 * scale}" stroke="#111827" stroke-width="${0.75 * scale}" stroke-linecap="round"/>
+		<path d="M${11.4 * scale} ${5.5 * scale} ${8.7 * scale} ${2.6 * scale}M${12.3 * scale} ${5.5 * scale} ${15.7 * scale} ${2.3 * scale}" stroke="#111827" stroke-width="${0.45 * scale}" stroke-linecap="round"/>
+	`);
+}
+
+function flowerReferenceSvg(viewSize) {
+	const scale = viewSize / 24;
+	return svgShell(viewSize, `
+		<rect width="${viewSize}" height="${viewSize}" fill="#bfdbfe"/>
+		<path d="M0 ${15 * scale}c${6 * scale}-${2 * scale} ${11 * scale}-${1 * scale} ${24 * scale}-${3.5 * scale}v${12.5 * scale}H0Z" fill="#4ade80"/>
+		<path d="M0 ${22 * scale}c${4.5 * scale}-${1.5 * scale} ${8 * scale}-${0.8 * scale} ${12 * scale} ${0.4 * scale}c${4 * scale} ${1.2 * scale} ${7 * scale} ${0.7 * scale} ${12 * scale}-${1.4 * scale}v${3 * scale}H0Z" fill="#22c55e" opacity=".62"/>
+		<path d="M${1.2 * scale} ${23.2 * scale}c${4.5 * scale}-${2.6 * scale} ${8.5 * scale}-${2.4 * scale} ${13 * scale}-${0.4 * scale}" fill="none" stroke="#d6a15a" stroke-width="${1.1 * scale}" stroke-linecap="round" opacity=".78"/>
+		<path d="M${1.5 * scale} ${19 * scale}l${0.9 * scale}-${2 * scale} ${0.6 * scale} ${2.3 * scale} ${1.2 * scale}-${1.4 * scale}M${5 * scale} ${21 * scale}l${0.8 * scale}-${2.4 * scale} ${0.8 * scale} ${2.6 * scale} ${1.1 * scale}-${1.6 * scale}M${13.5 * scale} ${18.8 * scale}l${0.7 * scale}-${2.1 * scale} ${0.9 * scale} ${2.3 * scale} ${1.1 * scale}-${1.7 * scale}M${20 * scale} ${20.5 * scale}l${0.7 * scale}-${2.2 * scale} ${0.8 * scale} ${2.4 * scale} ${1.1 * scale}-${1.4 * scale}" fill="none" stroke="#15803d" stroke-width="${0.45 * scale}" stroke-linecap="round"/>
+		<g fill="#fde047">
+			<circle cx="${3.4 * scale}" cy="${18.4 * scale}" r="${0.35 * scale}"/>
+			<circle cx="${6.8 * scale}" cy="${22.1 * scale}" r="${0.32 * scale}"/>
+			<circle cx="${18.7 * scale}" cy="${18.6 * scale}" r="${0.32 * scale}"/>
+			<circle cx="${22.1 * scale}" cy="${21.9 * scale}" r="${0.35 * scale}"/>
+		</g>
+		<path d="M${8 * scale} ${13 * scale}v${9 * scale}M${16.5 * scale} ${10 * scale}v${11 * scale}" stroke="#15803d" stroke-width="${0.9 * scale}" stroke-linecap="round"/>
+		<ellipse cx="${7 * scale}" cy="${10 * scale}" rx="${2.5 * scale}" ry="${4.4 * scale}" fill="#f472b6" transform="rotate(-25 ${7 * scale} ${10 * scale})"/>
+		<ellipse cx="${10 * scale}" cy="${8.8 * scale}" rx="${2.5 * scale}" ry="${4.2 * scale}" fill="#fb7185" transform="rotate(32 ${10 * scale} ${8.8 * scale})"/>
+		<ellipse cx="${9.2 * scale}" cy="${12 * scale}" rx="${2.4 * scale}" ry="${3.7 * scale}" fill="#e879f9" transform="rotate(104 ${9.2 * scale} ${12 * scale})"/>
+		<circle cx="${8.5 * scale}" cy="${10.3 * scale}" r="${1.4 * scale}" fill="#facc15"/>
+		<ellipse cx="${15.2 * scale}" cy="${7 * scale}" rx="${2 * scale}" ry="${3.4 * scale}" fill="#f97316" transform="rotate(-38 ${15.2 * scale} ${7 * scale})"/>
+		<ellipse cx="${18.5 * scale}" cy="${7.4 * scale}" rx="${2 * scale}" ry="${3.4 * scale}" fill="#fde047" transform="rotate(42 ${18.5 * scale} ${7.4 * scale})"/>
+		<ellipse cx="${16.7 * scale}" cy="${9.4 * scale}" rx="${2.2 * scale}" ry="${3.3 * scale}" fill="#fb923c" transform="rotate(110 ${16.7 * scale} ${9.4 * scale})"/>
+		<circle cx="${16.8 * scale}" cy="${8 * scale}" r="${1.2 * scale}" fill="#7c2d12"/>
+		<path d="M${3 * scale} ${20 * scale}c${4 * scale}-${1.4 * scale} ${7 * scale}-${1.2 * scale} ${11 * scale}.3c${2.5 * scale}.9 ${5 * scale}.6 ${8 * scale}-.8" fill="none" stroke="#166534" stroke-width="${0.7 * scale}"/>
+	`);
 }
 
 function drawPuzzlePaths(canvas, gridSize, seed = 0, difficulty = 'medium') {
@@ -671,56 +902,72 @@ function drawRocketScene(canvas, gridSize) {
 }
 
 function drawDifficultConnectors(canvas, gridSize, seed = 0) {
-	const markerPalettes = [
-		['red', 'blue', 'yellow', 'magenta', 'white', 'green', 'cyan', 'orange', 'green'],
-		['cyan', 'yellow', 'red', 'orange', 'white', 'blue', 'green', 'magenta', 'yellow'],
-		['green', 'magenta', 'cyan', 'blue', 'white', 'orange', 'red', 'yellow', 'green'],
+	const routeSets = gridSize === 2 ? strawRoutes2x2() : strawRoutes3x3();
+	const offset = seed % routeSets.length;
+	[...routeSets.slice(offset), ...routeSets.slice(0, offset)].forEach((route) => drawStrawPath(canvas, route.color, route.points));
+	drawStrawTerminals(canvas, gridSize);
+}
+
+function strawRoutes2x2() {
+	return [
+		{ color: 'magenta', points: [[2, 3], [6, 3], [6, 12], [9, 12]] },
+		{ color: 'red', points: [[1, 10], [5, 10], [5, 5], [12, 5], [12, 13]] },
+		{ color: 'green', points: [[2, 4], [8, 4], [8, 10], [14, 10]] },
+		{ color: 'cyan', points: [[9, 1], [9, 3], [14, 3], [14, 8]] },
+		{ color: 'orange', points: [[3, 13], [3, 15], [7, 15], [7, 10]] },
+		{ color: 'white', points: [[1, 14], [10, 14], [10, 8], [14, 8]] },
+		{ color: 'blue', points: [[1, 7], [4, 7], [4, 11], [11, 11]] },
 	];
-	const markerShapes = seed % 2 === 0
-		? ['plus', 'box', 'corner', 'zig', 'ladder', 'fork', 'slash', 'gate', 'steps']
-		: ['corner', 'slash', 'gate', 'box', 'plus', 'steps', 'fork', 'zig', 'ladder'];
-	const palette = markerPalettes[seed % markerPalettes.length];
+}
 
-	Array.from({ length: gridSize * gridSize }, (_, index) => {
-		drawCellMarker(canvas, Math.floor(index / gridSize), index % gridSize, palette[index % palette.length], markerShapes[index % markerShapes.length]);
+function strawRoutes3x3() {
+	return [
+		{ color: 'magenta', points: [[2, 4], [8, 4], [8, 12], [16, 12], [16, 21]] },
+		{ color: 'red', points: [[1, 18], [6, 18], [6, 6], [14, 6], [14, 14], [22, 14]] },
+		{ color: 'green', points: [[3, 5], [10, 5], [10, 18], [17, 18], [17, 10], [22, 10]] },
+		{ color: 'cyan', points: [[13, 1], [13, 4], [20, 4], [20, 13], [23, 13]] },
+		{ color: 'white', points: [[4, 21], [12, 21], [12, 15], [20, 15], [20, 22]] },
+		{ color: 'orange', points: [[5, 13], [5, 16], [11, 16], [11, 13], [17, 13]] },
+		{ color: 'blue', points: [[2, 12], [7, 12], [7, 20], [19, 20]] },
+		{ color: 'yellow', points: [[11, 2], [16, 2], [16, 16], [21, 16]] },
+	];
+}
+
+function drawStrawPath(canvas, color, points) {
+	for (let index = 0; index < points.length - 1; index += 1) {
+		drawStrawSegment(canvas, color, points[index], points[index + 1]);
+	}
+}
+
+function drawStrawSegment(canvas, color, start, end) {
+	const [x1, y1] = start;
+	const [x2, y2] = end;
+	if (x1 === x2) {
+		const minY = Math.min(y1, y2);
+		const maxY = Math.max(y1, y2);
+		drawLine(canvas, color, x1, minY, x1, maxY);
+		return;
+	}
+	if (y1 === y2) {
+		const minX = Math.min(x1, x2);
+		const maxX = Math.max(x1, x2);
+		drawLine(canvas, color, minX, y1, maxX, y1);
+	}
+}
+
+function drawStrawTerminals(canvas, gridSize) {
+	const size = gridSize * 8;
+	const caps = gridSize === 2
+		? [
+			['green', 1, 4], ['cyan', 14, 2], ['white', 13, 8], ['orange', 6, 14],
+		]
+		: [
+			['magenta', 2, 4], ['red', 22, 14], ['green', 22, 10], ['cyan', 20, 4],
+			['white', 20, 22], ['orange', 5, 13], ['blue', 2, 12], ['yellow', 21, 16],
+	];
+	caps.forEach(([color, x, y]) => {
+		if (x < size && y < size) setPixel(canvas, x, y, color);
 	});
-
-	const horizontalKeys = rotatedSignatures([
-		{ color: 'blue', offsets: [1], accent: 'dot' },
-		{ color: 'red', offsets: [2, 5], accent: 'bar' },
-		{ color: 'yellow', offsets: [6], accent: 'cap' },
-		{ color: 'magenta', offsets: [3], accent: 'bar' },
-		{ color: 'cyan', offsets: [1, 4], accent: 'cap' },
-		{ color: 'orange', offsets: [5], accent: 'dot' },
-		{ color: 'green', offsets: [2], accent: 'cap' },
-		{ color: 'white', offsets: [4, 6], accent: 'bar' },
-	], seed);
-	const verticalKeys = rotatedSignatures([
-		{ color: 'cyan', offsets: [2], accent: 'dot' },
-		{ color: 'orange', offsets: [5], accent: 'bar' },
-		{ color: 'green', offsets: [1, 6], accent: 'cap' },
-		{ color: 'white', offsets: [4], accent: 'dot' },
-		{ color: 'blue', offsets: [3, 5], accent: 'cap' },
-		{ color: 'yellow', offsets: [2], accent: 'bar' },
-		{ color: 'magenta', offsets: [6], accent: 'dot' },
-		{ color: 'red', offsets: [1, 4], accent: 'cap' },
-	], seed + 3);
-
-	let keyIndex = 0;
-	for (let row = 0; row < gridSize; row += 1) {
-		for (let col = 0; col < gridSize - 1; col += 1) {
-			drawHorizontalConnector(canvas, row, col, horizontalKeys[keyIndex % horizontalKeys.length]);
-			keyIndex += 1;
-		}
-	}
-
-	keyIndex = 0;
-	for (let row = 0; row < gridSize - 1; row += 1) {
-		for (let col = 0; col < gridSize; col += 1) {
-			drawVerticalConnector(canvas, row, col, verticalKeys[keyIndex % verticalKeys.length]);
-			keyIndex += 1;
-		}
-	}
 }
 
 function rotatedSignatures(signatures, seed = 0) {
@@ -922,93 +1169,54 @@ function drawCellMarker(canvas, row, col, color, shape) {
 		plus: [
 			[3, 3],
 			[4, 3],
-			[5, 3],
-			[4, 2],
+			[3, 4],
 			[4, 4],
-			[4, 5],
 		],
 		box: [
-			[2, 2],
-			[3, 2],
-			[4, 2],
-			[5, 2],
-			[2, 3],
-			[5, 3],
-			[2, 4],
-			[5, 4],
-			[2, 5],
-			[3, 5],
-			[4, 5],
-			[5, 5],
+			[3, 3],
+			[4, 3],
+			[3, 4],
+			[4, 4],
 		],
 		corner: [
-			[2, 2],
-			[2, 3],
-			[2, 4],
-			[2, 5],
-			[3, 5],
-			[4, 5],
-			[5, 5],
+			[3, 3],
+			[3, 4],
+			[4, 4],
 		],
 		zig: [
-			[2, 2],
-			[3, 2],
 			[3, 3],
 			[4, 3],
+			[3, 4],
 			[4, 4],
-			[5, 4],
-			[5, 5],
 		],
 		ladder: [
-			[2, 2],
-			[5, 2],
-			[2, 3],
 			[3, 3],
 			[4, 3],
-			[5, 3],
-			[2, 4],
-			[5, 4],
-			[2, 5],
-			[3, 5],
-			[4, 5],
-			[5, 5],
+			[3, 4],
+			[4, 4],
 		],
 		fork: [
-			[3, 2],
 			[3, 3],
 			[3, 4],
-			[3, 5],
 			[4, 3],
-			[5, 3],
 			[4, 5],
-			[5, 5],
 		],
 		slash: [
-			[5, 2],
-			[4, 3],
 			[3, 4],
-			[2, 5],
-			[2, 2],
+			[4, 3],
 			[3, 2],
 		],
 		gate: [
-			[2, 5],
-			[2, 4],
-			[2, 3],
 			[3, 3],
 			[4, 3],
-			[5, 3],
-			[5, 4],
-			[5, 5],
+			[3, 4],
+			[4, 4],
 		],
 		steps: [
-			[2, 2],
 			[3, 2],
 			[3, 3],
 			[4, 3],
 			[4, 4],
-			[5, 4],
-			[5, 5],
 		],
 	};
 	points[shape].forEach(([pointX, pointY]) => setPixel(canvas, x + pointX, y + pointY, color));

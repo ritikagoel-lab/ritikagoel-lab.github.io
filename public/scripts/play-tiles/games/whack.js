@@ -1,15 +1,6 @@
-import { blankTilePack, squareLayout } from '../config.js?v=3';
+import { blankTilePack, squareLayout } from '../config.js?v=6';
 
-const molePixels = [
-	['yellow', 'yellow', 'magenta', 'magenta', 'magenta', 'magenta', 'yellow', 'yellow'],
-	['yellow', 'magenta', 'yellow', 'magenta', 'magenta', 'yellow', 'magenta', 'yellow'],
-	['magenta', 'yellow', 'black', 'yellow', 'yellow', 'black', 'yellow', 'magenta'],
-	['magenta', 'yellow', 'yellow', 'red', 'red', 'yellow', 'yellow', 'magenta'],
-	['magenta', 'yellow', 'black', 'yellow', 'yellow', 'black', 'yellow', 'magenta'],
-	['yellow', 'magenta', 'yellow', 'yellow', 'yellow', 'yellow', 'magenta', 'yellow'],
-	['yellow', 'yellow', 'magenta', 'cyan', 'cyan', 'magenta', 'yellow', 'yellow'],
-	['red', 'red', 'red', 'white', 'white', 'red', 'red', 'red'],
-];
+const moleFace = { type: 'lcd', scene: 'mole' };
 
 export class WhackGame {
 	constructor(app, board) {
@@ -123,7 +114,7 @@ export class WhackGame {
 		const shuffled = [...boardTiles].sort(() => Math.random() - 0.5);
 		shuffled.slice(0, count).forEach((tile) => {
 			tile.gameData.activeMole = true;
-			this.board.setTileDisplay(tile, molePixels, 'mole');
+			this.board.setTileDisplay(tile, moleFace, 'mole');
 			const timer = setTimeout(() => {
 				if (!this.running || !tile.gameData.activeMole) return;
 				tile.gameData.activeMole = false;

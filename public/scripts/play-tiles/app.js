@@ -1,8 +1,8 @@
-import { TileBoard } from './board.js?v=11';
-import { WhackGame } from './games/whack.js?v=6';
+import { TileBoard } from './board.js?v=20';
+import { WhackGame } from './games/whack.js?v=9';
 import { EquationGame } from './games/equation.js?v=7';
-import { MemoryGame } from './games/memory.js?v=3';
-import { PuzzleGame } from './games/puzzle.js?v=19';
+import { MemoryGame } from './games/memory.js?v=6';
+import { PuzzleGame } from './games/puzzle.js?v=30';
 
 export class SmartTilesApp {
 	constructor() {
@@ -35,6 +35,8 @@ export class SmartTilesApp {
 			memoryTileCount: document.querySelector('#memoryTileCount'),
 			memorySpeedControls: document.querySelector('#memorySpeedControls'),
 			memorySpeedMode: document.querySelector('#memorySpeedMode'),
+			memoryMatchControls: document.querySelector('#memoryMatchControls'),
+			memoryMatchMode: document.querySelector('#memoryMatchMode'),
 			puzzleDifficultyControls: document.querySelector('#puzzleDifficultyControls'),
 			puzzleDifficulty: document.querySelector('#puzzleDifficulty'),
 			puzzleControls: document.querySelector('#puzzleControls'),
@@ -99,6 +101,7 @@ export class SmartTilesApp {
 		});
 		this.elements.memoryTileCount.addEventListener('change', () => this.games.memory.setTileCount(Number(this.elements.memoryTileCount.value)));
 		this.elements.memorySpeedMode.addEventListener('change', () => this.games.memory.setSpeedMode(this.elements.memorySpeedMode.value));
+		this.elements.memoryMatchMode.addEventListener('change', () => this.games.memory.setMatchMode(this.elements.memoryMatchMode.value));
 		this.elements.puzzleDifficulty.addEventListener('change', () => this.games.puzzle.setDifficulty(this.elements.puzzleDifficulty.value));
 		this.elements.puzzleTileCount.addEventListener('change', () => this.games.puzzle.setTileCount(Number(this.elements.puzzleTileCount.value)));
 		this.elements.puzzleHintButton.addEventListener('click', () => this.games.puzzle.toggleHint());
@@ -143,6 +146,7 @@ export class SmartTilesApp {
 		this.elements.equationAnswerPanel.classList.toggle('hidden', this.mode !== 'equation');
 		this.elements.memoryControls.classList.toggle('hidden', this.mode !== 'memory');
 		this.elements.memorySpeedControls.classList.toggle('hidden', this.mode !== 'memory');
+		this.elements.memoryMatchControls.classList.toggle('hidden', this.mode !== 'memory');
 		this.elements.puzzleDifficultyControls.classList.toggle('hidden', this.mode !== 'puzzle');
 		this.elements.puzzleControls.classList.toggle('hidden', this.mode !== 'puzzle');
 		this.elements.puzzleHintButton.classList.toggle('hidden', this.mode !== 'puzzle');

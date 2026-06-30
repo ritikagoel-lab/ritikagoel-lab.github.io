@@ -1,4 +1,4 @@
-import { blankTilePack, memoryFaces, squareLayout } from '../config.js?v=3';
+import { blankTilePack, memoryFaces, squareLayout } from '../config.js?v=6';
 
 export class MemoryGame {
 	constructor(app, board) {
@@ -13,6 +13,7 @@ export class MemoryGame {
 		this.selection = [];
 		this.turnToken = 0;
 		this.speedMode = 'regular';
+		this.matchMode = 'images';
 		this.autoStartOnEnter = true;
 	}
 
@@ -34,11 +35,13 @@ export class MemoryGame {
 	}
 
 	instructions() {
-		return 'Choose tile count and Regular or Challenge mode. Matching images turn gray immediately.';
+		return 'Choose tile count, speed, and matching style. Reveal two LCD tiles at a time and find each matching pair.';
 	}
 
 	prompt() {
-		return `Memory is set to ${this.selectedCount} tiles in ${this.speedMode === 'regular' ? 'Regular' : 'Challenge'} mode. Click Start Game when you are ready.`;
+		const speed = this.speedMode === 'regular' ? 'Regular' : 'Challenge';
+		const matching = this.matchMode === 'images' ? 'matching images' : 'image-to-word matching';
+		return `Memory is set to ${this.selectedCount} tiles in ${speed} mode with ${matching}.`;
 	}
 
 	setTileCount(count) {
@@ -53,6 +56,11 @@ export class MemoryGame {
 		this.speedMode = mode;
 		this.app.setStatus(`${mode === 'regular' ? 'Regular' : 'Challenge'} mode selected.`);
 		this.app.render();
+	}
+
+	setMatchMode(mode) {
+		this.matchMode = mode === 'image-word' ? 'image-word' : 'images';
+		this.start();
 	}
 
 	autoArrange({ silent = false } = {}) {
@@ -101,10 +109,18 @@ export class MemoryGame {
 		const pairCount = this.selectedCount / 2;
 		const pairs = memoryFaces.slice(0, pairCount);
 		return pairs
-			.flatMap((pair) => [
-				{ key: pair.key, face: pair.image },
-				{ key: pair.key, face: pair.image },
-			])
+			.flatMap((pair) => {
+				if (this.matchMode === 'image-word') {
+					return [
+						{ key: pair.key, face: pair.image },
+						{ key: pair.key, face: { type: 'lcd', scene: 'word', word: pair.word } },
+					];
+				}
+				return [
+					{ key: pair.key, face: pair.image },
+					{ key: pair.key, face: pair.image },
+				];
+			})
 			.sort(() => Math.random() - 0.5);
 	}
 

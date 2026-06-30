@@ -61,6 +61,13 @@ import '../styles/play-tiles.css';
 									<option value="fast">Challenge</option>
 								</select>
 							</label>
+							<label id="memoryMatchControls" class="setup-select hidden">
+								Matching
+								<select id="memoryMatchMode">
+									<option value="images" selected>Images</option>
+									<option value="image-word">Image + Word</option>
+								</select>
+							</label>
 							<label id="puzzleDifficultyControls" class="setup-select hidden">
 								Mode
 								<select id="puzzleDifficulty">
@@ -187,6 +194,6 @@ import '../styles/play-tiles.css';
 			</section>
 		</main>
 		<Footer />
-		<script type="module" is:inline src="/scripts/play-tiles.js?v=26"></script>
+		<script type="module" is:inline src="/scripts/play-tiles.js?v=38"></script>
 	</body>
 </html>

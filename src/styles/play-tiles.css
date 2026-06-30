@@ -262,6 +262,10 @@
 	width: 118px;
 }
 
+.tiles-page #memoryMatchControls select {
+	width: 146px;
+}
+
 .tiles-page #puzzleDifficultyControls select {
 	width: 122px;
 }
@@ -729,11 +733,13 @@
 	place-items: center;
 	width: 90%;
 	aspect-ratio: 1;
-	padding: 2px;
+	padding: 3px;
 	overflow: hidden;
 	border-radius: 7px;
-	border: 1px solid rgba(255, 255, 255, 0.16);
-	background: var(--tiles-face-bg);
+	border: 1px solid rgba(15, 23, 42, 0.22);
+	background:
+		linear-gradient(145deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0) 38%),
+		var(--tiles-face-bg);
 	color: inherit;
 	font-size: 26px;
 	font-weight: 900;
@@ -755,13 +761,22 @@
 	color: transparent;
 }
 
+.tiles-page .tile.lcd-display[data-kind='blank'] .tile-face {
+	color: #17212b;
+}
+
 .tiles-page .pack-tile[data-kind='blank'] .tile-face {
 	color: #cbd5e1;
 	font-size: 16px;
 }
 
 .tiles-page .tile[data-kind='equation'] .tile-face {
-	color: var(--tiles-face-ink);
+	border-color: rgba(15, 23, 42, 0.2);
+	background:
+		linear-gradient(135deg, rgba(255, 255, 255, 0.56), rgba(255, 255, 255, 0) 34%),
+		#dff7ff;
+	color: #17212b;
+	box-shadow: inset 0 -8px 18px rgba(15, 23, 42, 0.08);
 }
 
 .tiles-page .tile.question-tile {
@@ -770,9 +785,11 @@
 }
 
 .tiles-page .tile.question-tile .tile-face {
-	border-color: rgba(255, 255, 255, 0.16);
-	background: var(--tiles-question-face);
-	color: #fff;
+	border-color: rgba(15, 23, 42, 0.24);
+	background:
+		linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0) 30%),
+		#dff7ff;
+	color: #17212b;
 }
 
 .tiles-page .tile.question-checked {
@@ -780,9 +797,9 @@
 }
 
 .tiles-page .tile.question-checked .tile-face {
-	border-color: rgba(255, 255, 255, 0.08);
-	background: #111827;
-	color: #cbd5e1;
+	border-color: rgba(15, 23, 42, 0.22);
+	background: #dbeafe;
+	color: #334155;
 }
 
 .tiles-page .tile.question-correct {
@@ -806,18 +823,188 @@
 }
 
 .tiles-page .tile.mole {
-	border-color: #38bdf8;
-	background: #e0f2fe;
+	border-color: #facc15;
+	background: #fef3c7;
 	box-shadow:
-		0 0 0 2px rgba(56, 189, 248, 0.72),
-		0 0 20px rgba(244, 59, 255, 0.54),
-		0 18px 42px rgba(56, 189, 248, 0.24);
+		0 0 0 2px rgba(250, 204, 21, 0.72),
+		0 0 22px rgba(250, 204, 21, 0.4),
+		0 18px 42px rgba(120, 53, 15, 0.2);
 }
 
 .tiles-page .tile.mole .tile-face {
-	border-color: #38bdf8;
-	background: #05070c;
+	border-color: #facc15;
+	background: #fde047;
 	color: #fff;
+}
+
+.tiles-page .tile.lcd-display .tile-face {
+	width: 94%;
+	padding: 4px;
+	border-color: rgba(15, 23, 42, 0.24);
+	background: #dff7ff;
+	color: #17212b;
+	box-shadow:
+		inset 0 0 0 2px rgba(255, 255, 255, 0.42),
+		inset 0 -10px 20px rgba(15, 23, 42, 0.08);
+}
+
+.tiles-page .lcd-face {
+	position: relative;
+	display: grid;
+	place-items: center;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	border-radius: 5px;
+	background:
+		linear-gradient(135deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0) 30%),
+		linear-gradient(180deg, #e0f7ff 0%, #a7e9ff 100%);
+}
+
+.tiles-page .lcd-svg {
+	z-index: 1;
+	display: block;
+	width: 100%;
+	height: 100%;
+	border-radius: 5px;
+}
+
+.tiles-page .lcd-face::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background: repeating-linear-gradient(
+		to bottom,
+		rgba(15, 23, 42, 0.07) 0,
+		rgba(15, 23, 42, 0.07) 1px,
+		transparent 1px,
+		transparent 5px
+	);
+	pointer-events: none;
+	mix-blend-mode: multiply;
+}
+
+.tiles-page .lcd-art {
+	position: relative;
+	z-index: 1;
+	display: grid;
+	place-items: center;
+	width: 72%;
+	aspect-ratio: 1;
+	border-radius: 999px;
+	background: rgba(255, 255, 255, 0.34);
+	font-size: 30px;
+	line-height: 1;
+	filter: saturate(1.08);
+}
+
+.tiles-page .lcd-art::before {
+	display: block;
+	transform: translateY(-1px);
+}
+
+.tiles-page .lcd-word {
+	z-index: 1;
+	display: grid;
+	place-items: center;
+	width: 88%;
+	min-height: 52%;
+	padding: 3px;
+	border: 2px solid rgba(15, 23, 42, 0.18);
+	border-radius: 6px;
+	background: rgba(255, 255, 255, 0.72);
+	color: #17212b;
+	font-size: 17px;
+	font-weight: 950;
+	line-height: 1;
+	white-space: normal;
+}
+
+.tiles-page .lcd-cat .lcd-art::before {
+	content: "🐱";
+}
+
+.tiles-page .lcd-fish .lcd-art::before {
+	content: "🐟";
+}
+
+.tiles-page .lcd-tree .lcd-art::before {
+	content: "🌳";
+}
+
+.tiles-page .lcd-car .lcd-art::before {
+	content: "🚗";
+}
+
+.tiles-page .lcd-star .lcd-art::before {
+	content: "⭐";
+}
+
+.tiles-page .lcd-house .lcd-art::before {
+	content: "🏠";
+}
+
+.tiles-page .lcd-flower .lcd-art::before {
+	content: "🌼";
+}
+
+.tiles-page .lcd-balloon .lcd-art::before {
+	content: "🎈";
+}
+
+.tiles-page .lcd-mole {
+	background:
+		linear-gradient(135deg, rgba(255, 255, 255, 0.68), rgba(255, 255, 255, 0) 28%),
+		linear-gradient(180deg, #fde047 0%, #fde047 58%, #5a341d 59%, #2f1b12 100%);
+}
+
+.tiles-page .lcd-mole .lcd-art {
+	width: 78%;
+	background: transparent;
+	font-size: 0;
+}
+
+.tiles-page .lcd-mole .lcd-art::before {
+	content: "";
+	width: 76%;
+	aspect-ratio: 1.18;
+	border-radius: 46% 46% 38% 38%;
+	background: #2b211d;
+	box-shadow:
+		-13px -1px 0 -5px #05070c,
+		13px -1px 0 -5px #05070c,
+		0 8px 0 -2px #171412,
+		-17px 12px 0 -7px #f8fafc,
+		17px 12px 0 -7px #f8fafc;
+}
+
+.tiles-page .lcd-mole .lcd-art::after {
+	content: "";
+	position: absolute;
+	width: 18%;
+	aspect-ratio: 1.45;
+	border-radius: 999px;
+	background: #111827;
+	transform: translateY(5px);
+}
+
+.tiles-page .tile.revealed.lcd-display .tile-face,
+.tiles-page .tile.matched.lcd-display .tile-face {
+	font-size: inherit;
+	line-height: inherit;
+}
+
+.tiles-page .tile.revealed.lcd-display .tile-face {
+	border-color: var(--tiles-blue);
+	background: #dff7ff;
+	color: #17212b;
+}
+
+.tiles-page .tile.matched.lcd-display .tile-face {
+	border-color: #94a3b8;
+	background: #dbe4ee;
+	color: #17212b;
+	opacity: 0.76;
 }
 
 .tiles-page .pixel-matrix {
@@ -829,8 +1016,10 @@
 	aspect-ratio: 1;
 	padding: 1px;
 	border-radius: 4px;
-	background: #334155;
-	box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+	background: #111827;
+	box-shadow:
+		inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+		inset 0 -8px 18px rgba(15, 23, 42, 0.18);
 }
 
 .tiles-page .pixel {
@@ -885,6 +1074,25 @@
 	color: #fff;
 	font-size: 28px;
 	line-height: 1;
+}
+
+.tiles-page .tile.revealed.lcd-display .tile-face,
+.tiles-page .tile.matched.lcd-display .tile-face {
+	font-size: inherit;
+	line-height: inherit;
+}
+
+.tiles-page .tile.revealed.lcd-display .tile-face {
+	border-color: var(--tiles-blue);
+	background: #dff7ff;
+	color: #17212b;
+}
+
+.tiles-page .tile.matched.lcd-display .tile-face {
+	border-color: #94a3b8;
+	background: #dbe4ee;
+	color: #17212b;
+	opacity: 0.76;
 }
 
 .tiles-page .tile.set-tile .tile-face {
@@ -942,6 +1150,17 @@
 	background: #0f172a;
 }
 
+.tiles-page .puzzle-face.lcd-puzzle-face {
+	background: #dff7ff;
+}
+
+.tiles-page .lcd-puzzle-svg,
+.tiles-page .lcd-puzzle-reference-svg {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
 .tiles-page .puzzle-face .pixel-matrix {
 	width: 100%;
 	padding: 3px;
@@ -976,42 +1195,42 @@
 
 .tiles-page .pixel[data-color='red'] {
 	background: #ff2d2d;
-	box-shadow: 0 0 5px rgba(255, 45, 45, 0.82);
+	box-shadow: none;
 }
 
 .tiles-page .pixel[data-color='blue'] {
 	background: #2f7cff;
-	box-shadow: 0 0 5px rgba(47, 124, 255, 0.82);
+	box-shadow: none;
 }
 
 .tiles-page .pixel[data-color='green'] {
 	background: #22e35f;
-	box-shadow: 0 0 5px rgba(34, 227, 95, 0.82);
+	box-shadow: none;
 }
 
 .tiles-page .pixel[data-color='yellow'] {
 	background: #ffd43b;
-	box-shadow: 0 0 5px rgba(255, 212, 59, 0.82);
+	box-shadow: none;
 }
 
 .tiles-page .pixel[data-color='magenta'] {
 	background: #f43bff;
-	box-shadow: 0 0 5px rgba(244, 59, 255, 0.82);
+	box-shadow: none;
 }
 
 .tiles-page .pixel[data-color='cyan'] {
 	background: #3ee7ff;
-	box-shadow: 0 0 5px rgba(62, 231, 255, 0.82);
+	box-shadow: none;
 }
 
 .tiles-page .pixel[data-color='orange'] {
 	background: #ff8a1f;
-	box-shadow: 0 0 5px rgba(255, 138, 31, 0.82);
+	box-shadow: none;
 }
 
 .tiles-page .pixel[data-color='white'] {
 	background: #f8fafc;
-	box-shadow: 0 0 5px rgba(248, 250, 252, 0.7);
+	box-shadow: none;
 }
 
 .tiles-page .tray .tile {

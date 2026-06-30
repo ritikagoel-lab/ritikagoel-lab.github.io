@@ -10,14 +10,14 @@ export const DIRECTIONS = [
 ];
 
 export const memoryFaces = [
-	{ key: 'sun', image: '☀' },
-	{ key: 'moon', image: '☾' },
-	{ key: 'key', image: '⚿' },
-	{ key: 'heart', image: '♥' },
-	{ key: 'circle', image: '●' },
-	{ key: 'triangle', image: '▲' },
-	{ key: 'diamond', image: '◆' },
-	{ key: 'plus', image: '+' },
+	{ key: 'cat', word: 'Cat', image: { type: 'lcd', scene: 'cat' } },
+	{ key: 'fish', word: 'Fish', image: { type: 'lcd', scene: 'fish' } },
+	{ key: 'tree', word: 'Tree', image: { type: 'lcd', scene: 'tree' } },
+	{ key: 'car', word: 'Car', image: { type: 'lcd', scene: 'car' } },
+	{ key: 'star', word: 'Star', image: { type: 'lcd', scene: 'star' } },
+	{ key: 'house', word: 'House', image: { type: 'lcd', scene: 'house' } },
+	{ key: 'flower', word: 'Flower', image: { type: 'lcd', scene: 'flower' } },
+	{ key: 'balloon', word: 'Balloon', image: { type: 'lcd', scene: 'balloon' } },
 ];
 
 export function blankTilePack(prefix = 'blank') {
