@@ -9,6 +9,7 @@ export class TileBoard {
 		this.packItems = [];
 		this.nextTileId = 1;
 		this.dragPayload = null;
+		this.dragHandled = false;
 		this.selectedPackKey = null;
 		this.selectedBoardTileId = null;
 	}
@@ -91,6 +92,7 @@ export class TileBoard {
 			event.preventDefault();
 			this.elements.tray.classList.remove('drop-ready');
 			if (this.dragPayload?.source === 'board' && !this.hooks.isLocked()) {
+				this.dragHandled = true;
 				this.returnTileToPack(this.dragPayload.id);
 			}
 		};
@@ -112,9 +114,11 @@ export class TileBoard {
 		this.renderTileFace(tile, item.face);
 		tile.addEventListener('dragstart', () => {
 			this.dragPayload = { source: 'pack', key: item.key };
+			this.dragHandled = false;
 		});
 		tile.addEventListener('dragend', () => {
 			this.dragPayload = null;
+			this.dragHandled = false;
 			this.clearDropTargets();
 		});
 		tile.addEventListener('click', (event) => {
@@ -159,9 +163,17 @@ export class TileBoard {
 				return;
 			}
 			this.dragPayload = { source: 'board', id };
+			this.dragHandled = false;
 		});
 		tile.addEventListener('dragend', () => {
+			if (this.dragPayload?.source === 'board' && !this.dragHandled) {
+				const draggedTile = this.placedTiles.get(this.dragPayload.id);
+				if (draggedTile && this.hooks.shouldDiscardOnDragEnd?.(draggedTile)) {
+					this.returnTileToPack(draggedTile.id);
+				}
+			}
 			this.dragPayload = null;
+			this.dragHandled = false;
 			this.clearDropTargets();
 		});
 		tile.addEventListener('click', (event) => {
@@ -177,10 +189,18 @@ export class TileBoard {
 	handleCellDrop(row, col) {
 		if (!this.dragPayload) return;
 		if (this.dragPayload.source === 'pack') {
-			this.addTileFromPack(this.dragPayload.key, row, col);
+			if (this.addTileFromPack(this.dragPayload.key, row, col)) this.dragHandled = true;
 		}
 		if (this.dragPayload.source === 'board') {
-			this.moveTileToCell(this.dragPayload.id, row, col);
+			if (this.moveTileToCell(this.dragPayload.id, row, col)) {
+				this.dragHandled = true;
+				return;
+			}
+			const tile = this.placedTiles.get(this.dragPayload.id);
+			if (tile && this.hooks.shouldDiscardOnDragEnd?.(tile)) {
+				this.dragHandled = true;
+				this.returnTileToPack(tile.id);
+			}
 		}
 	}
 
@@ -240,10 +260,10 @@ export class TileBoard {
 
 	moveTileToCell(id, row, col) {
 		const tile = this.placedTiles.get(id);
-		if (!tile) return;
+		if (!tile) return false;
 		if (!this.hooks.canPlace(tile, row, col)) {
 			this.hooks.onMessage('Use one of the highlighted answer slots.');
-			return;
+			return false;
 		}
 		const existing = this.placedTileList().find((candidate) => candidate.row === row && candidate.col === col);
 		if (existing && existing.id !== id) this.returnTileToPack(existing.id);
@@ -251,6 +271,7 @@ export class TileBoard {
 		tile.col = col;
 		this.cells.get(this.cellKey(row, col)).appendChild(tile.element);
 		this.hooks.onChange();
+		return true;
 	}
 
 	returnTileToPack(id) {
@@ -703,7 +724,8 @@ export class TileBoard {
 		}
 		if (this.dragPayload?.source === 'board') {
 			const tile = this.placedTiles.get(this.dragPayload.id);
-			return tile ? this.hooks.canPlace(tile, row, col) : false;
+			if (!tile) return false;
+			return this.hooks.canPlace(tile, row, col) || Boolean(this.hooks.shouldDiscardOnDragEnd?.(tile));
 		}
 		return false;
 	}

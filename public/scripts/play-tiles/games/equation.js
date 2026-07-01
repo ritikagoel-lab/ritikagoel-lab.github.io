@@ -48,11 +48,11 @@ export class EquationGame {
 	}
 
 	instructions() {
-		return `Solve: ${this.question.left} ${this.question.op} ${this.question.right} = ?. Drag digit tiles into the numbered answer slots, or type the answer below.`;
+		return 'Drag digit tiles into the numbered answer slots, or type the answer above the board. When the answer is ready, click Check Answer.';
 	}
 
 	prompt() {
-		return 'Use the leftmost slots first for the answer digits, then press Check Answer beside the board.';
+		return 'Use the leftmost slots first for dragged digits, or type the full answer, then click Check Answer.';
 	}
 
 	autoArrange({ silent = false } = {}) {
@@ -229,6 +229,10 @@ export class EquationGame {
 			return true;
 		}
 		return false;
+	}
+
+	shouldDiscardOnDragEnd(tile) {
+		return tile.row === 1 && tile.col >= 0 && tile.col <= 2 && /^\d$/.test(tile.label);
 	}
 
 	handleCellClick(row, col) {

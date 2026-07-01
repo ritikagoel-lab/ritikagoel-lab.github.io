@@ -113,18 +113,18 @@ import '../styles/play-tiles.css';
 						</section>
 						<section class="board-area" aria-label="Tile board area">
 							<div class="area-title">Tile Board</div>
-							<div id="equationAnswerPanel" class="equation-answer-panel hidden" aria-label="Equation answer entry">
-								<div>
-									<strong>Answer</strong>
-									<span>Drag digits into the numbered slots, or type the answer here.</span>
-								</div>
-								<label>
-									Type answer
-									<input id="equationAnswerInput" type="text" inputmode="numeric" autocomplete="off" maxlength="3" placeholder="12" />
-								</label>
-								<button class="check-button" type="button" id="equationCheckBoard">Check Answer</button>
-							</div>
 							<div class="grid-wrap">
+								<div id="equationAnswerPanel" class="equation-answer-panel hidden" aria-label="Equation answer entry">
+									<div>
+										<strong>Type Answer</strong>
+										<span>You can also drag digits into the answer slots on the board.</span>
+									</div>
+									<label>
+										Answer
+										<input id="equationAnswerInput" type="text" inputmode="numeric" autocomplete="off" maxlength="3" placeholder="12" />
+									</label>
+								</div>
+								<button class="check-button equation-check-action hidden" type="button" id="equationCheckBoard">Check Answer</button>
 								<div class="grid" aria-label="Tile board"></div>
 							</div>
 						</section>
@@ -194,6 +194,6 @@ import '../styles/play-tiles.css';
 			</section>
 		</main>
 		<Footer />
-		<script type="module" is:inline src="/scripts/play-tiles.js?v=38"></script>
+		<script type="module" is:inline src="/scripts/play-tiles.js?v=40"></script>
 	</body>
 </html>

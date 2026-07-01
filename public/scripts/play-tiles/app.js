@@ -1,6 +1,6 @@
-import { TileBoard } from './board.js?v=20';
+import { TileBoard } from './board.js?v=22';
 import { WhackGame } from './games/whack.js?v=9';
-import { EquationGame } from './games/equation.js?v=7';
+import { EquationGame } from './games/equation.js?v=8';
 import { MemoryGame } from './games/memory.js?v=6';
 import { PuzzleGame } from './games/puzzle.js?v=30';
 
@@ -60,6 +60,7 @@ export class SmartTilesApp {
 			},
 			onChange: () => this.render(),
 			onTileClick: (tile) => this.currentGame().handleTileClick(tile),
+			shouldDiscardOnDragEnd: (tile) => (this.currentGame().shouldDiscardOnDragEnd ? this.currentGame().shouldDiscardOnDragEnd(tile) : false),
 			onMessage: (message) => this.setStatus(message),
 		});
 		this.games = {
@@ -144,6 +145,7 @@ export class SmartTilesApp {
 		this.elements.startGameButton.classList.toggle('hidden', this.mode === 'equation' || this.mode === 'puzzle');
 		this.elements.checkGameButton.classList.toggle('hidden', true);
 		this.elements.equationAnswerPanel.classList.toggle('hidden', this.mode !== 'equation');
+		this.elements.equationCheckButton.classList.toggle('hidden', this.mode !== 'equation');
 		this.elements.memoryControls.classList.toggle('hidden', this.mode !== 'memory');
 		this.elements.memorySpeedControls.classList.toggle('hidden', this.mode !== 'memory');
 		this.elements.memoryMatchControls.classList.toggle('hidden', this.mode !== 'memory');
