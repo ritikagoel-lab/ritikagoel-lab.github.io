@@ -3,6 +3,8 @@ import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+
+const SHOW_HOMEPAGE_CONTENT = false;
 ---
 
 <!doctype html>
@@ -13,101 +15,107 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 	<body>
 		<Header />
 		<main class="product-page">
-			<section class="product-hero">
-				<div class="hero-heading">
-					<h1>A playground for infinite imagination</h1>
-				</div>
-				<div class="hero-content">
-					<div class="hero-copy">
-						<p class="hero-kicker">Scatter the tiles. Unlock the playground.</p>
-						<p>
-							Transform any space into an interactive, screen-free gaming console.
-							Just scatter the smart tiles across a floor or table and let the play begin!
-						</p>
-						<p class="hero-status">Product Coming Soon</p>
-						<a class="hero-link" href="/play-tiles/" aria-label="Try the games in the Games tab">
-							Try the games
-							<span aria-hidden="true">↗</span>
-						</a>
-					</div>
-					<figure class="hero-visual">
-						<img
-							src="/images/tikatiles-homepage-tile.png"
-							alt="A rendered TikaTiles smart tile with illuminated display pixels"
-							width="1800"
-							height="1200"
-						/>
-					</figure>
-				</div>
-				<figure class="hero-video">
-					<video
-						src="/images/master_tile_4side_spin_12fps_start1.mp4"
-						aria-label="Rotating TikaTiles smart tile render"
-						muted
-						loop
-						playsinline
-						controls
-						preload="metadata"
-					></video>
-				</figure>
-			</section>
+			{
+				SHOW_HOMEPAGE_CONTENT && (
+					<>
+						<section class="product-hero">
+							<div class="hero-heading">
+								<h1>A playground for infinite imagination</h1>
+							</div>
+							<div class="hero-content">
+								<div class="hero-copy">
+									<p class="hero-kicker">Scatter the tiles. Unlock the playground.</p>
+									<p>
+										Transform any space into an interactive, screen-free gaming console. Just scatter
+										the smart tiles across a floor or table and let the play begin!
+									</p>
+									<p class="hero-status">Product Coming Soon</p>
+									<a class="hero-link" href="/play-tiles/" aria-label="Try the games in the Games tab">
+										Try the games
+										<span aria-hidden="true">↗</span>
+									</a>
+								</div>
+								<figure class="hero-visual">
+									<img
+										src="/images/tikatiles-homepage-tile.png"
+										alt="A rendered TikaTiles smart tile with illuminated display pixels"
+										width="1800"
+										height="1200"
+									/>
+								</figure>
+							</div>
+							<figure class="hero-video">
+								<video
+									src="/images/master_tile_4side_spin_12fps_start1.mp4"
+									aria-label="Rotating TikaTiles smart tile render"
+									muted
+									loop
+									playsinline
+									controls
+									preload="metadata"
+								></video>
+							</figure>
+						</section>
 
-			<section class="features-section" aria-label="TikaTiles features">
-				<h2>The Features</h2>
-				<ul class="feature-list">
-					<li>
-						<strong>Play Anywhere</strong>
-						<p>100% wireless and standalone. No mats, tracks, or screens required.</p>
-					</li>
-					<li>
-						<strong>Smart Spatial Awareness</strong>
-						<p>
-							The tiles talk to each other. They instantly map their relative positions, knowing
-							exactly how you arrange and connect them.
-						</p>
-					</li>
-					<li>
-						<strong>Endless Games</strong>
-						<p>
-							Play high-energy games like Whack-a-Mole and Memory, or place the tiles to solve
-							math equations and spatial puzzles.
-						</p>
-					</li>
-					<li>
-						<strong>Learn Through Touch</strong>
-						<p>
-							Open-ended play that introduces physical computing, eventually letting kids program
-							their own custom rules.
-						</p>
-					</li>
-				</ul>
-			</section>
-			<section class="coming-grid" aria-label="Coming soon details">
-				<article>
-					<p class="card-label">Product</p>
-					<h2>Tiles are in development</h2>
-					<p>
-						The physical tile system is being prototyped now. More product images, videos, and
-						details will be added as the hardware form factor matures.
-					</p>
-				</article>
-				<article>
-					<p class="card-label">Images</p>
-					<h2>Available soon</h2>
-					<p>
-						High-quality product renders and prototype photos will live here once the design is
-						ready to share.
-					</p>
-				</article>
-				<article>
-					<p class="card-label">Videos</p>
-					<h2>Available soon</h2>
-					<p>
-						Gameplay demos, setup videos, and hardware progress clips will be added as the tiles
-						move closer to product testing.
-					</p>
-				</article>
-			</section>
+						<section class="features-section" aria-label="TikaTiles features">
+							<h2>The Features</h2>
+							<ul class="feature-list">
+								<li>
+									<strong>Play Anywhere</strong>
+									<p>100% wireless and standalone. No mats, tracks, or screens required.</p>
+								</li>
+								<li>
+									<strong>Smart Spatial Awareness</strong>
+									<p>
+										The tiles talk to each other. They instantly map their relative positions,
+										knowing exactly how you arrange and connect them.
+									</p>
+								</li>
+								<li>
+									<strong>Endless Games</strong>
+									<p>
+										Play high-energy games like Whack-a-Mole and Memory, or place the tiles to solve
+										math equations and spatial puzzles.
+									</p>
+								</li>
+								<li>
+									<strong>Learn Through Touch</strong>
+									<p>
+										Open-ended play that introduces physical computing, eventually letting kids
+										program their own custom rules.
+									</p>
+								</li>
+							</ul>
+						</section>
+						<section class="coming-grid" aria-label="Coming soon details">
+							<article>
+								<p class="card-label">Product</p>
+								<h2>Tiles are in development</h2>
+								<p>
+									The physical tile system is being prototyped now. More product images, videos, and
+									details will be added as the hardware form factor matures.
+								</p>
+							</article>
+							<article>
+								<p class="card-label">Images</p>
+								<h2>Available soon</h2>
+								<p>
+									High-quality product renders and prototype photos will live here once the design is
+									ready to share.
+								</p>
+							</article>
+							<article>
+								<p class="card-label">Videos</p>
+								<h2>Available soon</h2>
+								<p>
+									Gameplay demos, setup videos, and hardware progress clips will be added as the tiles
+									move closer to product testing.
+								</p>
+							</article>
+						</section>
+					</>
+				)
+			}
 		</main>
 		<Footer />
 	</body>
